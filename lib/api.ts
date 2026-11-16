@@ -40,17 +40,24 @@ const isApiResponse = (value: unknown): value is ApiResponse<unknown> =>
   "message" in value &&
   typeof value.message === "string"
 
+type ApiRequestResult<T> = {
+  result: ApiResponse<T>
+  // Raw Set-Cookie headers from the backend, empty when no response arrived
+  setCookies: string[]
+}
+
 /*
 Calls the backend from the server and always resolves to its response envelope.
 A network failure or a non-JSON reply becomes an `ApiFailure`, so callers handle
 every error the same way: check `success`, show `message`.
 
 `path` is a backend path starting with `/api/`, including any query string.
+Use this over `apiFetch` only when the Set-Cookie headers are needed.
 */
-export const apiFetch = async <T>(
+export const apiRequest = async <T>(
   path: string,
   { body, headers, ...init }: ApiFetchOptions = {},
-): Promise<ApiResponse<T>> => {
+): Promise<ApiRequestResult<T>> => {
   let res: Response
 
   try {
@@ -63,14 +70,27 @@ export const apiFetch = async <T>(
       body: body === undefined ? undefined : JSON.stringify(body),
     })
   } catch {
-    return { success: false, statusCode: 0, message: NETWORK_ERROR_MESSAGE }
+    return {
+      result: { success: false, statusCode: 0, message: NETWORK_ERROR_MESSAGE },
+      setCookies: [],
+    }
   }
 
+  const setCookies = res.headers.getSetCookie()
   const json: unknown = await res.json().catch(() => null)
 
   if (!isApiResponse(json)) {
-    return { success: false, statusCode: res.status, message: BAD_RESPONSE_MESSAGE }
+    return {
+      result: { success: false, statusCode: res.status, message: BAD_RESPONSE_MESSAGE },
+      setCookies,
+    }
   }
 
-  return json as ApiResponse<T>
+  return { result: json as ApiResponse<T>, setCookies }
 }
+
+// Same as `apiRequest`, returning only the response envelope
+export const apiFetch = async <T>(
+  path: string,
+  options?: ApiFetchOptions,
+): Promise<ApiResponse<T>> => (await apiRequest<T>(path, options)).result

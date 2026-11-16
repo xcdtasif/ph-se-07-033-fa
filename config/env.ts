@@ -10,5 +10,6 @@ function getEnv(key: string): string {
 
 // Server-only values. Next.js loads the .env files itself, so dotenv isn't needed
 export const env = {
+  NODE_ENV: getEnv("NODE_ENV"),
   API_URL: getEnv("API_URL"),
 } as const

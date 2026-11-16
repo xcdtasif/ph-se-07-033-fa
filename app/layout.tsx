@@ -3,6 +3,7 @@ import { Geist, Geist_Mono } from "next/font/google"
 
 import { Footer } from "@/components/shared/footer"
 import { Navbar } from "@/components/shared/navbar"
+import { Toaster } from "@/components/ui/sonner"
 
 import "./globals.css"
 
@@ -32,6 +33,14 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
         <Navbar />
         <main className="mx-auto flex w-full max-w-6xl flex-1 flex-col px-4 py-8">{children}</main>
         <Footer />
+        {/* Offsets keep toasts below the sticky navbar */}
+        <Toaster
+          theme="light"
+          richColors
+          position="top-center"
+          offset={64}
+          mobileOffset={{ top: 64 }}
+        />
       </body>
     </html>
   )
