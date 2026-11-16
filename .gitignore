@@ -42,8 +42,10 @@ next-env.d.ts
 
 _inbox
 _ph
+.agents
 .fallow
 
 .env*
 !.env.example
+skills-lock.json
 AGENTS.md
