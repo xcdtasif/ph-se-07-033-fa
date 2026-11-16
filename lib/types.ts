@@ -1,4 +1,6 @@
-export type UserRole = "ADMIN" | "LANDLORD" | "TENANT"
+export const USER_ROLES = ["ADMIN", "LANDLORD", "TENANT"] as const
+
+export type UserRole = (typeof USER_ROLES)[number]
 
 export type User = {
   id: string
