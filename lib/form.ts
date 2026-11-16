@@ -28,3 +28,10 @@ export const toFormError = <Field extends string>(
 
   return { success: false, message: failure.message, fieldErrors, values }
 }
+
+// A text field's value from FormData, or "" when it is missing or a file
+export const formText = (formData: FormData, name: string) => {
+  const value = formData.get(name)
+
+  return typeof value === "string" ? value : ""
+}

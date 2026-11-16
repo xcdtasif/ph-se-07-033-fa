@@ -1,5 +1,7 @@
 import { z } from "zod"
 
+import { nameSchema } from "@/lib/schemas"
+
 // These mirror the backend rules in docs/api-docs/auth.md
 
 const email = z
@@ -16,11 +18,7 @@ const password = z
 export const loginSchema = z.object({ email, password })
 
 export const registerSchema = z.object({
-  name: z
-    .string()
-    .trim()
-    .min(2, { error: "Name must be at least 2 characters" })
-    .max(100, { error: "Name must be at most 100 characters" }),
+  name: nameSchema,
   email,
   password: password.refine((value) => new TextEncoder().encode(value).length <= 72, {
     error: "Password is too long",

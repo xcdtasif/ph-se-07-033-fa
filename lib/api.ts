@@ -24,7 +24,7 @@ export type ApiFailure = {
 
 export type ApiResponse<T> = ApiSuccess<T> | ApiFailure
 
-type ApiFetchOptions = Omit<RequestInit, "body"> & {
+export type ApiFetchOptions = Omit<RequestInit, "body"> & {
   // Sent as JSON
   body?: unknown
 }

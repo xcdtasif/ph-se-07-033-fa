@@ -69,3 +69,12 @@ export const relayAuthCookies = async (setCookies: string[]): Promise<boolean> =
 
   return true
 }
+
+// Deletes both auth cookies on this domain
+export const clearAuthCookies = async () => {
+  const cookieStore = await cookies()
+
+  for (const name of AUTH_COOKIE_NAMES) {
+    cookieStore.delete({ name, path: "/" })
+  }
+}
