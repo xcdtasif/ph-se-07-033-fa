@@ -6,7 +6,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { RegisterForm } from "../_components/register-form"
 
 export const metadata: Metadata = {
-  title: "Create account",
+  title: "Register",
 }
 
 export default function RegisterPage() {
@@ -19,7 +19,7 @@ export default function RegisterPage() {
         <CardDescription>
           Already have one?{" "}
           <Link href="/login" className="text-foreground underline underline-offset-4">
-            Sign in
+            Log in
           </Link>
         </CardDescription>
       </CardHeader>

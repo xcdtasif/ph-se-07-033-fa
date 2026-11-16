@@ -15,7 +15,7 @@ import {
 } from "../_schemas/auth-schemas"
 
 const INVALID_FIELDS_MESSAGE = "Please fix the highlighted fields"
-const NO_SESSION_MESSAGE = "We couldn't sign you in. Please try again."
+const NO_SESSION_MESSAGE = "We couldn't log you in. Please try again."
 
 const text = (formData: FormData, name: string) => {
   const value = formData.get(name)

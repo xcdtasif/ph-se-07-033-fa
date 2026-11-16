@@ -6,7 +6,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { LoginForm } from "../_components/login-form"
 
 export const metadata: Metadata = {
-  title: "Sign in",
+  title: "Log in",
 }
 
 export default function LoginPage() {
@@ -14,12 +14,12 @@ export default function LoginPage() {
     <Card className="w-full max-w-sm">
       <CardHeader>
         <CardTitle>
-          <h1>Sign in</h1>
+          <h1>Log in</h1>
         </CardTitle>
         <CardDescription>
           New to RentNest?{" "}
           <Link href="/register" className="text-foreground underline underline-offset-4">
-            Create an account
+            Register
           </Link>
         </CardDescription>
       </CardHeader>

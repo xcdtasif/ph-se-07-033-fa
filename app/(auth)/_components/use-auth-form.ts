@@ -8,7 +8,7 @@ import type { FormState } from "@/lib/form"
 
 /*
 Runs an auth server action from a form: shows its message as a toast and goes
-to the home page once the user is signed in.
+to the home page once the user is logged in.
 */
 export const useAuthForm = <Field extends string>(
   action: (formData: FormData) => Promise<FormState<Field>>,

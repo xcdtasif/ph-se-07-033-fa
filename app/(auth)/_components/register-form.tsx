@@ -92,7 +92,7 @@ export function RegisterForm() {
         </FieldSet>
 
         <Button type="submit" disabled={pending}>
-          {pending ? "Creating account…" : "Create account"}
+          {pending ? "Registering…" : "Register"}
         </Button>
       </FieldGroup>
     </form>

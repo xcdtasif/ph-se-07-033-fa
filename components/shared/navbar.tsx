@@ -16,7 +16,7 @@ export function Navbar() {
         </Link>
         <div className="flex items-center gap-2">
           <Link href="/login" className={buttonVariants({ variant: "ghost" })}>
-            Sign in
+            Log in
           </Link>
           <Link href="/register" className={buttonVariants()}>
             Register

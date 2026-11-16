@@ -44,7 +44,7 @@ export function LoginForm() {
         </Field>
 
         <Button type="submit" disabled={pending}>
-          {pending ? "Signing in…" : "Sign in"}
+          {pending ? "Logging in…" : "Log in"}
         </Button>
       </FieldGroup>
     </form>
