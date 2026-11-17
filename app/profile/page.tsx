@@ -1,7 +1,7 @@
 import type { Metadata } from "next"
-import { redirect } from "next/navigation"
 import { Suspense } from "react"
 
+import { ApiError } from "@/components/shared/api-error"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { getCurrentUser } from "@/lib/auth-fetch"
 import { formatDate } from "@/lib/format"
@@ -17,11 +17,7 @@ async function ProfileDetails() {
 
   // The proxy lets the page through on an unverified token; the backend has the final say
   if (!result.success) {
-    if (result.statusCode === 401) {
-      redirect("/login?redirectTo=/profile")
-    }
-
-    throw new Error(result.message)
+    return <ApiError error={result} />
   }
 
   const user = result.data

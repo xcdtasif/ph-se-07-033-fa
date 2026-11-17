@@ -83,3 +83,13 @@ export const logoutAction = async () => {
   await clearAuthCookies()
   redirect("/")
 }
+
+/*
+Ends a session the backend no longer accepts (account deleted, token rejected)
+and opens the login page. Like logout, redirecting from an action re-renders
+the whole page, so the navbar drops the old name too.
+*/
+export const logInAgainAction = async () => {
+  await clearAuthCookies()
+  redirect("/login")
+}
