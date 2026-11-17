@@ -4,6 +4,10 @@ const nextConfig: NextConfig = {
   /* config options here */
   cacheComponents: true,
   partialPrefetching: true,
+  images: {
+    // Property photos are uploaded to UploadThing (https://<appId>.ufs.sh/f/<key>)
+    remotePatterns: [{ protocol: "https", hostname: "*.ufs.sh", pathname: "/f/**" }],
+  },
   experimental: {
     /*
     Turbopack's saved build cache can serve an old globals.css after the file
