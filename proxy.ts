@@ -1,7 +1,7 @@
 import { NextResponse, type NextRequest } from "next/server"
 import { z } from "zod"
 
-import { apiRequest } from "@/lib/api"
+import { apiFetch, apiRequest } from "@/lib/api"
 import { AUTH_COOKIE_NAMES, parseAuthCookies, type AuthCookie } from "@/lib/auth-cookies"
 import { safeRedirectPath } from "@/lib/redirect"
 import { USER_ROLES, type User, type UserRole } from "@/lib/types"
@@ -56,12 +56,40 @@ const roleFromToken = (token: string): UserRole | null => {
   }
 }
 
+const isGuestOnly = (pathname: string) =>
+  GUEST_ONLY_ROUTES.some((route) => matches(pathname, route))
+
+/*
+Asks the backend whether the access token's account still exists and isn't
+banned. Without this, a deleted or banned user with an unexpired token would be
+sent away from the login page while the navbar (which asks the backend) offers
+only "Log in", leaving no way to log in or out until the token expires.
+*/
+const confirmAccessToken = async (accessToken: string, role: UserRole): Promise<Session> => {
+  const result = await apiFetch<User>("/api/users/me", {
+    headers: { Cookie: `accessToken=${accessToken}` },
+  })
+
+  if (result.success) {
+    return { role: result.data.role }
+  }
+
+  // 401: account gone or token rejected, 403: account banned
+  if (result.statusCode === 401 || result.statusCode === 403) {
+    return { role: null, cleared: true }
+  }
+
+  // Backend unreachable or failing: keep trusting the token
+  return { role }
+}
+
 const readSession = async (request: NextRequest): Promise<Session> => {
   const accessToken = request.cookies.get("accessToken")?.value
   const role = accessToken ? roleFromToken(accessToken) : null
 
-  if (role) {
-    return { role }
+  if (accessToken && role) {
+    // Only where the token would lock the user out; elsewhere the page asks the backend anyway
+    return isGuestOnly(request.nextUrl.pathname) ? confirmAccessToken(accessToken, role) : { role }
   }
 
   const refreshToken = request.cookies.get("refreshToken")?.value
@@ -96,7 +124,7 @@ const readSession = async (request: NextRequest): Promise<Session> => {
 const redirectFor = (request: NextRequest, role: UserRole | null): URL | null => {
   const { pathname, search, searchParams } = request.nextUrl
 
-  if (GUEST_ONLY_ROUTES.some((route) => matches(pathname, route))) {
+  if (isGuestOnly(pathname)) {
     return role ? new URL(safeRedirectPath(searchParams.get("redirectTo")), request.url) : null
   }
 
@@ -145,7 +173,8 @@ export async function proxy(request: NextRequest) {
 
   if (cleared) {
     for (const name of AUTH_COOKIE_NAMES) {
-      response.cookies.set(name, "", { path: "/", maxAge: 0 })
+      // Expires in the past rather than Max-Age=0, which Next drops when it passes cookies to the render
+      response.cookies.delete({ name, path: "/" })
     }
   }
 
