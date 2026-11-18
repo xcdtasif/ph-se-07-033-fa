@@ -4,6 +4,8 @@ const nextConfig: NextConfig = {
   /* config options here */
   cacheComponents: true,
   partialPrefetching: true,
+  // The dev server refuses its scripts to other hostnames; omarchy is this machine on Tailscale
+  allowedDevOrigins: ["omarchy"],
   images: {
     // Property photos are uploaded to UploadThing (https://<appId>.ufs.sh/f/<key>)
     remotePatterns: [{ protocol: "https", hostname: "*.ufs.sh", pathname: "/f/**" }],
