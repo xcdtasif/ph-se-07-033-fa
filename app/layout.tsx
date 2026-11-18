@@ -22,7 +22,7 @@ export const metadata: Metadata = {
     default: "RentNest",
     template: "%s | RentNest",
   },
-  description: "Find and list rental properties with ease.",
+  description: "Find and list properties with ease.",
 }
 
 export default function RootLayout({ children }: LayoutProps<"/">) {

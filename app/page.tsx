@@ -30,7 +30,7 @@ export default function HomePage() {
           Find your next home with RentNest
         </h1>
         <p className="text-muted-foreground max-w-xl text-lg text-pretty">
-          Browse rental properties, send a request to the landlord and pay your deposit securely.
+          Search for properties, send requests to landlords, and pay deposits securely.
         </p>
         <Link href="/properties" className={buttonVariants({ size: "lg" })}>
           Browse properties

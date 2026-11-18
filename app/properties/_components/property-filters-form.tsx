@@ -168,7 +168,7 @@ export function PropertyFiltersForm({ categories, filters }: PropertyFiltersForm
       {/* One message for the pair, across the whole form, so the grid doesn't jump */}
       {rangeError && (
         <FieldError id="rent-error" className="text-center sm:col-span-2 lg:col-span-6">
-          Max rent must be at least the min rent.
+          Min rent can't be greater than the max rent
         </FieldError>
       )}
 

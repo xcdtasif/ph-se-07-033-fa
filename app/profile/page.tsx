@@ -2,7 +2,7 @@ import type { Metadata } from "next"
 import { Suspense } from "react"
 
 import { ApiError } from "@/components/shared/api-error"
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { getCurrentUser } from "@/lib/auth-fetch"
 import { formatDate } from "@/lib/format"
 
@@ -34,7 +34,6 @@ async function ProfileDetails() {
           <CardTitle>
             <h2>Account</h2>
           </CardTitle>
-          <CardDescription>Your email and role can&apos;t be changed.</CardDescription>
         </CardHeader>
         <CardContent>
           <dl className="grid grid-cols-[auto_1fr] gap-x-6 gap-y-2 text-sm">
