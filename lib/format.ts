@@ -6,8 +6,14 @@ const dateFormat = new Intl.DateTimeFormat("en-GB", { dateStyle: "long", timeZon
 
 export const formatDate = (iso: string) => dateFormat.format(new Date(iso))
 
-// "BDT 28,000", or "BDT 18,500.50" when there are paisa
-const moneyFormat = new Intl.NumberFormat("en-BD", {
+/*
+Lakh and crore grouping (9,99,99,999), as taka are written in Bangladesh.
+en-IN, because ICU's en-BD groups in thousands; en-IN keeps Latin digits, unlike bn-BD.
+*/
+const LOCALE = "en-IN"
+
+// "BDT 28,000", or "BDT 1,18,500.50" when there are paisa
+const moneyFormat = new Intl.NumberFormat(LOCALE, {
   style: "currency",
   currency: "BDT",
   maximumFractionDigits: 2,
@@ -16,3 +22,8 @@ const moneyFormat = new Intl.NumberFormat("en-BD", {
 
 // Takes the decimal string the backend sends
 export const formatMoney = (amount: string) => moneyFormat.format(Number(amount))
+
+const numberFormat = new Intl.NumberFormat(LOCALE)
+
+// 999999 as "9,99,999"
+export const formatNumber = (value: number) => numberFormat.format(value)
