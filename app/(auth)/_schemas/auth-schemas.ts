@@ -17,7 +17,7 @@ const password = z
 
 export const loginSchema = z.object({ email, password })
 
-export const registerSchema = z.object({
+export const signupSchema = z.object({
   name: nameSchema,
   email,
   password: password.refine((value) => new TextEncoder().encode(value).length <= 72, {
@@ -27,4 +27,4 @@ export const registerSchema = z.object({
 })
 
 export type LoginField = keyof z.infer<typeof loginSchema>
-export type RegisterField = keyof z.infer<typeof registerSchema>
+export type SignupField = keyof z.infer<typeof signupSchema>

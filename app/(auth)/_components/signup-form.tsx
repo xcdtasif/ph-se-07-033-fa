@@ -4,7 +4,6 @@ import { Button } from "@/components/ui/button"
 import {
   Field,
   FieldContent,
-  FieldDescription,
   FieldError,
   FieldGroup,
   FieldLabel,
@@ -15,18 +14,18 @@ import {
 import { Input } from "@/components/ui/input"
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group"
 
-import { registerAction } from "../_actions/auth-actions"
+import { signupAction } from "../_actions/auth-actions"
 import { useAuthForm } from "./use-auth-form"
 
 const ROLES = [
-  { value: "TENANT", title: "Tenant", description: "I'm looking for a place to rent" },
-  { value: "LANDLORD", title: "Landlord", description: "I want to list my properties" },
+  { value: "TENANT", title: "Tenant" },
+  { value: "LANDLORD", title: "Landlord" },
 ]
 
 const toErrors = (messages?: string[]) => messages?.map((message) => ({ message }))
 
-export function RegisterForm() {
-  const [state, formAction, pending] = useAuthForm(registerAction)
+export function SignupForm() {
+  const [state, formAction, pending] = useAuthForm(signupAction)
   const errors = state.fieldErrors
 
   return (
@@ -69,19 +68,21 @@ export function RegisterForm() {
             aria-invalid={Boolean(errors?.password)}
             required
           />
-          <FieldDescription>At least 8 characters.</FieldDescription>
           <FieldError errors={toErrors(errors?.password)} />
         </Field>
 
         <FieldSet>
-          <FieldLegend variant="label">I'm joining as a</FieldLegend>
-          <RadioGroup name="role" defaultValue={state.values?.role || "TENANT"}>
+          <FieldLegend variant="label">Role</FieldLegend>
+          <RadioGroup
+            name="role"
+            className="grid-cols-2"
+            defaultValue={state.values?.role || "TENANT"}
+          >
             {ROLES.map((role) => (
               <FieldLabel key={role.value} htmlFor={`role-${role.value}`}>
                 <Field orientation="horizontal">
                   <FieldContent>
                     <FieldTitle>{role.title}</FieldTitle>
-                    <FieldDescription>{role.description}</FieldDescription>
                   </FieldContent>
                   <RadioGroupItem id={`role-${role.value}`} value={role.value} />
                 </Field>
@@ -92,7 +93,7 @@ export function RegisterForm() {
         </FieldSet>
 
         <Button type="submit" disabled={pending}>
-          {pending ? "Registering…" : "Register"}
+          {pending ? "Signing up…" : "Sign up"}
         </Button>
       </FieldGroup>
     </form>

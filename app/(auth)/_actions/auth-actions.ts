@@ -10,9 +10,9 @@ import type { User } from "@/lib/types"
 
 import {
   loginSchema,
-  registerSchema,
+  signupSchema,
   type LoginField,
-  type RegisterField,
+  type SignupField,
 } from "../_schemas/auth-schemas"
 
 const INVALID_FIELDS_MESSAGE = "Please fix the highlighted fields"
@@ -53,13 +53,13 @@ export const loginAction = async (formData: FormData): Promise<FormState<LoginFi
   return authenticate("/api/auth/login", parsed.data, values)
 }
 
-export const registerAction = async (formData: FormData): Promise<FormState<RegisterField>> => {
+export const signupAction = async (formData: FormData): Promise<FormState<SignupField>> => {
   const values = {
     name: formText(formData, "name"),
     email: formText(formData, "email"),
     role: formText(formData, "role"),
   }
-  const parsed = registerSchema.safeParse({ ...values, password: formText(formData, "password") })
+  const parsed = signupSchema.safeParse({ ...values, password: formText(formData, "password") })
 
   if (!parsed.success) {
     return {
@@ -70,7 +70,7 @@ export const registerAction = async (formData: FormData): Promise<FormState<Regi
     }
   }
 
-  return authenticate("/api/auth/register", parsed.data, values)
+  return authenticate("/api/auth/signup", parsed.data, values)
 }
 
 /*
@@ -89,7 +89,7 @@ Ends a session the backend no longer accepts (account deleted, token rejected)
 and opens the login page. Like logout, redirecting from an action re-renders
 the whole page, so the navbar drops the old name too.
 */
-export const logInAgainAction = async () => {
+export const loginAgainAction = async () => {
   await clearAuthCookies()
   redirect("/login")
 }

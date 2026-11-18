@@ -27,7 +27,7 @@ const roleLabel = (role: User["role"]) => role.charAt(0) + role.slice(1).toLower
 export function UserMenu({ user }: UserMenuProps) {
   const [pending, startTransition] = useTransition()
 
-  const logOut = () =>
+  const logout = () =>
     startTransition(async () => {
       toast.success("Logged out successfully")
       await logoutAction()
@@ -58,7 +58,7 @@ export function UserMenu({ user }: UserMenuProps) {
           <UserRound aria-hidden="true" />
           Profile
         </DropdownMenuItem>
-        <DropdownMenuItem onClick={logOut} disabled={pending}>
+        <DropdownMenuItem onClick={logout} disabled={pending}>
           <LogOut aria-hidden="true" />
           Log out
         </DropdownMenuItem>

@@ -18,8 +18,8 @@ export default function LoginPage() {
         </CardTitle>
         <CardDescription>
           New to RentNest?{" "}
-          <Link href="/register" className="text-foreground underline underline-offset-4">
-            Register
+          <Link href="/signup" className="text-foreground underline underline-offset-4">
+            Sign up
           </Link>
         </CardDescription>
       </CardHeader>

@@ -12,7 +12,7 @@ verifying the signature (the secret stays on the backend), so it only decides
 where to send the user. The backend still checks every request.
 */
 
-const GUEST_ONLY_ROUTES = ["/login", "/register"]
+const GUEST_ONLY_ROUTES = ["/login", "/signup"]
 
 // First match wins, so the role-specific dashboards come before `/dashboard`
 const PROTECTED_ROUTES: { prefix: string; roles: readonly UserRole[] }[] = [

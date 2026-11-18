@@ -1,4 +1,4 @@
-import { logInAgainAction, logoutAction } from "@/app/(auth)/_actions/auth-actions"
+import { loginAgainAction, logoutAction } from "@/app/(auth)/_actions/auth-actions"
 import { Button } from "@/components/ui/button"
 import type { ApiFailure } from "@/lib/api"
 
@@ -19,7 +19,7 @@ export function ApiError({ error }: { error: ApiFailure }) {
       >
         <h2 className="text-lg font-semibold">Your session has ended</h2>
         <p className="text-muted-foreground max-w-md">{error.message}</p>
-        <form action={logInAgainAction}>
+        <form action={loginAgainAction}>
           <Button type="submit">Log in again</Button>
         </form>
       </div>

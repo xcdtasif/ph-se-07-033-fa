@@ -3,13 +3,13 @@ import Link from "next/link"
 
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 
-import { RegisterForm } from "../_components/register-form"
+import { SignupForm } from "../_components/signup-form"
 
 export const metadata: Metadata = {
-  title: "Register",
+  title: "Sign up",
 }
 
-export default function RegisterPage() {
+export default function SignupPage() {
   return (
     <Card className="w-full max-w-sm">
       <CardHeader>
@@ -24,7 +24,7 @@ export default function RegisterPage() {
         </CardDescription>
       </CardHeader>
       <CardContent>
-        <RegisterForm />
+        <SignupForm />
       </CardContent>
     </Card>
   )

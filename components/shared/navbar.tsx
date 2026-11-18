@@ -1,10 +1,10 @@
-import { House } from "lucide-react"
 import Link from "next/link"
 import { Suspense } from "react"
 
 import { buttonVariants } from "@/components/ui/button"
 import { getCurrentUser } from "@/lib/auth-fetch"
 
+import { HomeLink } from "./home-link"
 import { UserMenu } from "./user-menu"
 
 // Reads the session, so it streams in behind the Suspense boundary below
@@ -22,8 +22,8 @@ async function NavbarAccount() {
       <Link href="/login" className={buttonVariants({ variant: "outline" })}>
         Log in
       </Link>
-      <Link href="/register" className={buttonVariants()}>
-        Register
+      <Link href="/signup" className={buttonVariants()}>
+        Sign up
       </Link>
     </>
   )
@@ -36,10 +36,7 @@ export function Navbar() {
         aria-label="Main"
         className="mx-auto flex h-14 w-full max-w-6xl items-center gap-2 px-4 md:grid md:grid-cols-[1fr_auto_1fr]"
       >
-        <Link href="/" className="flex items-center gap-2 justify-self-start font-semibold">
-          <House className="text-primary size-5" aria-hidden="true" />
-          RentNest
-        </Link>
+        <HomeLink className="justify-self-start text-lg font-semibold" />
         {/* Sits beside the account links on mobile, centred on desktop */}
         <Link
           href="/properties"
