@@ -43,3 +43,15 @@ export type Property = {
   // One decimal, null when there are no reviews
   averageRating: number | null
 }
+
+// A review as the public property reviews list returns it: the tenant's name only
+export type PropertyReview = {
+  id: string
+  propertyId: string
+  // 1 to 5
+  rating: number
+  comment: string
+  createdAt: string
+  updatedAt: string
+  tenant: { name: string }
+}

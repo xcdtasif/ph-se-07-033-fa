@@ -5,16 +5,15 @@ import type { ReactNode } from "react"
 import { buttonVariants } from "@/components/ui/button"
 import { cn } from "@/lib/utils"
 
-import { toQueryString, type PropertyFilters } from "../_schemas/property-filters"
-
 type PaginationProps = {
-  filters: PropertyFilters
+  page: number
   totalPages: number
+  // The URL of a page, keeping the rest of the current query
+  href: (page: number) => string
+  label?: string
 }
 
-export function Pagination({ filters, totalPages }: PaginationProps) {
-  const { page } = filters
-
+export function Pagination({ page, totalPages, href, label = "Pagination" }: PaginationProps) {
   // A link to `target`, or a disabled look-alike when there's no such page
   const pageLink = (target: number, children: ReactNode) => {
     if (target < 1 || target > totalPages) {
@@ -28,20 +27,15 @@ export function Pagination({ filters, totalPages }: PaginationProps) {
       )
     }
 
-    const query = toQueryString({ ...filters, page: target })
-
     return (
-      <Link
-        href={query ? `/properties?${query}` : "/properties"}
-        className={buttonVariants({ variant: "outline" })}
-      >
+      <Link href={href(target)} className={buttonVariants({ variant: "outline" })}>
         {children}
       </Link>
     )
   }
 
   return (
-    <nav aria-label="Pagination" className="flex items-center justify-center gap-4">
+    <nav aria-label={label} className="flex items-center justify-center gap-4">
       {pageLink(
         page - 1,
         <>

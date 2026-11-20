@@ -3,12 +3,12 @@ import Link from "next/link"
 import { Suspense } from "react"
 
 import { ApiError } from "@/components/shared/api-error"
+import { Pagination } from "@/components/shared/pagination"
 import { PropertyGrid, PropertyGridSkeleton } from "@/components/shared/property-grid"
 import { buttonVariants } from "@/components/ui/button"
 import { getCategories } from "@/lib/categories"
 import { getProperties } from "@/lib/properties"
 
-import { Pagination } from "./_components/pagination"
 import { PropertyFiltersForm } from "./_components/property-filters-form"
 import {
   hasActiveFilters,
@@ -77,7 +77,17 @@ async function PropertyResults({ filters }: { filters: PropertyFilters }) {
         Showing {first}–{last} of {total} {total === 1 ? "property" : "properties"}
       </p>
       <PropertyGrid properties={properties} />
-      {totalPages > 1 && <Pagination filters={filters} totalPages={totalPages} />}
+      {totalPages > 1 && (
+        <Pagination
+          page={filters.page}
+          totalPages={totalPages}
+          href={(page) => {
+            const query = toQueryString({ ...filters, page })
+
+            return query ? `/properties?${query}` : "/properties"
+          }}
+        />
+      )}
     </div>
   )
 }
@@ -96,8 +106,7 @@ async function PropertiesView({ searchParams }: Pick<PageProps<"/properties">, "
 
   return (
     <>
-      {/* Keyed by the query so the fields reset to the URL on back/forward */}
-      <PropertyFiltersForm key={`form?${query}`} categories={categories.data} filters={filters} />
+      <PropertyFiltersForm categories={categories.data} filters={filters} />
       {/* A new key shows the skeleton while the next page of results loads */}
       <Suspense key={`results?${query}`} fallback={<PropertyGridSkeleton count={PAGE_SIZE} />}>
         <PropertyResults filters={filters} />
