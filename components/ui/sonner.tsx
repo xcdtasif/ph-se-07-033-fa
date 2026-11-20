@@ -1,12 +1,6 @@
 "use client"
 
-import {
-  CircleCheckIcon,
-  InfoIcon,
-  TriangleAlertIcon,
-  OctagonXIcon,
-  Loader2Icon,
-} from "lucide-react"
+import { Loader2Icon } from "lucide-react"
 import { useTheme } from "next-themes"
 import { Toaster as Sonner, type ToasterProps } from "sonner"
 
@@ -17,11 +11,12 @@ const Toaster = ({ ...props }: ToasterProps) => {
     <Sonner
       theme={theme as ToasterProps["theme"]}
       className="toaster group"
+      // Text-only toasts: null hides the type icon (the colour already shows the type)
       icons={{
-        success: <CircleCheckIcon className="size-4" />,
-        info: <InfoIcon className="size-4" />,
-        warning: <TriangleAlertIcon className="size-4" />,
-        error: <OctagonXIcon className="size-4" />,
+        success: null,
+        info: null,
+        warning: null,
+        error: null,
         loading: <Loader2Icon className="size-4 animate-spin" />,
       }}
       style={
@@ -34,7 +29,8 @@ const Toaster = ({ ...props }: ToasterProps) => {
       }
       toastOptions={{
         classNames: {
-          toast: "cn-toast",
+          // `!` beats Sonner's own unlayered 13px font size
+          toast: "cn-toast justify-center text-center text-sm!",
         },
       }}
       {...props}
