@@ -1,10 +1,9 @@
 "use client"
 
-import Link from "next/link"
 import { useRouter } from "next/navigation"
-import { useState, useTransition, type InputEvent, type SubmitEvent } from "react"
+import { useEffect, useRef, useState, useTransition, type ChangeEvent } from "react"
 
-import { Button, buttonVariants } from "@/components/ui/button"
+import { Button } from "@/components/ui/button"
 import { Field, FieldError, FieldLabel } from "@/components/ui/field"
 import { Input } from "@/components/ui/input"
 import {
@@ -21,6 +20,7 @@ import {
   DEFAULT_SORT,
   MAX_RENT,
   SORT_OPTIONS,
+  toQueryString,
   type PropertyFilters,
 } from "../_schemas/property-filters"
 
@@ -29,60 +29,126 @@ type PropertyFiltersFormProps = {
   filters: PropertyFilters
 }
 
-const RENT_KEYS = new Set(["minRent", "maxRent"])
+// The fields as typed; rent stays text so a box can be empty
+type Values = {
+  search: string
+  categoryId: string | null
+  minRent: string
+  maxRent: string
+  sort: string
+}
+
 const RENT_DIGITS = String(MAX_RENT).length
+// Typing waits for a pause this long before applying; picking from a list applies at once
+const TYPING_DELAY = 400
+
+const EMPTY: Values = { search: "", categoryId: null, minRent: "", maxRent: "", sort: DEFAULT_SORT }
+
+const toValues = (filters: PropertyFilters): Values => ({
+  search: filters.search ?? "",
+  categoryId: filters.categoryId ?? null,
+  minRent: filters.minRent?.toString() ?? "",
+  maxRent: filters.maxRent?.toString() ?? "",
+  sort: filters.sort,
+})
+
+// Empty fields and defaults are left out (no `search=&minRent=` noise); a change starts from page 1
+const toQuery = (values: Values) =>
+  toQueryString({
+    search: values.search.trim() || undefined,
+    categoryId: values.categoryId ?? undefined,
+    // Number() drops leading zeros, so 007 becomes 7
+    minRent: values.minRent ? Number(values.minRent) : undefined,
+    maxRent: values.maxRent ? Number(values.maxRent) : undefined,
+    sort: values.sort,
+    page: 1,
+  })
+
+// Digits only, capped at the max rent's length; a pasted 9.56 keeps the whole part, not 956
+const toDigits = (event: ChangeEvent<HTMLInputElement>) =>
+  event.target.value.split(".")[0].replace(/\D/g, "").slice(0, RENT_DIGITS)
 
 /*
-Filters live in the URL. Submitting builds the query from the non-empty fields
-(so the URL has no `search=&minRent=` noise) and starts again from page 1.
+Filters live in the URL and apply as they change, replacing the URL so Back
+leaves the page instead of stepping through each keystroke. The fields are kept
+in state, not remounted per URL, so typing keeps focus while results load.
 */
 export function PropertyFiltersForm({ categories, filters }: PropertyFiltersFormProps) {
-  // null is "no category"; it submits as an empty value, which is left out of the URL
+  // null is "no category", which is left out of the URL
   const categoryItems = [
     { label: "All categories", value: null },
     ...categories.map((category) => ({ label: category.name, value: category.id })),
   ]
   const router = useRouter()
   const [pending, startTransition] = useTransition()
+  const [values, setValues] = useState(() => toValues(filters))
   const [rangeError, setRangeError] = useState(false)
+  const timer = useRef<ReturnType<typeof setTimeout>>(undefined)
 
-  // Digits only, capped at the max rent's length, so a rent box can't hold an out-of-range value
-  const keepDigits = (event: InputEvent<HTMLInputElement>) => {
-    const input = event.currentTarget
-    // A pasted 9.56 keeps the whole part instead of becoming 956
-    input.value = input.value.split(".")[0].replace(/\D/g, "").slice(0, RENT_DIGITS)
-    setRangeError(false)
+  /*
+  A URL this form didn't produce (Back/Forward, a pagination link) resets the
+  fields to it. The form's own URL is skipped, or typing done while it loaded
+  would be undone.
+  */
+  const urlQuery = toQueryString(filters)
+  const [seenQuery, setSeenQuery] = useState(urlQuery)
+  const [appliedQuery, setAppliedQuery] = useState(urlQuery)
+
+  if (urlQuery !== seenQuery) {
+    setSeenQuery(urlQuery)
+
+    if (urlQuery !== appliedQuery) {
+      setValues(toValues(filters))
+      setAppliedQuery(urlQuery)
+      setRangeError(false)
+    }
   }
 
-  const submit = (event: SubmitEvent<HTMLFormElement>) => {
-    event.preventDefault()
+  // A pending apply mustn't navigate after leaving the page
+  useEffect(() => () => clearTimeout(timer.current), [])
 
-    const params = new URLSearchParams()
+  const apply = (next: Values) => {
+    clearTimeout(timer.current)
 
-    for (const [key, value] of new FormData(event.currentTarget)) {
-      const text = String(value).trim()
-
-      if (text && !(key === "sort" && text === DEFAULT_SORT)) {
-        // Number() drops leading zeros, so 007 becomes 7
-        params.set(key, RENT_KEYS.has(key) ? String(Number(text)) : text)
-      }
-    }
-
-    const minRent = params.get("minRent")
-    const maxRent = params.get("maxRent")
-
-    if (minRent && maxRent && Number(minRent) > Number(maxRent)) {
+    if (next.minRent && next.maxRent && Number(next.minRent) > Number(next.maxRent)) {
       setRangeError(true)
       return
     }
 
-    startTransition(() => router.push(params.size ? `/properties?${params}` : "/properties"))
+    setRangeError(false)
+    const query = toQuery(next)
+
+    if (query === urlQuery) {
+      return
+    }
+
+    setAppliedQuery(query)
+    startTransition(() =>
+      router.replace(query ? `/properties?${query}` : "/properties", { scroll: false }),
+    )
+  }
+
+  const update = (change: Partial<Values>, delay = 0) => {
+    const next = { ...values, ...change }
+    setValues(next)
+    clearTimeout(timer.current)
+
+    if (delay) {
+      timer.current = setTimeout(() => apply(next), delay)
+    } else {
+      apply(next)
+    }
   }
 
   return (
     <form
-      onSubmit={submit}
+      // Enter applies right away instead of waiting for the pause
+      onSubmit={(event) => {
+        event.preventDefault()
+        apply(values)
+      }}
       noValidate
+      aria-busy={pending}
       aria-label="Filter properties"
       className="grid items-start gap-4 rounded-xl border p-4 sm:grid-cols-2 lg:grid-cols-6"
     >
@@ -94,7 +160,8 @@ export function PropertyFiltersForm({ categories, filters }: PropertyFiltersForm
           type="search"
           placeholder="Name, location or description"
           maxLength={100}
-          defaultValue={filters.search}
+          value={values.search}
+          onChange={(event) => update({ search: event.target.value }, TYPING_DELAY)}
         />
       </Field>
 
@@ -102,9 +169,9 @@ export function PropertyFiltersForm({ categories, filters }: PropertyFiltersForm
         <FieldLabel htmlFor="categoryId">Category</FieldLabel>
         <Select
           id="categoryId"
-          name="categoryId"
           items={categoryItems}
-          defaultValue={filters.categoryId ?? null}
+          value={values.categoryId}
+          onValueChange={(categoryId) => update({ categoryId })}
         >
           <SelectTrigger className="w-full">
             <SelectValue />
@@ -127,8 +194,8 @@ export function PropertyFiltersForm({ categories, filters }: PropertyFiltersForm
           inputMode="numeric"
           autoComplete="off"
           placeholder="0"
-          defaultValue={filters.minRent}
-          onInput={keepDigits}
+          value={values.minRent}
+          onChange={(event) => update({ minRent: toDigits(event) }, TYPING_DELAY)}
           aria-invalid={rangeError}
           aria-describedby={rangeError ? "rent-error" : undefined}
         />
@@ -142,8 +209,8 @@ export function PropertyFiltersForm({ categories, filters }: PropertyFiltersForm
           inputMode="numeric"
           autoComplete="off"
           placeholder={formatNumber(MAX_RENT)}
-          defaultValue={filters.maxRent}
-          onInput={keepDigits}
+          value={values.maxRent}
+          onChange={(event) => update({ maxRent: toDigits(event) }, TYPING_DELAY)}
           aria-invalid={rangeError}
           aria-describedby={rangeError ? "rent-error" : undefined}
         />
@@ -151,7 +218,12 @@ export function PropertyFiltersForm({ categories, filters }: PropertyFiltersForm
 
       <Field>
         <FieldLabel htmlFor="sort">Sort by</FieldLabel>
-        <Select id="sort" name="sort" items={SORT_OPTIONS} defaultValue={filters.sort}>
+        <Select
+          id="sort"
+          items={SORT_OPTIONS}
+          value={values.sort}
+          onValueChange={(sort) => update({ sort: sort ?? DEFAULT_SORT })}
+        >
           <SelectTrigger className="w-full">
             <SelectValue />
           </SelectTrigger>
@@ -172,12 +244,9 @@ export function PropertyFiltersForm({ categories, filters }: PropertyFiltersForm
         </FieldError>
       )}
 
-      <div className="flex justify-center gap-2 sm:col-span-2 lg:col-span-6">
-        <Link href="/properties" className={buttonVariants({ variant: "outline" })}>
+      <div className="flex justify-center sm:col-span-2 lg:col-span-6">
+        <Button type="button" onClick={() => update(EMPTY)}>
           Clear filters
-        </Link>
-        <Button type="submit" disabled={pending}>
-          {pending ? "Applying…" : "Apply filters"}
         </Button>
       </div>
     </form>
