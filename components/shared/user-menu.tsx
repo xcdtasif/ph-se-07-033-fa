@@ -1,6 +1,5 @@
 "use client"
 
-import { LogOut, UserRound } from "lucide-react"
 import Link from "next/link"
 import { useTransition } from "react"
 import { toast } from "sonner"
@@ -10,19 +9,14 @@ import { buttonVariants } from "@/components/ui/button"
 import {
   DropdownMenu,
   DropdownMenuContent,
-  DropdownMenuGroup,
   DropdownMenuItem,
-  DropdownMenuLabel,
-  DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
 import type { User } from "@/lib/types"
 
 type UserMenuProps = {
-  user: Pick<User, "name" | "email" | "role">
+  user: Pick<User, "name">
 }
-
-const roleLabel = (role: User["role"]) => role.charAt(0) + role.slice(1).toLowerCase()
 
 export function UserMenu({ user }: UserMenuProps) {
   const [pending, startTransition] = useTransition()
@@ -35,31 +29,20 @@ export function UserMenu({ user }: UserMenuProps) {
 
   return (
     <DropdownMenu>
-      <DropdownMenuTrigger className={buttonVariants({ variant: "ghost" })} disabled={pending}>
-        <span
-          aria-hidden="true"
-          className="bg-primary text-primary-foreground flex size-6 items-center justify-center rounded-full text-xs font-medium uppercase"
-        >
-          {user.name.charAt(0)}
-        </span>
-        <span className="hidden max-w-40 truncate sm:inline">{user.name}</span>
-        <span className="sr-only sm:hidden">Account menu for {user.name}</span>
+      {/* Just the initial; screen readers get the full name */}
+      <DropdownMenuTrigger
+        className={buttonVariants({ size: "icon", className: "rounded-full uppercase" })}
+        disabled={pending}
+      >
+        <span aria-hidden="true">{user.name.charAt(0)}</span>
+        <span className="sr-only">Account menu for {user.name}</span>
       </DropdownMenuTrigger>
-      <DropdownMenuContent align="end" className="w-56">
-        <DropdownMenuGroup>
-          <DropdownMenuLabel className="text-foreground">
-            <span className="block truncate text-sm">{user.name}</span>
-            <span className="text-muted-foreground block truncate font-normal">{user.email}</span>
-            <span className="text-muted-foreground block font-normal">{roleLabel(user.role)}</span>
-          </DropdownMenuLabel>
-        </DropdownMenuGroup>
-        <DropdownMenuSeparator />
-        <DropdownMenuItem render={<Link href="/profile" />}>
-          <UserRound aria-hidden="true" />
+      {/* Ends on the page's content edge, in line with the cards below; just fits its items */}
+      <DropdownMenuContent align="end" className="w-auto">
+        <DropdownMenuItem render={<Link href="/profile" />} className="justify-center">
           Profile
         </DropdownMenuItem>
-        <DropdownMenuItem onClick={logout} disabled={pending}>
-          <LogOut aria-hidden="true" />
+        <DropdownMenuItem onClick={logout} disabled={pending} className="justify-center">
           Log out
         </DropdownMenuItem>
       </DropdownMenuContent>

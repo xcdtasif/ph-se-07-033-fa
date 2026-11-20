@@ -12,18 +12,16 @@ async function NavbarAccount() {
   const result = await getCurrentUser()
 
   if (result.success) {
-    const { name, email, role } = result.data
-
-    return <UserMenu user={{ name, email, role }} />
+    return <UserMenu user={{ name: result.data.name }} />
   }
 
   return (
     <>
-      <Link href="/login" className={buttonVariants({ variant: "outline" })}>
-        Log in
-      </Link>
-      <Link href="/signup" className={buttonVariants()}>
+      <Link href="/signup" className={buttonVariants({ variant: "outline" })}>
         Sign up
+      </Link>
+      <Link href="/login" className={buttonVariants()}>
+        Log in
       </Link>
     </>
   )
