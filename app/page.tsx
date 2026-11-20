@@ -1,6 +1,7 @@
 import Link from "next/link"
 import { Suspense } from "react"
 
+import { ApiError } from "@/components/shared/api-error"
 import { PropertyGrid, PropertyGridSkeleton } from "@/components/shared/property-grid"
 import { buttonVariants } from "@/components/ui/button"
 import { getProperties } from "@/lib/properties"
@@ -9,7 +10,14 @@ const FEATURED_COUNT = 6
 
 async function FeaturedProperties() {
   // The newest available properties
-  const { properties } = await getProperties(`limit=${FEATURED_COUNT}`)
+  const result = await getProperties(`limit=${FEATURED_COUNT}`)
+
+  // Only this section shows the failure; the rest of the home page still works
+  if (!result.success) {
+    return <ApiError error={result} />
+  }
+
+  const properties = result.data
 
   if (properties.length === 0) {
     return (

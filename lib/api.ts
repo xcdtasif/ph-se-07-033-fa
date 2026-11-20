@@ -1,3 +1,5 @@
+import { unstable_rethrow } from "next/navigation"
+
 import { env } from "@/config/env"
 
 export type ApiMeta = {
@@ -29,7 +31,11 @@ export type ApiFetchOptions = Omit<RequestInit, "body"> & {
   body?: unknown
 }
 
-const NETWORK_ERROR_MESSAGE = "Can't reach the server. Check your connection and try again."
+/*
+The backend didn't answer this server. The visitor's own connection is fine (they
+reached this page), so the message doesn't ask them to check it.
+*/
+const UNAVAILABLE_MESSAGE = "Service unavailable, try again later"
 const BAD_RESPONSE_MESSAGE = "The server sent an unexpected response. Please try again."
 
 const isApiResponse = (value: unknown): value is ApiResponse<unknown> =>
@@ -69,9 +75,18 @@ export const apiRequest = async <T>(
       },
       body: body === undefined ? undefined : JSON.stringify(body),
     })
-  } catch {
+  } catch (error) {
+    /*
+    Next.js's own signals aren't backend failures, e.g. a prerender that ended
+    while this fetch was in flight (HANGING_PROMISE_REJECTION). Let Next.js handle them
+    */
+    unstable_rethrow(error)
+
+    // The real cause (e.g. ECONNREFUSED) for the server log; visitors get the generic message
+    console.error(`Backend unreachable: ${init.method ?? "GET"} ${env.API_URL}${path}`, error)
+
     return {
-      result: { success: false, statusCode: 0, message: NETWORK_ERROR_MESSAGE },
+      result: { success: false, statusCode: 0, message: UNAVAILABLE_MESSAGE },
       setCookies: [],
     }
   }

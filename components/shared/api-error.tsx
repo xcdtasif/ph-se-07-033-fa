@@ -48,9 +48,14 @@ export function ApiError({ error }: { error: ApiFailure }) {
       className="flex flex-col items-center gap-4 rounded-xl border p-8 text-center"
     >
       <h2 className="text-lg font-semibold">
-        {error.statusCode === 0 ? "Can't reach the server" : "Something went wrong"}
+        {error.statusCode === 0 ? "Service unavailable" : "Something went wrong"}
       </h2>
-      <p className="text-muted-foreground max-w-md">{error.message}</p>
+      <p className="text-muted-foreground max-w-md">
+        {/* The card has room for more than the short toast text in `message` */}
+        {error.statusCode === 0
+          ? "This is usually temporary. Please try again in a moment."
+          : error.message}
+      </p>
       <RetryButton />
     </div>
   )

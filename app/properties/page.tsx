@@ -2,6 +2,7 @@ import type { Metadata } from "next"
 import Link from "next/link"
 import { Suspense } from "react"
 
+import { ApiError } from "@/components/shared/api-error"
 import { PropertyGrid, PropertyGridSkeleton } from "@/components/shared/property-grid"
 import { buttonVariants } from "@/components/ui/button"
 import { getCategories } from "@/lib/categories"
@@ -25,7 +26,13 @@ async function PropertyResults({ filters }: { filters: PropertyFilters }) {
   const backendQuery = new URLSearchParams(toQueryString(filters))
   backendQuery.set("limit", String(PAGE_SIZE))
 
-  const { properties, meta } = await getProperties(backendQuery.toString())
+  const result = await getProperties(backendQuery.toString())
+
+  if (!result.success) {
+    return <ApiError error={result} />
+  }
+
+  const { data: properties, meta } = result
   const total = meta?.total ?? properties.length
   const totalPages = Math.max(1, Math.ceil(total / PAGE_SIZE))
 
@@ -79,12 +86,18 @@ async function PropertyResults({ filters }: { filters: PropertyFilters }) {
 async function PropertiesView({ searchParams }: Pick<PageProps<"/properties">, "searchParams">) {
   const filters = parseFilters(await searchParams)
   const categories = await getCategories()
+
+  // The filters need the categories, so the error replaces both; the heading stays
+  if (!categories.success) {
+    return <ApiError error={categories} />
+  }
+
   const query = toQueryString(filters)
 
   return (
     <>
       {/* Keyed by the query so the fields reset to the URL on back/forward */}
-      <PropertyFiltersForm key={`form?${query}`} categories={categories} filters={filters} />
+      <PropertyFiltersForm key={`form?${query}`} categories={categories.data} filters={filters} />
       {/* A new key shows the skeleton while the next page of results loads */}
       <Suspense key={`results?${query}`} fallback={<PropertyGridSkeleton count={PAGE_SIZE} />}>
         <PropertyResults filters={filters} />
