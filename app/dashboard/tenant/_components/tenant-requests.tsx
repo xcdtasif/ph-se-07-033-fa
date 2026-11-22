@@ -5,6 +5,7 @@ import { ApiError } from "@/components/shared/api-error"
 import { Pagination } from "@/components/shared/pagination"
 import { PropertyImage } from "@/components/shared/property-image"
 import { RequestStatusBadge, requestStatusLabel } from "@/components/shared/request-status-badge"
+import { SkeletonText } from "@/components/shared/skeleton-text"
 import { buttonVariants } from "@/components/ui/button"
 import { authFetch } from "@/lib/auth-fetch"
 import { formatDate, formatMoney } from "@/lib/format"
@@ -102,6 +103,37 @@ function RequestItem({ request }: { request: RentalRequest }) {
         )}
       </div>
     </li>
+  )
+}
+
+// A card while it loads: the same frame, thumbnail, rows and footer as RequestItem
+function RequestItemSkeleton() {
+  return (
+    <div className="bg-card flex flex-col rounded-xl border p-4">
+      <div className="flex flex-1 flex-col gap-2">
+        <div className="mb-1 flex items-start justify-between gap-2">
+          <div className="skeleton aspect-3/2 w-24 rounded-lg sm:w-32" />
+          <div className="skeleton h-5 w-16 rounded-4xl" />
+        </div>
+        <SkeletonText className="w-3/4" />
+        <SkeletonText className="w-1/2 text-sm" />
+        <SkeletonText className="w-2/3 text-sm" />
+        <SkeletonText className="w-32 text-xs" />
+      </div>
+      <div className="divider-dashed mt-6 flex justify-center gap-2 pt-4">
+        <div className="skeleton h-7 w-28 rounded-lg" />
+      </div>
+    </div>
+  )
+}
+
+export function TenantRequestsSkeleton() {
+  return (
+    <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3" aria-hidden="true">
+      {Array.from({ length: REQUESTS_PAGE_SIZE }, (_, index) => (
+        <RequestItemSkeleton key={index} />
+      ))}
+    </div>
   )
 }
 

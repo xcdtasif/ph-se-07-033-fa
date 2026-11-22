@@ -4,6 +4,7 @@ import Link from "next/link"
 import { PropertyImage } from "@/components/shared/property-image"
 import { PropertyStatusBadge } from "@/components/shared/property-status-badge"
 import { Rating } from "@/components/shared/rating"
+import { SkeletonText } from "@/components/shared/skeleton-text"
 import { Card, CardContent } from "@/components/ui/card"
 import { formatMoney } from "@/lib/format"
 import type { Property } from "@/lib/types"
@@ -58,5 +59,26 @@ export function PropertyCard({ property, eager = false }: PropertyCardProps) {
         </CardContent>
       </Card>
     </Link>
+  )
+}
+
+// The card while it loads: the same frame, photo box and rows, so it's as tall at every width
+export function PropertyCardSkeleton() {
+  return (
+    <Card className="w-full gap-0 py-0">
+      <div className="skeleton aspect-3/2" />
+      <CardContent className="flex flex-1 flex-col gap-2 p-4">
+        <div className="flex items-center justify-between gap-2">
+          <SkeletonText className="w-24 text-xs" />
+          <div className="skeleton h-5 w-16 rounded-4xl" />
+        </div>
+        <SkeletonText className="w-3/4" />
+        <SkeletonText className="w-1/2" />
+        <div className="mt-auto flex items-center justify-between pt-2">
+          <SkeletonText className="w-32" />
+          <div className="skeleton h-5 w-14 rounded-4xl" />
+        </div>
+      </CardContent>
+    </Card>
   )
 }

@@ -3,6 +3,7 @@
 import { useRouter } from "next/navigation"
 import { useEffect, useRef, useState, useTransition, type ChangeEvent } from "react"
 
+import { SkeletonText } from "@/components/shared/skeleton-text"
 import { Button } from "@/components/ui/button"
 import { Field, FieldError, FieldLabel } from "@/components/ui/field"
 import { Input } from "@/components/ui/input"
@@ -15,6 +16,7 @@ import {
 } from "@/components/ui/select"
 import { formatNumber } from "@/lib/format"
 import type { Category } from "@/lib/types"
+import { cn } from "@/lib/utils"
 
 import {
   DEFAULT_SORT,
@@ -250,5 +252,34 @@ export function PropertyFiltersForm({ categories, filters }: PropertyFiltersForm
         </Button>
       </div>
     </form>
+  )
+}
+
+// One field while it loads: its label line, then a box the height of the input
+function FieldSkeleton({ className }: { className?: string }) {
+  return (
+    <div className={cn("flex flex-col gap-2", className)}>
+      <SkeletonText className="w-24 text-sm leading-snug" />
+      <div className="skeleton h-8 rounded-lg" />
+    </div>
+  )
+}
+
+// The form while the categories load: the same box, grid, fields and button row
+export function PropertyFiltersFormSkeleton() {
+  return (
+    <div
+      aria-hidden="true"
+      className="bg-card grid items-start gap-4 rounded-xl border p-4 sm:grid-cols-2 lg:grid-cols-6"
+    >
+      <FieldSkeleton className="sm:col-span-2" />
+      <FieldSkeleton />
+      <FieldSkeleton />
+      <FieldSkeleton />
+      <FieldSkeleton />
+      <div className="flex justify-center sm:col-span-2 lg:col-span-6">
+        <div className="skeleton h-7 w-24 rounded-lg" />
+      </div>
+    </div>
   )
 }

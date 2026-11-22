@@ -2,11 +2,12 @@ import { Star } from "lucide-react"
 
 import { ApiError } from "@/components/shared/api-error"
 import { Pagination } from "@/components/shared/pagination"
+import { SkeletonText } from "@/components/shared/skeleton-text"
 import { formatShortDate } from "@/lib/format"
 import { getPropertyReviews } from "@/lib/properties"
 import { cn } from "@/lib/utils"
 
-export const REVIEWS_PAGE_SIZE = 6
+const REVIEWS_PAGE_SIZE = 6
 
 // Each star as tall as the text around it (1em)
 function Stars({ rating }: { rating: number }) {
@@ -72,6 +73,36 @@ export async function PropertyReviews({ propertyId, page }: { propertyId: string
         }
         scrollTo="reviews"
       />
+    </div>
+  )
+}
+
+/*
+The reviews while they load. `count` is how many to expect (the property's review count,
+up to a page): none shows the empty box, so the section is as tall as what replaces it.
+A comment's length isn't known, so each card assumes two lines.
+*/
+export function PropertyReviewsSkeleton({ count }: { count: number }) {
+  if (count === 0) {
+    return (
+      <div className="empty-state" aria-hidden="true">
+        <SkeletonText className="mx-auto w-28" />
+      </div>
+    )
+  }
+
+  return (
+    <div className="grid gap-4 lg:grid-cols-2" aria-hidden="true">
+      {Array.from({ length: Math.min(count, REVIEWS_PAGE_SIZE) }, (_, index) => (
+        <div key={index} className="bg-card flex flex-col gap-2 rounded-xl border p-4">
+          <SkeletonText className="w-32" />
+          <SkeletonText className="w-36 text-xs" />
+          <div className="text-sm">
+            <SkeletonText />
+            <SkeletonText className="w-2/3" />
+          </div>
+        </div>
+      ))}
     </div>
   )
 }

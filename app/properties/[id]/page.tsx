@@ -6,13 +6,14 @@ import { Suspense } from "react"
 
 import { ApiError } from "@/components/shared/api-error"
 import { PropertyStatusText } from "@/components/shared/property-status-badge"
+import { SkeletonText } from "@/components/shared/skeleton-text"
 import { Card, CardContent } from "@/components/ui/card"
 import { formatDate, formatMoney } from "@/lib/format"
 import { parsePage } from "@/lib/pagination"
 import { getProperty } from "@/lib/properties"
 
 import { PropertyGallery } from "./_components/property-gallery"
-import { PropertyReviews, REVIEWS_PAGE_SIZE } from "./_components/property-reviews"
+import { PropertyReviews, PropertyReviewsSkeleton } from "./_components/property-reviews"
 import { RequestToRent } from "./_components/request-to-rent"
 
 export async function generateMetadata({
@@ -126,7 +127,7 @@ async function PropertyDetails({ params, searchParams }: PageProps<"/properties/
           </h2>
           {/* The rating link and a page change jump here, to the first review */}
           <div id="reviews" className="jump-target-4">
-            <Suspense fallback={<ReviewsSkeleton />}>
+            <Suspense fallback={<PropertyReviewsSkeleton count={reviewCount} />}>
               <ReviewsPage propertyId={property.id} searchParams={searchParams} />
             </Suspense>
           </div>
@@ -150,24 +151,61 @@ async function ReviewsPage({
   return <PropertyReviews propertyId={propertyId} page={page} />
 }
 
-function ReviewsSkeleton() {
-  return (
-    <div className="grid gap-4 lg:grid-cols-2" aria-hidden="true">
-      {Array.from({ length: REVIEWS_PAGE_SIZE }, (_, index) => (
-        <div key={index} className="skeleton h-32 rounded-xl" />
-      ))}
-    </div>
-  )
-}
-
+/*
+The page while the property loads, in the same grid as PropertyDetails: photo and
+thumbnails, the title block, the rent card (a row per detail), then description and reviews
+*/
 function PropertyDetailsSkeleton() {
   return (
-    <div className="grid gap-8 lg:grid-cols-[minmax(0,1fr)_20rem]" aria-hidden="true">
+    <div className="grid gap-x-8 gap-y-6 lg:grid-cols-[minmax(0,1fr)_20rem]" aria-hidden="true">
       <div className="flex flex-col gap-6">
-        <div className="skeleton aspect-3/2 rounded-xl" />
-        <div className="skeleton h-24 rounded-xl" />
+        <div className="flex flex-col gap-3">
+          <div className="skeleton aspect-3/2 rounded-xl" />
+          <div className="flex gap-3">
+            {Array.from({ length: 2 }, (_, index) => (
+              <div key={index} className="pb-2.5">
+                <div className="skeleton aspect-3/2 w-24 rounded-lg sm:w-32" />
+              </div>
+            ))}
+          </div>
+        </div>
+        <div className="flex flex-col gap-2">
+          <SkeletonText className="w-24 text-xs" />
+          <SkeletonText className="w-2/3 text-2xl sm:text-3xl" />
+          <SkeletonText className="w-48 text-sm" />
+        </div>
       </div>
-      <div className="skeleton h-64 rounded-xl" />
+
+      <div className="lg:col-start-2 lg:row-span-2 lg:row-start-1 lg:self-start">
+        <Card>
+          <CardContent className="flex flex-col gap-4">
+            <SkeletonText className="w-40 text-2xl" />
+            <div className="flex flex-col gap-2 text-sm">
+              {Array.from({ length: 5 }, (_, index) => (
+                <SkeletonText key={index} />
+              ))}
+            </div>
+            <div className="divider-dashed mt-2 flex justify-center pt-4">
+              <div className="skeleton h-7 w-32 rounded-lg" />
+            </div>
+          </CardContent>
+        </Card>
+      </div>
+
+      <div className="flex flex-col gap-8 lg:col-start-1">
+        <div className="flex flex-col gap-2">
+          <SkeletonText className="w-28 text-lg" />
+          <div>
+            <SkeletonText />
+            <SkeletonText />
+            <SkeletonText className="w-1/2" />
+          </div>
+        </div>
+        <div className="flex flex-col gap-4">
+          <SkeletonText className="w-20 text-lg" />
+          <PropertyReviewsSkeleton count={2} />
+        </div>
+      </div>
     </div>
   )
 }

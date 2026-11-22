@@ -5,11 +5,15 @@ import { Suspense } from "react"
 import { ApiError } from "@/components/shared/api-error"
 import { Pagination } from "@/components/shared/pagination"
 import { PropertyGrid, PropertyGridSkeleton } from "@/components/shared/property-grid"
+import { SkeletonText } from "@/components/shared/skeleton-text"
 import { buttonVariants } from "@/components/ui/button"
 import { getCategories } from "@/lib/categories"
 import { getProperties } from "@/lib/properties"
 
-import { PropertyFiltersForm } from "./_components/property-filters-form"
+import {
+  PropertyFiltersForm,
+  PropertyFiltersFormSkeleton,
+} from "./_components/property-filters-form"
 import {
   hasActiveFilters,
   PAGE_SIZE,
@@ -97,6 +101,16 @@ async function PropertyResults({ filters }: { filters: PropertyFilters }) {
   )
 }
 
+// The results while they load: the count line above the grid too, so the cards don't move down
+function PropertyResultsSkeleton() {
+  return (
+    <div className="flex flex-col gap-6" aria-hidden="true">
+      <SkeletonText className="w-52 text-sm" />
+      <PropertyGridSkeleton count={PAGE_SIZE} />
+    </div>
+  )
+}
+
 // Reads the URL, so it renders at request time behind the Suspense boundary below
 async function PropertiesView({ searchParams }: Pick<PageProps<"/properties">, "searchParams">) {
   const filters = parseFilters(await searchParams)
@@ -119,10 +133,7 @@ async function PropertiesView({ searchParams }: Pick<PageProps<"/properties">, "
       transition) and nothing above them moves.
       */}
       <section aria-label="Results">
-        <Suspense
-          key={`results?${filtersQuery}`}
-          fallback={<PropertyGridSkeleton count={PAGE_SIZE} />}
-        >
+        <Suspense key={`results?${filtersQuery}`} fallback={<PropertyResultsSkeleton />}>
           <PropertyResults filters={filters} />
         </Suspense>
       </section>
@@ -137,8 +148,8 @@ export default function PropertiesPage({ searchParams }: PageProps<"/properties"
       <Suspense
         fallback={
           <>
-            <div className="skeleton h-48 rounded-xl lg:h-32" />
-            <PropertyGridSkeleton count={PAGE_SIZE} />
+            <PropertyFiltersFormSkeleton />
+            <PropertyResultsSkeleton />
           </>
         }
       >

@@ -4,7 +4,7 @@ import { Suspense } from "react"
 import { parseRequestStatus, RequestStatusFilter } from "@/components/shared/request-status-filter"
 import { parsePage } from "@/lib/pagination"
 
-import { requestsHref, TenantRequests } from "./_components/tenant-requests"
+import { requestsHref, TenantRequests, TenantRequestsSkeleton } from "./_components/tenant-requests"
 
 export const metadata: Metadata = {
   title: "Requests",
@@ -26,7 +26,7 @@ async function RequestsPage({
       <RequestStatusFilter status={status} href={(option) => requestsHref(option)} />
       {/* A page change jumps here, to the first card */}
       <div id="requests" className="jump-target-4">
-        <Suspense key={status} fallback={<RequestsSkeleton />}>
+        <Suspense key={status} fallback={<TenantRequestsSkeleton />}>
           <TenantRequests page={page} status={status} />
         </Suspense>
       </div>
@@ -34,12 +34,12 @@ async function RequestsPage({
   )
 }
 
-function RequestsSkeleton() {
+// The first load: the status links' row too, so the cards don't move down when it arrives
+function RequestsPageSkeleton() {
   return (
-    <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3" aria-hidden="true">
-      {Array.from({ length: 6 }, (_, index) => (
-        <div key={index} className="skeleton h-64 rounded-xl" />
-      ))}
+    <div className="flex flex-col gap-6" aria-hidden="true">
+      <div className="skeleton h-7 w-full max-w-xl rounded-lg" />
+      <TenantRequestsSkeleton />
     </div>
   )
 }
@@ -48,7 +48,7 @@ export default function TenantDashboardPage({ searchParams }: PageProps<"/dashbo
   return (
     <section className="flex flex-col gap-6">
       <h1 className="text-2xl font-semibold tracking-tight">Requests</h1>
-      <Suspense fallback={<RequestsSkeleton />}>
+      <Suspense fallback={<RequestsPageSkeleton />}>
         <RequestsPage searchParams={searchParams} />
       </Suspense>
     </section>

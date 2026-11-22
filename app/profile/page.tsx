@@ -2,6 +2,7 @@ import type { Metadata } from "next"
 import { Suspense } from "react"
 
 import { ApiError } from "@/components/shared/api-error"
+import { SkeletonText } from "@/components/shared/skeleton-text"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { getCurrentUser } from "@/lib/auth-fetch"
 import { formatDate } from "@/lib/format"
@@ -61,11 +62,42 @@ async function ProfileDetails() {
   )
 }
 
+// Both cards while the user loads: their frames, a line per detail, and the form's field and button
+function ProfileDetailsSkeleton() {
+  return (
+    <>
+      <Card aria-hidden="true">
+        <CardHeader>
+          <SkeletonText className="w-20 text-base leading-snug" />
+        </CardHeader>
+        <CardContent className="flex flex-col gap-2">
+          {Array.from({ length: 3 }, (_, index) => (
+            <SkeletonText key={index} />
+          ))}
+        </CardContent>
+      </Card>
+
+      <Card aria-hidden="true">
+        <CardHeader>
+          <SkeletonText className="w-28 text-base leading-snug" />
+        </CardHeader>
+        <CardContent className="flex flex-col gap-5">
+          <div className="flex flex-col gap-2">
+            <SkeletonText className="w-12 leading-snug" />
+            <div className="skeleton h-8 rounded-lg" />
+          </div>
+          <div className="skeleton h-7 w-28 rounded-lg" />
+        </CardContent>
+      </Card>
+    </>
+  )
+}
+
 export default function ProfilePage() {
   return (
     <section className="mx-auto flex w-full max-w-lg flex-col gap-6">
       <h1 className="text-2xl font-semibold tracking-tight">Profile</h1>
-      <Suspense fallback={<div className="skeleton h-72 rounded-xl" />}>
+      <Suspense fallback={<ProfileDetailsSkeleton />}>
         <ProfileDetails />
       </Suspense>
     </section>
