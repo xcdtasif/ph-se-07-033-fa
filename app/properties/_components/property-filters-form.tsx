@@ -247,7 +247,13 @@ export function PropertyFiltersForm({ categories, filters }: PropertyFiltersForm
       )}
 
       <div className="flex justify-center sm:col-span-2 lg:col-span-6">
-        <Button type="button" size="sm" className="text-sm" onClick={() => update(EMPTY)}>
+        <Button
+          type="button"
+          variant="outline"
+          size="sm"
+          className="text-sm"
+          onClick={() => update(EMPTY)}
+        >
           Clear filters
         </Button>
       </div>
