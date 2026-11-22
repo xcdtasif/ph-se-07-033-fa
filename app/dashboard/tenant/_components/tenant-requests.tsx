@@ -11,6 +11,7 @@ import { formatDate, formatMoney } from "@/lib/format"
 import type { RentalRequest, RequestStatus } from "@/lib/types"
 
 import { CancelRequestDialog } from "./cancel-request-dialog"
+import { PayDepositButton } from "./pay-deposit-button"
 
 const REQUESTS_PAGE_SIZE = 6
 
@@ -90,7 +91,10 @@ function RequestItem({ request }: { request: RentalRequest }) {
       */}
       <div className="divider-dashed mt-6 flex justify-center gap-2 pt-4">
         {CANCELLABLE.includes(status) ? (
-          <CancelRequestDialog requestId={request.id} status={status} />
+          <>
+            <CancelRequestDialog requestId={request.id} status={status} />
+            {status === "APPROVED" && <PayDepositButton requestId={request.id} />}
+          </>
         ) : (
           <p className="text-muted-foreground flex h-7 items-center text-sm">
             This request is {status.toLowerCase()}
