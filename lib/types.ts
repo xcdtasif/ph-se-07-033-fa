@@ -55,3 +55,30 @@ export type PropertyReview = {
   updatedAt: string
   tenant: { name: string }
 }
+
+// In lifecycle order, as the status filter lists them
+export const REQUEST_STATUSES = [
+  "PENDING",
+  "APPROVED",
+  "ACTIVE",
+  "COMPLETED",
+  "REJECTED",
+  "CANCELLED",
+] as const
+
+export type RequestStatus = (typeof REQUEST_STATUSES)[number]
+
+// A rental request as the tenant reads it, with a summary of its property
+export type RentalRequest = {
+  id: string
+  tenantId: string
+  propertyId: string
+  message: string
+  status: RequestStatus
+  createdAt: string
+  updatedAt: string
+  property: Pick<
+    Property,
+    "id" | "landlordId" | "name" | "location" | "images" | "rent" | "deposit" | "status"
+  >
+}

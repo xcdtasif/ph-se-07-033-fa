@@ -15,11 +15,17 @@ import {
 import type { User } from "@/lib/types"
 
 type UserMenuProps = {
-  user: Pick<User, "name">
+  user: Pick<User, "name" | "role">
+}
+
+// Dashboards that exist so far; the others are added with their pages
+const DASHBOARDS: Partial<Record<User["role"], string>> = {
+  TENANT: "/dashboard/tenant",
 }
 
 export function UserMenu({ user }: UserMenuProps) {
   const [pending, startTransition] = useTransition()
+  const dashboard = DASHBOARDS[user.role]
 
   const logout = () =>
     startTransition(async () => {
@@ -39,6 +45,11 @@ export function UserMenu({ user }: UserMenuProps) {
       </DropdownMenuTrigger>
       {/* Ends on the page's content edge, in line with the cards below; just fits its items */}
       <DropdownMenuContent align="end" className="w-auto">
+        {dashboard && (
+          <DropdownMenuItem render={<Link href={dashboard} />} className="justify-center">
+            Dashboard
+          </DropdownMenuItem>
+        )}
         <DropdownMenuItem render={<Link href="/profile" />} className="justify-center">
           Profile
         </DropdownMenuItem>
