@@ -40,7 +40,7 @@ export async function PropertyReviews({ propertyId, page }: { propertyId: string
 
   if (reviews.length === 0) {
     return (
-      <p className="text-muted-foreground rounded-xl border border-dashed p-8 text-center">
+      <p className="text-muted-foreground empty-state">
         {total > 0 ? "There are no reviews on this page." : "No reviews yet."}
       </p>
     )

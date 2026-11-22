@@ -21,7 +21,7 @@ async function FeaturedProperties() {
 
   if (properties.length === 0) {
     return (
-      <p className="text-muted-foreground rounded-xl border border-dashed p-8 text-center">
+      <p className="text-muted-foreground empty-state">
         No properties are listed yet. Check back soon.
       </p>
     )

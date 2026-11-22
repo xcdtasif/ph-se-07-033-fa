@@ -120,7 +120,7 @@
 }
 
 /*
-The dashed line above a card's footer: the rent card's note, request card actions.
+The dashed line above a footer: the rent card's note, request card actions, the page footer.
 @apply, because `@theme inline` doesn't output --color-* variables to read with var().
 */
 @utility divider-dashed {
@@ -133,6 +133,14 @@ muted grey, so it shows on the page and on white cards alike.
 */
 @utility skeleton {
   @apply bg-foreground/5 animate-pulse;
+}
+
+/*
+An empty list's message box: on the page background, unlike a card, with a dashed border as
+dark as divider-dashed so it shows against the grey page
+*/
+@utility empty-state {
+  @apply border-foreground/25 rounded-xl border border-dashed p-8 text-center;
 }
 
 /* An inline text link: a grey underline that darkens on hover */

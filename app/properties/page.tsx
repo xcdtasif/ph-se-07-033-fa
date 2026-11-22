@@ -42,7 +42,7 @@ async function PropertyResults({ filters }: { filters: PropertyFilters }) {
     const firstPageQuery = toQueryString({ ...filters, page: 1 })
 
     return (
-      <div className="flex flex-col items-center gap-4 rounded-xl border border-dashed p-8 text-center">
+      <div className="empty-state flex flex-col items-center gap-4">
         <p className="text-muted-foreground">
           {pastLastPage
             ? "There are no properties on this page."
@@ -53,7 +53,7 @@ async function PropertyResults({ filters }: { filters: PropertyFilters }) {
         {pastLastPage ? (
           <Link
             href={firstPageQuery ? `/properties?${firstPageQuery}` : "/properties"}
-            className={buttonVariants({ variant: "outline" })}
+            className={buttonVariants({ variant: "outline", size: "sm", className: "text-sm" })}
           >
             Go to the first page
           </Link>

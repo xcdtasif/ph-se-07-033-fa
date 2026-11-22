@@ -123,11 +123,14 @@ export async function TenantRequests({ page, status }: { page: number; status?: 
   if (requests.length === 0) {
     // Past the last page, none with this status, or no requests at all
     return (
-      <div className="text-muted-foreground flex flex-col items-center gap-4 rounded-xl border border-dashed p-8 text-center">
+      <div className="text-muted-foreground empty-state flex flex-col items-center gap-4">
         {total > 0 ? (
           <>
             <p>There are no requests on this page.</p>
-            <Link href={requestsHref(status)} className={buttonVariants({ variant: "outline" })}>
+            <Link
+              href={requestsHref(status)}
+              className={buttonVariants({ variant: "outline", size: "sm", className: "text-sm" })}
+            >
               Go to the first page
             </Link>
           </>
@@ -136,7 +139,10 @@ export async function TenantRequests({ page, status }: { page: number; status?: 
         ) : (
           <>
             <p>You haven&apos;t sent any rental requests yet.</p>
-            <Link href="/properties" className={buttonVariants()}>
+            <Link
+              href="/properties"
+              className={buttonVariants({ variant: "outline", size: "sm", className: "text-sm" })}
+            >
               Browse properties
             </Link>
           </>
