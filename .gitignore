@@ -43,6 +43,7 @@ next-env.d.ts
 _inbox
 _ph
 .agents
+.claude
 .fallow
 
 .env*
