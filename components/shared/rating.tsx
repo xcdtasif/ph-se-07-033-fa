@@ -8,10 +8,18 @@ type RatingProps = {
   className?: string
 }
 
-// A star with the average and review count, or "N/A" before the first review
+/*
+A pill with a star, the average and review count, or "N/A" before the first review.
+Same height and text size as the status badge on the property card.
+*/
 export function Rating({ averageRating, reviewCount, className }: RatingProps) {
   return (
-    <span className={cn("flex items-center gap-1", className)}>
+    <span
+      className={cn(
+        "bg-muted flex h-5 w-fit shrink-0 items-center gap-1 rounded-4xl px-2 text-xs font-medium whitespace-nowrap",
+        className,
+      )}
+    >
       <Star className="size-[1em] shrink-0 fill-amber-400 text-amber-400" aria-hidden="true" />
       {averageRating === null ? (
         <>

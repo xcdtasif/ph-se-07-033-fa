@@ -57,12 +57,13 @@
   --primary-foreground: oklch(0.985 0 0);
   --secondary: oklch(0.97 0 0);
   --secondary-foreground: oklch(0.205 0 0);
-  --muted: oklch(0.97 0 0);
-  --muted-foreground: oklch(0.556 0 0);
-  --accent: oklch(0.97 0 0);
+  /* Hover and pill grey, a clear step below the 0.98 page */
+  --muted: oklch(0.96 0 0);
+  --muted-foreground: oklch(0.48 0 0);
+  --accent: oklch(0.96 0 0);
   --accent-foreground: oklch(0.205 0 0);
   --destructive: oklch(0.577 0.245 27.325);
-  --border: oklch(0.922 0 0);
+  --border: oklch(0.9 0 0);
   --input: oklch(0.922 0 0);
   --ring: oklch(0.708 0 0);
   --chart-1: oklch(0.87 0 0);
@@ -79,7 +80,8 @@
   --sidebar-accent-foreground: oklch(0.205 0 0);
   --sidebar-border: oklch(0.922 0 0);
   --sidebar-ring: oklch(0.708 0 0);
-  --background: oklch(1 0 0);
+  /* Light grey, so white cards (--card) stand out from the page */
+  --background: oklch(0.98 0 0);
   --foreground: oklch(0.145 0 0);
 }
 
@@ -117,6 +119,51 @@
   --sidebar-ring: oklch(0.556 0 0);
 }
 
+/*
+The dashed line above a card's footer: the rent card's note, request card actions.
+@apply, because `@theme inline` doesn't output --color-* variables to read with var().
+*/
+@utility divider-dashed {
+  @apply border-foreground/25 border-t border-dashed;
+}
+
+/*
+A loading placeholder. A light tint of the text colour, a little darker than the page and the
+muted grey, so it shows on the page and on white cards alike.
+*/
+@utility skeleton {
+  @apply bg-foreground/5 animate-pulse;
+}
+
+/* An inline text link: a grey underline that darkens on hover */
+@utility link-underline {
+  @apply decoration-muted-foreground/60 hover:decoration-foreground underline underline-offset-4;
+}
+
+/* A title link: the same grey underline, shown only on hover */
+@utility link-hover-underline {
+  @apply decoration-muted-foreground/60 underline-offset-4 hover:underline;
+}
+
+/*
+A list that pagination and the rating link jump to, with its pagination. jump-target-N
+takes the list's gap between cards (gap-N), and its first card lands that far below the
+navbar. The page-wide scroll padding leaves the navbar plus main's 2rem top padding; the
+margin swaps the 2rem for the gap. A page too short to scroll that far stops at its
+bottom; no empty space is added to make room. While the next page loads (data-pending,
+set by ScrollLink) the current cards fade, after a short delay so an instant swap doesn't
+flicker, and come back at once.
+*/
+@utility jump-target-* {
+  scroll-margin-top: calc(--spacing(--value(integer)) - 2rem);
+  transition: opacity 150ms;
+
+  &[data-pending] {
+    opacity: 0.5;
+    transition-delay: 150ms;
+  }
+}
+
 @layer base {
   * {
     @apply border-border outline-ring/50;
@@ -128,7 +175,14 @@
   [role="button"]:not(:disabled) {
     cursor: pointer;
   }
+  /*
+  After a client navigation Next scrolls the new page's first element into view,
+  which skips the sticky navbar and lands under it. Offsetting by the navbar
+  (3.5rem + 1px border) and main's top padding (2rem) lands at the very top.
+  Applies to #hash jumps too.
+  */
   html {
     @apply font-sans;
+    scroll-padding-top: calc(3.5rem + 1px + 2rem);
   }
 }

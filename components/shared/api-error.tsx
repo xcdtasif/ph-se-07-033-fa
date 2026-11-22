@@ -15,7 +15,7 @@ export function ApiError({ error }: { error: ApiFailure }) {
     return (
       <div
         role="alert"
-        className="flex flex-col items-center gap-4 rounded-xl border p-8 text-center"
+        className="bg-card flex flex-col items-center gap-4 rounded-xl border p-8 text-center"
       >
         <h2 className="text-lg font-semibold">Your session has ended</h2>
         <p className="text-muted-foreground max-w-md">{error.message}</p>
@@ -31,7 +31,7 @@ export function ApiError({ error }: { error: ApiFailure }) {
     return (
       <div
         role="alert"
-        className="flex flex-col items-center gap-4 rounded-xl border p-8 text-center"
+        className="bg-card flex flex-col items-center gap-4 rounded-xl border p-8 text-center"
       >
         <h2 className="text-lg font-semibold">You can&apos;t access this page</h2>
         <p className="text-muted-foreground max-w-md">{error.message}</p>
@@ -45,7 +45,7 @@ export function ApiError({ error }: { error: ApiFailure }) {
   return (
     <div
       role="alert"
-      className="flex flex-col items-center gap-4 rounded-xl border p-8 text-center"
+      className="bg-card flex flex-col items-center gap-4 rounded-xl border p-8 text-center"
     >
       <h2 className="text-lg font-semibold">
         {error.statusCode === 0 ? "Service unavailable" : "Something went wrong"}

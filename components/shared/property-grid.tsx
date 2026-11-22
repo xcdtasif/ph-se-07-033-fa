@@ -21,7 +21,7 @@ export function PropertyGridSkeleton({ count }: { count: number }) {
   return (
     <div className={GRID_CLASS} aria-hidden="true">
       {Array.from({ length: count }, (_, index) => (
-        <div key={index} className="bg-muted h-80 animate-pulse rounded-xl" />
+        <div key={index} className="skeleton h-80 rounded-xl" />
       ))}
     </div>
   )

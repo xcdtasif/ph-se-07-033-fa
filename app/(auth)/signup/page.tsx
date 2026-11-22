@@ -18,7 +18,7 @@ export default function SignupPage() {
         </CardTitle>
         <CardDescription>
           Already have one?{" "}
-          <Link href="/login" className="text-foreground underline underline-offset-4">
+          <Link href="/login" className="text-foreground link-underline">
             Log in
           </Link>
         </CardDescription>

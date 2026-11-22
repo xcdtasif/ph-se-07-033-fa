@@ -5,6 +5,7 @@ import { buttonVariants } from "@/components/ui/button"
 import { getCurrentUser } from "@/lib/auth-fetch"
 
 import { HomeLink } from "./home-link"
+import { NavLink } from "./nav-link"
 import { UserMenu } from "./user-menu"
 
 // Reads the session, so it streams in behind the Suspense boundary below
@@ -12,7 +13,7 @@ async function NavbarAccount() {
   const result = await getCurrentUser()
 
   if (result.success) {
-    return <UserMenu user={{ name: result.data.name }} />
+    return <UserMenu user={{ name: result.data.name, role: result.data.role }} />
   }
 
   return (
@@ -29,22 +30,19 @@ async function NavbarAccount() {
 
 export function Navbar() {
   return (
-    <header className="bg-background/80 sticky top-0 z-40 border-b backdrop-blur">
+    <header className="bg-card sticky top-0 z-40 border-b">
       <nav
         aria-label="Main"
         className="mx-auto flex h-14 w-full max-w-6xl items-center gap-2 px-4 md:grid md:grid-cols-[1fr_auto_1fr]"
       >
         <HomeLink className="justify-self-start text-lg font-semibold" />
         {/* Sits beside the account links on mobile, centred on desktop */}
-        <Link
-          href="/properties"
-          className={buttonVariants({ variant: "ghost", className: "ml-auto md:ml-0" })}
-        >
+        <NavLink href="/properties" className="ml-auto md:ml-0">
           Properties
-        </Link>
+        </NavLink>
         <div className="flex items-center gap-2 justify-self-end">
           {/* Same height as the buttons, so the navbar doesn't shift when they arrive */}
-          <Suspense fallback={<div className="bg-muted h-8 w-24 animate-pulse rounded-lg" />}>
+          <Suspense fallback={<div className="skeleton h-8 w-24 rounded-lg" />}>
             <NavbarAccount />
           </Suspense>
         </div>

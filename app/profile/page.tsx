@@ -65,7 +65,7 @@ export default function ProfilePage() {
   return (
     <section className="mx-auto flex w-full max-w-lg flex-col gap-6">
       <h1 className="text-2xl font-semibold tracking-tight">Profile</h1>
-      <Suspense fallback={<div className="bg-muted h-72 animate-pulse rounded-xl" />}>
+      <Suspense fallback={<div className="skeleton h-72 rounded-xl" />}>
         <ProfileDetails />
       </Suspense>
     </section>

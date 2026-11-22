@@ -50,7 +50,7 @@ export default function HomePage() {
           <h2 id="featured-heading" className="text-2xl font-semibold tracking-tight">
             Featured properties
           </h2>
-          <Link href="/properties" className="text-sm font-medium underline underline-offset-4">
+          <Link href="/properties" className="link-underline text-sm font-medium">
             View all
           </Link>
         </div>

@@ -27,9 +27,13 @@ export const metadata: Metadata = {
 
 export default function RootLayout({ children }: LayoutProps<"/">) {
   return (
-    <html lang="en" className={`${geistSans.variable} ${geistMono.variable} h-full antialiased`}>
-      {/* Browser extensions add attributes to body before React loads */}
-      <body className="flex min-h-full flex-col" suppressHydrationWarning>
+    <html lang="en" className={`${geistSans.variable} ${geistMono.variable} antialiased`}>
+      {/*
+      The body is at least the screen's height as it is now, address bar shown or hidden, so
+      the footer stays at the bottom of a short page on phones. Browser extensions add
+      attributes to it before React loads, so its hydration warnings are off.
+      */}
+      <body className="flex min-h-dvh flex-col" suppressHydrationWarning>
         <Navbar />
         <main className="mx-auto flex w-full max-w-6xl flex-1 flex-col px-4 py-8">{children}</main>
         <Footer />

@@ -13,8 +13,8 @@ export default function GlobalError({ error, retry }: { error: unknown; retry: (
   }, [error])
 
   return (
-    <html lang="en" className="h-full antialiased">
-      <body className="flex min-h-full flex-col items-center justify-center gap-4 p-4 text-center">
+    <html lang="en" className="antialiased">
+      <body className="flex min-h-dvh flex-col items-center justify-center gap-4 p-4 text-center">
         <title>Something went wrong | RentNest</title>
         <h1 className="text-3xl font-semibold tracking-tight">Something went wrong</h1>
         <p className="text-muted-foreground max-w-md">
