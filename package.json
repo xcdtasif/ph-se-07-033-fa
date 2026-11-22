@@ -1,10 +1,11 @@
 {
-  "name": "my-app",
+  "name": "ph-se-07-033-fa",
   "version": "0.1.0",
   "private": true,
   "scripts": {
     "dev": "next dev",
-    "build": "next build",
+    "clean": "rm -rf .next",
+    "build": "pnpm clean && next build",
     "start": "next start",
     "fmt": "oxfmt",
     "lint": "oxlint --fix"
