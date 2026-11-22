@@ -82,3 +82,24 @@ export type RentalRequest = {
     "id" | "landlordId" | "name" | "location" | "images" | "rent" | "deposit" | "status"
   >
 }
+
+// Set by the Stripe webhook only: COMPLETED when paid, FAILED when the checkout expired
+export type PaymentStatus = "PENDING" | "COMPLETED" | "FAILED"
+
+// A deposit payment as the tenant reads it, with its request and a summary of the property
+export type Payment = {
+  id: string
+  requestId: string
+  stripeSessionId: string
+  // Decimal string
+  amount: string
+  status: PaymentStatus
+  createdAt: string
+  updatedAt: string
+  request: {
+    id: string
+    tenantId: string
+    status: RequestStatus
+    property: Pick<Property, "id" | "name" | "location">
+  }
+}
