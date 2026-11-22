@@ -1,6 +1,6 @@
 import { z } from "zod"
 
-export const PAGE_SIZE = 12
+export const PAGE_SIZE = 6
 
 export const SORT_OPTIONS = [
   { value: "NEWEST", label: "Newest first" },

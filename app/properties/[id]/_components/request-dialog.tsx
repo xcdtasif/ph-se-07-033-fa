@@ -35,7 +35,7 @@ export function RequestDialog({ propertyId, propertyName }: RequestDialogProps) 
 
   return (
     <Dialog open={open} onOpenChange={setOpen}>
-      <DialogTrigger render={<Button size="lg" className="w-full" />}>
+      <DialogTrigger render={<Button size="sm" className="text-sm" />}>
         Request to rent
       </DialogTrigger>
       <DialogContent className="grid-cols-1 sm:max-w-md">
@@ -58,7 +58,7 @@ export function RequestDialog({ propertyId, propertyName }: RequestDialogProps) 
             <FieldError errors={toErrors(errors?.message)} />
           </Field>
 
-          <DialogFooter className="sm:justify-center">
+          <DialogFooter>
             <DialogClose render={<Button variant="outline" />}>Cancel</DialogClose>
             <Button type="submit" disabled={pending}>
               {pending ? "Sending…" : "Send request"}

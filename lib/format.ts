@@ -6,6 +6,23 @@ const dateFormat = new Intl.DateTimeFormat("en-GB", { dateStyle: "long", timeZon
 
 export const formatDate = (iso: string) => dateFormat.format(new Date(iso))
 
+// en-US months, since en-GB writes September as "Sept"
+const shortDateFormat = new Intl.DateTimeFormat("en-US", {
+  day: "2-digit",
+  month: "short",
+  year: "2-digit",
+  timeZone: "Asia/Dhaka",
+})
+
+// "22-Nov-26"
+export const formatShortDate = (iso: string) => {
+  const parts = shortDateFormat.formatToParts(new Date(iso))
+  const part = (type: Intl.DateTimeFormatPartTypes) =>
+    parts.find((item) => item.type === type)?.value
+
+  return `${part("day")}-${part("month")}-${part("year")}`
+}
+
 /*
 Lakh and crore grouping (9,99,99,999), as taka are written in Bangladesh.
 en-IN, because ICU's en-BD groups in thousands; en-IN keeps Latin digits, unlike bn-BD.

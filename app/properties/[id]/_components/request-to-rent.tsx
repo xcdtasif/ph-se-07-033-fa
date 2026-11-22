@@ -4,14 +4,12 @@ import type { ReactNode } from "react"
 import { buttonVariants } from "@/components/ui/button"
 import { getCurrentUser } from "@/lib/auth-fetch"
 import type { Property } from "@/lib/types"
-import { cn } from "@/lib/utils"
 
 import { RequestDialog } from "./request-dialog"
 
+// In place of the button, at its height, as on the request cards
 const Note = ({ children }: { children: ReactNode }) => (
-  <p className="text-muted-foreground border-foreground/25 border-t border-dashed pt-4 text-center text-sm">
-    {children}
-  </p>
+  <p className="text-muted-foreground flex min-h-7 items-center text-center text-sm">{children}</p>
 )
 
 /*
@@ -21,7 +19,7 @@ link that comes back here. Reads cookies, so it sits inside <Suspense>.
 export async function RequestToRent({ property }: { property: Property }) {
   // Only AVAILABLE properties take requests, whoever is asking
   if (property.status !== "AVAILABLE") {
-    return <Note>You can&apos;t send a request for this property right now</Note>
+    return <Note>Only available properties can be requested</Note>
   }
 
   const user = await getCurrentUser()
@@ -32,7 +30,7 @@ export async function RequestToRent({ property }: { property: Property }) {
       return (
         <Link
           href={`/login?redirectTo=${encodeURIComponent(`/properties/${property.id}`)}`}
-          className={cn(buttonVariants({ size: "lg" }), "w-full")}
+          className={buttonVariants({ size: "sm", className: "text-sm" })}
         >
           Log in as tenant to request
         </Link>

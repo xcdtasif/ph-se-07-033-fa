@@ -59,7 +59,10 @@ async function PropertyResults({ filters }: { filters: PropertyFilters }) {
           </Link>
         ) : (
           hasActiveFilters(filters) && (
-            <Link href="/properties" className={buttonVariants({ variant: "outline" })}>
+            <Link
+              href="/properties"
+              className={buttonVariants({ variant: "outline", size: "sm", className: "text-sm" })}
+            >
               Clear filters
             </Link>
           )
@@ -76,8 +79,9 @@ async function PropertyResults({ filters }: { filters: PropertyFilters }) {
       <p role="status" className="text-muted-foreground text-sm">
         Showing {first}–{last} of {total} {total === 1 ? "property" : "properties"}
       </p>
-      <PropertyGrid properties={properties} />
-      {totalPages > 1 && (
+      {/* A page change jumps here, to the first card, past the count above */}
+      <div id="results" className="jump-target-6 flex flex-col gap-6">
+        <PropertyGrid properties={properties} />
         <Pagination
           page={filters.page}
           totalPages={totalPages}
@@ -86,8 +90,9 @@ async function PropertyResults({ filters }: { filters: PropertyFilters }) {
 
             return query ? `/properties?${query}` : "/properties"
           }}
+          scrollTo="results"
         />
-      )}
+      </div>
     </div>
   )
 }
@@ -102,15 +107,25 @@ async function PropertiesView({ searchParams }: Pick<PageProps<"/properties">, "
     return <ApiError error={categories} />
   }
 
-  const query = toQueryString(filters)
+  // Without the page: a page change keeps the current cards until the next page is ready
+  const filtersQuery = toQueryString({ ...filters, page: 1 })
 
   return (
     <>
       <PropertyFiltersForm categories={categories.data} filters={filters} />
-      {/* A new key shows the skeleton while the next page of results loads */}
-      <Suspense key={`results?${query}`} fallback={<PropertyGridSkeleton count={PAGE_SIZE} />}>
-        <PropertyResults filters={filters} />
-      </Suspense>
+      {/*
+      A filter change gives a new key, so the skeleton shows while its results load. A page
+      change keeps the key, so the current cards stay until the next page swaps in (a
+      transition) and nothing above them moves.
+      */}
+      <section aria-label="Results">
+        <Suspense
+          key={`results?${filtersQuery}`}
+          fallback={<PropertyGridSkeleton count={PAGE_SIZE} />}
+        >
+          <PropertyResults filters={filters} />
+        </Suspense>
+      </section>
     </>
   )
 }
@@ -122,7 +137,7 @@ export default function PropertiesPage({ searchParams }: PageProps<"/properties"
       <Suspense
         fallback={
           <>
-            <div className="bg-muted h-48 animate-pulse rounded-xl lg:h-32" />
+            <div className="skeleton h-48 rounded-xl lg:h-32" />
             <PropertyGridSkeleton count={PAGE_SIZE} />
           </>
         }

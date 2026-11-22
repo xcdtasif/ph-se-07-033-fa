@@ -1,58 +1,84 @@
 import { ChevronLeft, ChevronRight } from "lucide-react"
-import Link from "next/link"
 import type { ReactNode } from "react"
 
 import { buttonVariants } from "@/components/ui/button"
 import { cn } from "@/lib/utils"
+
+import { ActiveDot } from "./active-dot"
+import { ScrollLink, ScrollOnArrival } from "./scroll-link"
+
+// Page numbers shown at once; an odd count keeps the current page in the middle
+const WINDOW = 9
 
 type PaginationProps = {
   page: number
   totalPages: number
   // The URL of a page, keeping the rest of the current query
   href: (page: number) => string
+  // The id of the list the pages belong to, scrolled into view on a page change
+  scrollTo: string
   label?: string
 }
 
-export function Pagination({ page, totalPages, href, label = "Pagination" }: PaginationProps) {
-  // A link to `target`, or a disabled look-alike when there's no such page
-  const pageLink = (target: number, children: ReactNode) => {
-    if (target < 1 || target > totalPages) {
-      return (
-        <span
-          aria-disabled="true"
-          className={cn(buttonVariants({ variant: "outline" }), "pointer-events-none opacity-50")}
-        >
-          {children}
-        </span>
-      )
-    }
+const linkClass = buttonVariants({
+  variant: "ghost",
+  size: "icon-sm",
+  className: "relative text-sm",
+})
 
-    return (
-      <Link href={href(target)} className={buttonVariants({ variant: "outline" })}>
-        {children}
-      </Link>
+/*
+< 1 2 3 … 9 >, the current page centred when there are pages on both sides, marked
+with a dot. Each link prefetches its page (prefetch={true} resolves the URL's
+searchParams ahead of the click), so cached pages swap in without a skeleton.
+*/
+export function Pagination({
+  page,
+  totalPages,
+  href,
+  scrollTo,
+  label = "Pagination",
+}: PaginationProps) {
+  const first = Math.max(1, Math.min(page - (WINDOW - 1) / 2, totalPages - WINDOW + 1))
+  const last = Math.min(totalPages, first + WINDOW - 1)
+  const pages = Array.from({ length: last - first + 1 }, (_, index) => first + index)
+
+  // Previous or Next, or a disabled look-alike at either end
+  const stepLink = (target: number, ariaLabel: string, icon: ReactNode) =>
+    target < 1 || target > totalPages ? (
+      <span aria-disabled="true" className={cn(linkClass, "pointer-events-none opacity-50")}>
+        {icon}
+      </span>
+    ) : (
+      <ScrollLink
+        href={href(target)}
+        prefetch={true}
+        scrollTo={scrollTo}
+        aria-label={ariaLabel}
+        className={linkClass}
+      >
+        {icon}
+      </ScrollLink>
     )
-  }
 
   return (
-    <nav aria-label={label} className="flex items-center justify-center gap-4">
-      {pageLink(
-        page - 1,
-        <>
-          <ChevronLeft aria-hidden="true" />
-          Previous
-        </>,
-      )}
-      <p className="text-muted-foreground text-sm">
-        Page {page} of {totalPages}
-      </p>
-      {pageLink(
-        page + 1,
-        <>
-          Next
-          <ChevronRight aria-hidden="true" />
-        </>,
-      )}
+    <nav aria-label={label} className="flex items-center justify-center gap-0.5">
+      {stepLink(page - 1, "Previous page", <ChevronLeft aria-hidden="true" />)}
+      {pages.map((target) => (
+        <ScrollLink
+          key={target}
+          href={href(target)}
+          prefetch={true}
+          scrollTo={scrollTo}
+          aria-label={`Page ${target}`}
+          aria-current={target === page ? "page" : undefined}
+          className={linkClass}
+        >
+          {target}
+          {target === page && <ActiveDot />}
+        </ScrollLink>
+      ))}
+      {stepLink(page + 1, "Next page", <ChevronRight aria-hidden="true" />)}
+      <ScrollOnArrival id={scrollTo} />
     </nav>
   )
 }

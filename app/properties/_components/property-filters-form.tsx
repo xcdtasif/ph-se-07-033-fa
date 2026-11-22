@@ -150,7 +150,7 @@ export function PropertyFiltersForm({ categories, filters }: PropertyFiltersForm
       noValidate
       aria-busy={pending}
       aria-label="Filter properties"
-      className="grid items-start gap-4 rounded-xl border p-4 sm:grid-cols-2 lg:grid-cols-6"
+      className="bg-card grid items-start gap-4 rounded-xl border p-4 sm:grid-cols-2 lg:grid-cols-6"
     >
       <Field className="sm:col-span-2">
         <FieldLabel htmlFor="search">Search</FieldLabel>
@@ -245,7 +245,7 @@ export function PropertyFiltersForm({ categories, filters }: PropertyFiltersForm
       )}
 
       <div className="flex justify-center sm:col-span-2 lg:col-span-6">
-        <Button type="button" onClick={() => update(EMPTY)}>
+        <Button type="button" size="sm" className="text-sm" onClick={() => update(EMPTY)}>
           Clear filters
         </Button>
       </div>

@@ -5,27 +5,15 @@ import { notFound } from "next/navigation"
 import { Suspense } from "react"
 
 import { ApiError } from "@/components/shared/api-error"
-import { Rating } from "@/components/shared/rating"
-import { Badge } from "@/components/ui/badge"
+import { PropertyStatusText } from "@/components/shared/property-status-badge"
 import { Card, CardContent } from "@/components/ui/card"
 import { formatDate, formatMoney } from "@/lib/format"
+import { parsePage } from "@/lib/pagination"
 import { getProperty } from "@/lib/properties"
-import type { PropertyStatus } from "@/lib/types"
 
 import { PropertyGallery } from "./_components/property-gallery"
-import {
-  parseReviewsPage,
-  PropertyReviews,
-  REVIEWS_PAGE_SIZE,
-} from "./_components/property-reviews"
+import { PropertyReviews, REVIEWS_PAGE_SIZE } from "./_components/property-reviews"
 import { RequestToRent } from "./_components/request-to-rent"
-
-const STATUSES: Record<PropertyStatus, { label: string; className: string }> = {
-  AVAILABLE: { label: "Available", className: "bg-emerald-100 text-emerald-800" },
-  RESERVED: { label: "Reserved", className: "bg-amber-100 text-amber-800" },
-  RENTED: { label: "Rented", className: "bg-sky-100 text-sky-800" },
-  UNAVAILABLE: { label: "Unavailable", className: "bg-muted text-muted-foreground" },
-}
 
 export async function generateMetadata({
   params,
@@ -50,23 +38,30 @@ async function PropertyDetails({ params, searchParams }: PageProps<"/properties/
   }
 
   const property = result.data
-  const status = STATUSES[property.status]
   const { name, category, location, averageRating, reviewCount } = property
   const details = [
     { label: "Deposit", value: formatMoney(property.deposit) },
+    { label: "Status", value: <PropertyStatusText status={property.status} /> },
+    { label: "Landlord", value: property.landlord.name },
     {
       label: "Rating",
-      value: (
-        <Rating averageRating={averageRating} reviewCount={reviewCount} className="justify-end" />
-      ),
+      // Jumps to the reviews below, once there are any
+      value:
+        averageRating === null ? (
+          "N/A"
+        ) : (
+          <a href="#reviews" className="link-underline">
+            {averageRating.toFixed(1)} ({reviewCount})
+            <span className="sr-only">, go to reviews</span>
+          </a>
+        ),
     },
-    { label: "Landlord", value: property.landlord.name },
     { label: "Listed since", value: formatDate(property.createdAt) },
   ]
 
   /*
   Phones read top to bottom: photos and title, the rent card, then description and reviews.
-  Desktop has two columns: everything else on the left, the card on the right beside it
+  Desktop has two columns: everything else on the left, the card on the right beside it.
   */
   return (
     <div className="grid gap-x-8 gap-y-6 lg:grid-cols-[minmax(0,1fr)_20rem]">
@@ -92,13 +87,10 @@ async function PropertyDetails({ params, searchParams }: PageProps<"/properties/
       <aside className="lg:sticky lg:top-35.25 lg:col-start-2 lg:row-span-2 lg:row-start-1 lg:self-start">
         <Card>
           <CardContent className="flex flex-col gap-4">
-            <div className="flex items-start justify-between gap-2">
-              <p>
-                <span className="text-2xl font-semibold">{formatMoney(property.rent)}</span>
-                <span className="text-muted-foreground text-sm"> / month</span>
-              </p>
-              <Badge className={status.className}>{status.label}</Badge>
-            </div>
+            <p>
+              <span className="text-2xl font-semibold">{formatMoney(property.rent)}</span>
+              <span className="text-muted-foreground text-sm"> / month</span>
+            </p>
             <dl className="grid grid-cols-[auto_1fr] gap-x-6 gap-y-2 text-sm">
               {details.map(({ label, value }) => (
                 <div key={label} className="contents">
@@ -107,9 +99,15 @@ async function PropertyDetails({ params, searchParams }: PageProps<"/properties/
                 </div>
               ))}
             </dl>
-            <Suspense fallback={<div className="bg-muted h-10 animate-pulse rounded-lg" />}>
-              <RequestToRent property={property} />
-            </Suspense>
+            {/*
+            The footer, as on the request cards: mt-2 on top of the 1rem gap is 1.5rem
+            above the line, 1rem below. A note is as tall as the button.
+            */}
+            <div className="divider-dashed mt-2 flex justify-center pt-4">
+              <Suspense fallback={<div className="skeleton h-7 w-32 rounded-lg" />}>
+                <RequestToRent property={property} />
+              </Suspense>
+            </div>
           </CardContent>
         </Card>
       </aside>
@@ -126,9 +124,12 @@ async function PropertyDetails({ params, searchParams }: PageProps<"/properties/
           <h2 id="reviews-heading" className="text-lg font-semibold">
             Reviews
           </h2>
-          <Suspense fallback={<ReviewsSkeleton />}>
-            <ReviewsPage propertyId={property.id} searchParams={searchParams} />
-          </Suspense>
+          {/* The rating link and a page change jump here, to the first review */}
+          <div id="reviews" className="jump-target-4">
+            <Suspense fallback={<ReviewsSkeleton />}>
+              <ReviewsPage propertyId={property.id} searchParams={searchParams} />
+            </Suspense>
+          </div>
         </section>
       </div>
     </div>
@@ -143,20 +144,17 @@ async function ReviewsPage({
   propertyId: string
   searchParams: PageProps<"/properties/[id]">["searchParams"]
 }) {
-  const page = parseReviewsPage((await searchParams).reviewsPage)
+  const page = parsePage((await searchParams).reviewsPage)
 
-  return (
-    <Suspense key={page} fallback={<ReviewsSkeleton />}>
-      <PropertyReviews propertyId={propertyId} page={page} />
-    </Suspense>
-  )
+  // No Suspense key: a page change keeps the current reviews until the next page swaps in
+  return <PropertyReviews propertyId={propertyId} page={page} />
 }
 
 function ReviewsSkeleton() {
   return (
-    <div className="flex flex-col gap-3" aria-hidden="true">
+    <div className="grid gap-4 lg:grid-cols-2" aria-hidden="true">
       {Array.from({ length: REVIEWS_PAGE_SIZE }, (_, index) => (
-        <div key={index} className="bg-muted h-24 animate-pulse rounded-xl" />
+        <div key={index} className="skeleton h-32 rounded-xl" />
       ))}
     </div>
   )
@@ -166,10 +164,10 @@ function PropertyDetailsSkeleton() {
   return (
     <div className="grid gap-8 lg:grid-cols-[minmax(0,1fr)_20rem]" aria-hidden="true">
       <div className="flex flex-col gap-6">
-        <div className="bg-muted aspect-3/2 animate-pulse rounded-xl" />
-        <div className="bg-muted h-24 animate-pulse rounded-xl" />
+        <div className="skeleton aspect-3/2 rounded-xl" />
+        <div className="skeleton h-24 rounded-xl" />
       </div>
-      <div className="bg-muted h-64 animate-pulse rounded-xl" />
+      <div className="skeleton h-64 rounded-xl" />
     </div>
   )
 }
