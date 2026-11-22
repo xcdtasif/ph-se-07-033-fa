@@ -82,6 +82,14 @@ export const apiRequest = async <T>(
     */
     unstable_rethrow(error)
 
+    /*
+    Nothing here aborts a fetch, so an abort means Next.js cancelled the render, e.g. the
+    browser left or dropped a prefetch. Nobody is waiting for the answer, so it isn't a failure
+    */
+    if (error instanceof Error && error.name === "AbortError") {
+      throw error
+    }
+
     // The real cause (e.g. ECONNREFUSED) for the server log; visitors get the generic message
     console.error(`Backend unreachable: ${init.method ?? "GET"} ${env.API_URL}${path}`, error)
 
