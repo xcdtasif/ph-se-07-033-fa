@@ -12,7 +12,7 @@ const STATUSES: Record<RequestStatus, { label: string; className: string }> = {
 
 export const requestStatusLabel = (status: RequestStatus) => STATUSES[status].label
 
-// The badge's colours, for the status strip's pills
+// The badge's colours on their own, for other elements that show a status
 export const requestStatusColors = (status: RequestStatus) => STATUSES[status].className
 
 export function RequestStatusBadge({ status }: { status: RequestStatus }) {

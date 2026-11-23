@@ -6,7 +6,7 @@ import { toast } from "sonner"
 import { logoutAction } from "@/app/(auth)/_actions/auth-actions"
 import { Button } from "@/components/ui/button"
 
-// An outline button, beside the Profile button in the navbar and under it in the menu
+// An outline Log out button that toasts, then logs out and redirects
 export function LogoutButton({
   className,
   onLogout,

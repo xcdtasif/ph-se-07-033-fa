@@ -19,7 +19,7 @@ type MobileMenuProps = {
   loggedIn: boolean
 }
 
-// Bigger than the desktop links; the dashboard's pages are a step smaller, under it
+// Large links; the dashboard's pages, under it, a step smaller
 const parentLink = buttonVariants({
   variant: "ghost",
   className: "h-auto px-3 py-1.5 text-lg font-normal",

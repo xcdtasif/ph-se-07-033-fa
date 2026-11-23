@@ -25,7 +25,7 @@ const PAYMENTS_PAGE_SIZE = 10
 export const paymentsHref = (page = 1) =>
   page > 1 ? `/dashboard/payments?page=${page}` : "/dashboard/payments"
 
-// Completed means paid, so it gets the green the approved requests use
+// Completed means paid, so it's green
 const STATUSES: Record<PaymentStatus, { label: string; className: string }> = {
   PENDING: { label: "Pending", className: "bg-yellow-100 text-yellow-800" },
   COMPLETED: { label: "Completed", className: "bg-emerald-100 text-emerald-800" },

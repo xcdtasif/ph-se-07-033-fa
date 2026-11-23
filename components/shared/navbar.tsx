@@ -81,7 +81,7 @@ export function Navbar() {
         className="mx-auto flex h-14 w-full max-w-6xl items-center gap-2 px-4 lg:grid lg:grid-cols-[1fr_auto_1fr]"
       >
         <HomeLink className="justify-self-start text-lg font-semibold" />
-        {/* One skeleton for both links while the session loads, like the account buttons' */}
+        {/* One skeleton for both links while the session loads */}
         <div className="hidden lg:block">
           <Suspense fallback={<div className="skeleton h-8 w-44 rounded-lg" aria-hidden="true" />}>
             <NavbarLinks />

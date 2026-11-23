@@ -14,9 +14,8 @@ import type { DashboardSection } from "@/lib/dashboard"
 import { cn } from "@/lib/utils"
 
 /*
-The desktop navbar's Dashboard link, opening the role's dashboard pages. Like the other navbar
-links it's ghost, but with no dot: the menu marks the current page semibold, as in every vertical
-list. The menu is centred under it.
+The desktop navbar's Dashboard link, opening the role's dashboard pages: a ghost button with no
+dot, its menu centred under it with the current page semibold.
 */
 export function DashboardMenu({ sections }: { sections: DashboardSection[] }) {
   const pathname = usePathname()
