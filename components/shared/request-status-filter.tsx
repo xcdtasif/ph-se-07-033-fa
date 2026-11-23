@@ -1,10 +1,11 @@
 import Link from "next/link"
 
-import { buttonVariants } from "@/components/ui/button"
+import { ScrollFade } from "@/components/ui/scroll-fade"
 import { REQUEST_STATUSES, type RequestStatus } from "@/lib/types"
+import { cn } from "@/lib/utils"
 
 import { ActiveDot } from "./active-dot"
-import { requestStatusLabel } from "./request-status-badge"
+import { requestStatusColors, requestStatusLabel } from "./request-status-badge"
 
 // `?status=` as a request status, undefined (all) for anything else
 export const parseRequestStatus = (value: string | string[] | undefined) =>
@@ -18,41 +19,41 @@ type RequestStatusFilterProps = {
 }
 
 /*
-One line of status links; on a phone it scrolls sideways instead of wrapping,
-reaching the screen edges past the page padding. No scrollbar: the right 3rem
-fades out instead, hinting at more. The 3rem end padding matches it, so the last
-link scrolls clear of the fade; on wider screens the links never reach it.
+One line of status pills in the badges' colours ("All" white with a thin ring), the selected
+one with the dot under it. On a phone it scrolls sideways within the content width instead
+of wrapping (ScrollFade).
 */
 export function RequestStatusFilter({ status, href }: RequestStatusFilterProps) {
   const options = [undefined, ...REQUEST_STATUSES]
 
   return (
-    <nav
-      aria-label="Filter requests by status"
-      className="-mx-4 [scrollbar-width:none] overflow-x-auto [mask-image:linear-gradient(to_right,black_calc(100%-3rem),transparent)] pr-12 pl-4"
-    >
-      <ul className="flex w-max gap-1">
-        {options.map((option) => {
-          const selected = option === status
+    <nav aria-label="Filter requests by status">
+      <ScrollFade>
+        <ul className="flex w-max gap-2">
+          {options.map((option) => {
+            const selected = option === status
 
-          return (
-            <li key={option ?? "ALL"}>
-              <Link
-                href={href(option)}
-                aria-current={selected ? "page" : undefined}
-                className={buttonVariants({
-                  variant: "ghost",
-                  size: "sm",
-                  className: "relative text-sm",
-                })}
-              >
-                {option ? requestStatusLabel(option) : "All"}
+            return (
+              // Room under the pill for the dot
+              <li key={option ?? "ALL"} className="relative pb-2">
+                <Link
+                  href={href(option)}
+                  aria-current={selected ? "page" : undefined}
+                  className={cn(
+                    "focus-visible:ring-ring/50 flex h-7 items-center rounded-full px-3 text-sm font-medium whitespace-nowrap outline-none hover:brightness-95 focus-visible:ring-3",
+                    option
+                      ? requestStatusColors(option)
+                      : "bg-card text-foreground ring-foreground/15 ring-1 ring-inset",
+                  )}
+                >
+                  {option ? requestStatusLabel(option) : "All"}
+                </Link>
                 {selected && <ActiveDot />}
-              </Link>
-            </li>
-          )
-        })}
-      </ul>
+              </li>
+            )
+          })}
+        </ul>
+      </ScrollFade>
     </nav>
   )
 }

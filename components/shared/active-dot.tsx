@@ -1,4 +1,4 @@
-// The dot under the current item: the navbar page, the request status filter, the gallery photo
+// The dot under the current item in a row
 export function ActiveDot() {
   return (
     <span

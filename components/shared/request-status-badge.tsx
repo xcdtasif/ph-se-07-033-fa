@@ -12,6 +12,9 @@ const STATUSES: Record<RequestStatus, { label: string; className: string }> = {
 
 export const requestStatusLabel = (status: RequestStatus) => STATUSES[status].label
 
+// The badge's colours, for the status strip's pills
+export const requestStatusColors = (status: RequestStatus) => STATUSES[status].className
+
 export function RequestStatusBadge({ status }: { status: RequestStatus }) {
   const { label, className } = STATUSES[status]
 
