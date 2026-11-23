@@ -1,32 +1,11 @@
-import { Star } from "lucide-react"
-
 import { ApiError } from "@/components/shared/api-error"
 import { Pagination } from "@/components/shared/pagination"
 import { SkeletonText } from "@/components/shared/skeleton-text"
+import { Stars } from "@/components/shared/stars"
 import { formatShortDate } from "@/lib/format"
 import { getPropertyReviews } from "@/lib/properties"
-import { cn } from "@/lib/utils"
 
 const REVIEWS_PAGE_SIZE = 6
-
-// Each star as tall as the text around it (1em)
-function Stars({ rating }: { rating: number }) {
-  return (
-    <span className="flex gap-0.5">
-      <span className="sr-only">Rated {rating} out of 5</span>
-      {Array.from({ length: 5 }, (_, index) => (
-        <Star
-          key={index}
-          aria-hidden="true"
-          className={cn(
-            "size-[1em]",
-            index < rating ? "fill-amber-400 text-amber-400" : "text-muted-foreground/40",
-          )}
-        />
-      ))}
-    </span>
-  )
-}
 
 export async function PropertyReviews({ propertyId, page }: { propertyId: string; page: number }) {
   const result = await getPropertyReviews(propertyId, page, REVIEWS_PAGE_SIZE)
