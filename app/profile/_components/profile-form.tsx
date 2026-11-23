@@ -10,11 +10,11 @@ import { updateProfileAction } from "../_actions/profile-actions"
 const toErrors = (messages?: string[]) => messages?.map((message) => ({ message }))
 
 export function ProfileForm({ name }: { name: string }) {
-  const [state, formAction, pending] = useFormAction(updateProfileAction)
+  const [state, formAction, pending, onFormChange] = useFormAction(updateProfileAction)
   const errors = state.fieldErrors
 
   return (
-    <form action={formAction} noValidate>
+    <form action={formAction} onChange={onFormChange} noValidate>
       <FieldGroup>
         <Field data-invalid={Boolean(errors?.name)}>
           <FieldLabel htmlFor="name">Name</FieldLabel>

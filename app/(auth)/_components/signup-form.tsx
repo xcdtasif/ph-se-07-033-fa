@@ -25,11 +25,11 @@ const ROLES = [
 const toErrors = (messages?: string[]) => messages?.map((message) => ({ message }))
 
 export function SignupForm() {
-  const [state, formAction, pending] = useAuthForm(signupAction)
+  const [state, formAction, pending, onFormChange] = useAuthForm(signupAction)
   const errors = state.fieldErrors
 
   return (
-    <form action={formAction} noValidate>
+    <form action={formAction} onChange={onFormChange} noValidate>
       <FieldGroup>
         <Field data-invalid={Boolean(errors?.name)}>
           <FieldLabel htmlFor="name">Name</FieldLabel>
