@@ -5,6 +5,7 @@ import { buttonVariants } from "@/components/ui/button"
 import { getCurrentUser } from "@/lib/auth-fetch"
 import { DASHBOARD_SECTIONS, type DashboardSection } from "@/lib/dashboard"
 
+import { AuthLink } from "./auth-link"
 import { DashboardMenu } from "./dashboard-menu"
 import { HomeLink } from "./home-link"
 import { LogoutButton } from "./logout-button"
@@ -51,12 +52,12 @@ async function NavbarAccount() {
     </>
   ) : (
     <>
-      <Link href="/signup" className={buttonVariants({ variant: "outline" })}>
+      <AuthLink href="/signup" className={buttonVariants({ variant: "outline" })}>
         Sign up
-      </Link>
-      <Link href="/login" className={buttonVariants()}>
+      </AuthLink>
+      <AuthLink href="/login" className={buttonVariants()}>
         Log in
-      </Link>
+      </AuthLink>
     </>
   )
 }

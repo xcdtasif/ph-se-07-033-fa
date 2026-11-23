@@ -1,6 +1,6 @@
 import type { Metadata } from "next"
-import Link from "next/link"
 
+import { AuthLink } from "@/components/shared/auth-link"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 
 import { LoginForm } from "../_components/login-form"
@@ -18,9 +18,9 @@ export default function LoginPage() {
         </CardTitle>
         <CardDescription>
           New to RentNest?{" "}
-          <Link href="/signup" className="text-foreground link-underline">
+          <AuthLink href="/signup" className="text-foreground link-underline">
             Sign up
-          </Link>
+          </AuthLink>
         </CardDescription>
       </CardHeader>
       <CardContent>

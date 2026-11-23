@@ -10,6 +10,7 @@ import { Sheet, SheetClose, SheetContent, SheetTitle, SheetTrigger } from "@/com
 import type { DashboardSection } from "@/lib/dashboard"
 import { cn } from "@/lib/utils"
 
+import { AuthLink } from "./auth-link"
 import { HomeLink } from "./home-link"
 import { LogoutButton } from "./logout-button"
 
@@ -137,16 +138,16 @@ export function MobileMenu({ sections, loggedIn }: MobileMenuProps) {
               </>
             ) : (
               <>
-                <Link href="/login" onClick={close} className={buttonVariants()}>
+                <AuthLink href="/login" onClick={close} className={buttonVariants()}>
                   Log in
-                </Link>
-                <Link
+                </AuthLink>
+                <AuthLink
                   href="/signup"
                   onClick={close}
                   className={buttonVariants({ variant: "outline" })}
                 >
                   Sign up
-                </Link>
+                </AuthLink>
               </>
             )}
           </div>
