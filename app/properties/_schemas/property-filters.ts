@@ -1,5 +1,7 @@
 import { z } from "zod"
 
+import { MAX_AMOUNT } from "@/lib/amount"
+
 export const PAGE_SIZE = 6
 
 export const SORT_OPTIONS = [
@@ -10,11 +12,8 @@ export const SORT_OPTIONS = [
 
 export const DEFAULT_SORT = "NEWEST"
 
-// Whole taka only; the backend allows decimals, but no one filters rent by paisa
-export const MAX_RENT = 999_999
-
 const sortValues = SORT_OPTIONS.map((option) => option.value) as [string, ...string[]]
-const rentSchema = z.coerce.number().int().min(0).max(MAX_RENT)
+const rentSchema = z.coerce.number().int().min(0).max(MAX_AMOUNT)
 
 /*
 Mirrors the backend's list query rules. Each invalid value is dropped on its

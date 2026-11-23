@@ -14,13 +14,13 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select"
+import { MAX_AMOUNT, toAmountDigits } from "@/lib/amount"
 import { formatNumber } from "@/lib/format"
 import type { Category } from "@/lib/types"
 import { cn } from "@/lib/utils"
 
 import {
   DEFAULT_SORT,
-  MAX_RENT,
   SORT_OPTIONS,
   toQueryString,
   type PropertyFilters,
@@ -40,7 +40,6 @@ type Values = {
   sort: string
 }
 
-const RENT_DIGITS = String(MAX_RENT).length
 // Typing waits for a pause this long before applying; picking from a list applies at once
 const TYPING_DELAY = 400
 
@@ -66,9 +65,7 @@ const toQuery = (values: Values) =>
     page: 1,
   })
 
-// Digits only, capped at the max rent's length; a pasted 9.56 keeps the whole part, not 956
-const toDigits = (event: ChangeEvent<HTMLInputElement>) =>
-  event.target.value.split(".")[0].replace(/\D/g, "").slice(0, RENT_DIGITS)
+const toDigits = (event: ChangeEvent<HTMLInputElement>) => toAmountDigits(event.target.value)
 
 /*
 Filters live in the URL and apply as they change, replacing the URL so Back
@@ -210,7 +207,7 @@ export function PropertyFiltersForm({ categories, filters }: PropertyFiltersForm
           name="maxRent"
           inputMode="numeric"
           autoComplete="off"
-          placeholder={formatNumber(MAX_RENT)}
+          placeholder={formatNumber(MAX_AMOUNT)}
           value={values.maxRent}
           onChange={(event) => update({ maxRent: toDigits(event) }, TYPING_DELAY)}
           aria-invalid={rangeError}
