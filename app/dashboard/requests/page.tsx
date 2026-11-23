@@ -14,9 +14,9 @@ export const metadata: Metadata = {
 Reads the URL, so it renders at request time. A new status shows the skeleton again; a
 new page keeps the current cards until the next page swaps in, so nothing above moves.
 */
-async function RequestsPage({
+async function RequestsList({
   searchParams,
-}: Pick<PageProps<"/dashboard/tenant">, "searchParams">) {
+}: Pick<PageProps<"/dashboard/requests">, "searchParams">) {
   const query = await searchParams
   const page = parsePage(query.page)
   const status = parseRequestStatus(query.status)
@@ -38,18 +38,18 @@ async function RequestsPage({
 function RequestsPageSkeleton() {
   return (
     <div className="flex flex-col gap-6" aria-hidden="true">
-      <div className="skeleton h-7 w-full max-w-xl rounded-lg" />
+      <div className="skeleton h-9 w-full max-w-xl rounded-lg" />
       <TenantRequestsSkeleton />
     </div>
   )
 }
 
-export default function TenantDashboardPage({ searchParams }: PageProps<"/dashboard/tenant">) {
+export default function RequestsPage({ searchParams }: PageProps<"/dashboard/requests">) {
   return (
     <section className="flex flex-col gap-6">
       <h1 className="text-2xl font-semibold tracking-tight">Requests</h1>
       <Suspense fallback={<RequestsPageSkeleton />}>
-        <RequestsPage searchParams={searchParams} />
+        <RequestsList searchParams={searchParams} />
       </Suspense>
     </section>
   )

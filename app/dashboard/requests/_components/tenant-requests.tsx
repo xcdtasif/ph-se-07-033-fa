@@ -30,7 +30,7 @@ export const requestsHref = (status?: RequestStatus, page = 1) => {
 
   const search = query.toString()
 
-  return search ? `/dashboard/tenant?${search}` : "/dashboard/tenant"
+  return search ? `/dashboard/requests?${search}` : "/dashboard/requests"
 }
 
 // The backend allows cancelling only these

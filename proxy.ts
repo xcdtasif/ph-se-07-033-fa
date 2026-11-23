@@ -3,6 +3,7 @@ import { z } from "zod"
 
 import { apiFetch, apiRequest } from "@/lib/api"
 import { AUTH_COOKIE_NAMES, parseAuthCookies, type AuthCookie } from "@/lib/auth-cookies"
+import { DASHBOARD_SECTIONS } from "@/lib/dashboard"
 import { safeRedirectPath } from "@/lib/redirect"
 import { USER_ROLES, type User, type UserRole } from "@/lib/types"
 
@@ -14,11 +15,8 @@ where to send the user. The backend still checks every request.
 
 const GUEST_ONLY_ROUTES = ["/login", "/signup"]
 
-// First match wins, so the role-specific dashboards come before `/dashboard`
+// Which roles may open each protected path; the dashboard's pages are checked per role below
 const PROTECTED_ROUTES: { prefix: string; roles: readonly UserRole[] }[] = [
-  { prefix: "/dashboard/admin", roles: ["ADMIN"] },
-  { prefix: "/dashboard/landlord", roles: ["LANDLORD"] },
-  { prefix: "/dashboard/tenant", roles: ["TENANT"] },
   { prefix: "/payments", roles: ["TENANT"] },
   { prefix: "/dashboard", roles: USER_ROLES },
   { prefix: "/profile", roles: USER_ROLES },
@@ -40,7 +38,13 @@ type Session = {
 const matches = (pathname: string, prefix: string) =>
   pathname === prefix || pathname.startsWith(`${prefix}/`)
 
-const roleHome = (role: UserRole) => `/dashboard/${role.toLowerCase()}`
+// The role's first dashboard page, or its profile while it has none
+const roleHome = (role: UserRole) => DASHBOARD_SECTIONS[role][0]?.href ?? "/profile"
+
+// `/dashboard` itself, or a dashboard page the role doesn't have
+const isOtherDashboard = (pathname: string, role: UserRole) =>
+  matches(pathname, "/dashboard") &&
+  !DASHBOARD_SECTIONS[role].some((section) => matches(pathname, section.href))
 
 // The role in an unexpired access token, or null
 const roleFromToken = (token: string): UserRole | null => {
@@ -141,7 +145,7 @@ const redirectFor = (request: NextRequest, role: UserRole | null): URL | null =>
     return loginUrl
   }
 
-  if (pathname === "/dashboard" || !rule.roles.includes(role)) {
+  if (!rule.roles.includes(role) || isOtherDashboard(pathname, role)) {
     return new URL(roleHome(role), request.url)
   }
 

@@ -3,7 +3,7 @@ import type { Metadata } from "next"
 import Link from "next/link"
 import { Suspense } from "react"
 
-import { requestsHref } from "@/app/dashboard/tenant/_components/tenant-requests"
+import { requestsHref } from "@/app/dashboard/requests/_components/tenant-requests"
 import { ApiError } from "@/components/shared/api-error"
 import { SkeletonText } from "@/components/shared/skeleton-text"
 import { buttonVariants } from "@/components/ui/button"
