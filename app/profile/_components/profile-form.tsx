@@ -30,7 +30,7 @@ export function ProfileForm({ name }: { name: string }) {
         </Field>
 
         <Button type="submit" size="sm" disabled={pending} className="self-start text-sm">
-          {pending ? "Updating…" : "Update profile"}
+          {pending ? "Saving…" : "Save changes"}
         </Button>
       </FieldGroup>
     </form>
