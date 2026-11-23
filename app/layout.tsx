@@ -37,11 +37,12 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
         <Navbar />
         <main className="mx-auto flex w-full max-w-6xl flex-1 flex-col px-4 py-8">{children}</main>
         <Footer />
-        {/* Offsets keep toasts below the sticky navbar */}
+        {/* Offsets keep toasts below the sticky navbar; 3s instead of Sonner's 4s */}
         <Toaster
           theme="light"
           richColors
           position="top-center"
+          duration={3000}
           offset={64}
           mobileOffset={{ top: 64 }}
         />
