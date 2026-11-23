@@ -23,6 +23,25 @@ export const formatShortDate = (iso: string) => {
   return `${part("day")}-${part("month")}-${part("year")}`
 }
 
+const shortDateTimeFormat = new Intl.DateTimeFormat("en-GB", {
+  day: "2-digit",
+  month: "2-digit",
+  year: "2-digit",
+  hour: "2-digit",
+  minute: "2-digit",
+  hourCycle: "h23",
+  timeZone: "Asia/Dhaka",
+})
+
+// "31-12-99 09:09", on a 24-hour clock
+export const formatShortDateTime = (iso: string) => {
+  const parts = shortDateTimeFormat.formatToParts(new Date(iso))
+  const part = (type: Intl.DateTimeFormatPartTypes) =>
+    parts.find((item) => item.type === type)?.value
+
+  return `${part("day")}-${part("month")}-${part("year")} ${part("hour")}:${part("minute")}`
+}
+
 /*
 Lakh and crore grouping (9,99,99,999), as taka are written in Bangladesh.
 en-IN, because ICU's en-BD groups in thousands; en-IN keeps Latin digits, unlike bn-BD.
@@ -39,6 +58,14 @@ const moneyFormat = new Intl.NumberFormat(LOCALE, {
 
 // Takes the decimal string the backend sends
 export const formatMoney = (amount: string) => moneyFormat.format(Number(amount))
+
+const amountFormat = new Intl.NumberFormat(LOCALE, {
+  maximumFractionDigits: 2,
+  trailingZeroDisplay: "stripIfInteger",
+})
+
+// "28,000" or "1,18,500.50", where the currency is shown apart; takes the backend's decimal string
+export const formatAmount = (amount: string) => amountFormat.format(Number(amount))
 
 const numberFormat = new Intl.NumberFormat(LOCALE)
 
