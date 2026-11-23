@@ -1,0 +1,34 @@
+import type { Metadata } from "next"
+import { Suspense } from "react"
+
+import { parsePage } from "@/lib/pagination"
+
+import { TenantReviews, TenantReviewsSkeleton } from "./_components/tenant-reviews"
+
+export const metadata: Metadata = {
+  title: "Reviews",
+}
+
+/*
+Reads the URL, so it renders at request time. A new page keeps the current cards until the
+next page swaps in.
+*/
+async function ReviewsList({
+  searchParams,
+}: Pick<PageProps<"/dashboard/reviews">, "searchParams">) {
+  return <TenantReviews page={parsePage((await searchParams).page)} />
+}
+
+export default function ReviewsPage({ searchParams }: PageProps<"/dashboard/reviews">) {
+  return (
+    <section className="flex flex-col gap-6">
+      <h1 className="text-2xl font-semibold tracking-tight">Reviews</h1>
+      {/* A page change jumps here, to the first card */}
+      <div id="reviews" className="jump-target-4">
+        <Suspense fallback={<TenantReviewsSkeleton />}>
+          <ReviewsList searchParams={searchParams} />
+        </Suspense>
+      </div>
+    </section>
+  )
+}

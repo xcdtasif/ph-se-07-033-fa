@@ -10,6 +10,7 @@ export const DASHBOARD_SECTIONS: Record<UserRole, DashboardSection[]> = {
   TENANT: [
     { href: "/dashboard/requests", label: "Requests" },
     { href: "/dashboard/payments", label: "Payments" },
+    { href: "/dashboard/reviews", label: "Reviews" },
   ],
   LANDLORD: [],
   ADMIN: [],

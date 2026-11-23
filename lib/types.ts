@@ -56,6 +56,15 @@ export type PropertyReview = {
   tenant: { name: string }
 }
 
+// One of the signed-in tenant's own reviews, hidden ones included
+export type TenantReview = Omit<PropertyReview, "tenant"> & {
+  tenantId: string
+  requestId: string
+  // Hidden by an admin: left out of the property's reviews and rating
+  isHidden: boolean
+  property: Pick<Property, "id" | "name" | "location" | "images">
+}
+
 // In lifecycle order, as the status filter lists them
 export const REQUEST_STATUSES = [
   "PENDING",
