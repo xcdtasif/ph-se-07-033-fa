@@ -19,7 +19,10 @@ export type Category = {
   updatedAt: string
 }
 
-export type PropertyStatus = "AVAILABLE" | "UNAVAILABLE" | "RESERVED" | "RENTED"
+// In lifecycle order, as the status filter lists them
+export const PROPERTY_STATUSES = ["AVAILABLE", "RESERVED", "RENTED", "UNAVAILABLE"] as const
+
+export type PropertyStatus = (typeof PROPERTY_STATUSES)[number]
 
 // As returned by the public reads, which add the rating summary
 export type Property = {
