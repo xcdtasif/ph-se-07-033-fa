@@ -1,7 +1,11 @@
-import { cacheLife } from "next/cache"
+import { cacheLife, cacheTag } from "next/cache"
 
 import { apiFetch } from "@/lib/api"
 import type { Property, PropertyReview } from "@/lib/types"
+
+// The cached list pages, and one property's page; the landlord's changes expire them
+export const PROPERTIES_TAG = "properties"
+export const propertyTag = (id: string) => `property:${id}`
 
 /*
 Public property reads, cached across requests for a few minutes. A failure is
@@ -19,6 +23,7 @@ const cacheFor = (success: boolean) => {
 // `query` is the search string without "?", e.g. "limit=6"
 export const getProperties = async (query: string) => {
   "use cache"
+  cacheTag(PROPERTIES_TAG)
 
   const result = await apiFetch<Property[]>(`/api/properties?${query}`)
   cacheFor(result.success)
@@ -29,6 +34,7 @@ export const getProperties = async (query: string) => {
 // Any status, unless hidden: 404 for a hidden or missing property, 400 for a malformed id
 export const getProperty = async (id: string) => {
   "use cache"
+  cacheTag(propertyTag(id))
 
   const result = await apiFetch<Property>(`/api/properties/${encodeURIComponent(id)}`)
   cacheFor(result.success)

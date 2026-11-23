@@ -8,8 +8,8 @@ import type { FormState } from "@/lib/form"
 /*
 Runs a server action from a form through useActionState: shows its message as a toast and
 calls `onSuccess` when it succeeds. Returns the state, the form action, whether it's pending,
-and an onChange handler for the form that drops a field's error once the user edits that field;
-the next submit shows errors afresh.
+an onChange handler for the form that drops a field's error once the user edits that field, and
+the same for a field by name; the next submit shows errors afresh.
 */
 export const useFormAction = <Field extends string>(
   action: (formData: FormData) => Promise<FormState<Field>>,
@@ -41,14 +41,17 @@ export const useFormAction = <Field extends string>(
       ) as FormState<Field>["fieldErrors"])
     : undefined
 
-  // Change events from the form's fields bubble up to the form
-  const onFormChange = (event: FormEvent<HTMLFormElement>) => {
-    const { name } = event.target as HTMLInputElement
-
-    if (name && fieldErrors && name in fieldErrors) {
+  // For fields that don't fire a change event on the form, like a select or a removed photo
+  const clearFieldError = (name: string) => {
+    if (fieldErrors && name in fieldErrors) {
       setEdited({ state, fields: new Set(editedFields).add(name) })
     }
   }
 
-  return [{ ...state, fieldErrors }, formAction, pending, onFormChange] as const
+  // Change events from the form's fields bubble up to the form
+  const onFormChange = (event: FormEvent<HTMLFormElement>) => {
+    clearFieldError((event.target as HTMLInputElement).name)
+  }
+
+  return [{ ...state, fieldErrors }, formAction, pending, onFormChange, clearFieldError] as const
 }

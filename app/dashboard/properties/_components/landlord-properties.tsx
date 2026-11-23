@@ -20,7 +20,6 @@ import type { Property } from "@/lib/types"
 import { cn } from "@/lib/utils"
 
 import { AvailabilityButton } from "./availability-button"
-import { DeletePropertyDialog } from "./delete-property-dialog"
 
 const PROPERTIES_PAGE_SIZE = 6
 
@@ -104,17 +103,25 @@ function PropertyItem({ property }: { property: Property }) {
           <Rating averageRating={property.averageRating} reviewCount={property.reviewCount} />
         </div>
       </div>
-      {/* Spaced like the request cards' footer; a note is as tall as the buttons */}
-      <div className="divider-dashed mt-6 flex justify-center gap-2 pt-4">
-        {status === "AVAILABLE" || status === "UNAVAILABLE" ? (
-          <>
-            <DeletePropertyDialog propertyId={id} />
-            <AvailabilityButton propertyId={id} status={status} />
-          </>
-        ) : (
+      {/*
+      Spaced like the request cards' footer; a note is as tall as the buttons. A reserved property
+      can't be edited, and only an available or unavailable one can change status.
+      */}
+      <div className="divider-dashed mt-6 flex flex-wrap justify-center gap-2 pt-4">
+        {status === "RESERVED" ? (
           <p className="text-muted-foreground flex h-7 items-center text-sm">
-            This property is {status.toLowerCase()}
+            This property is reserved
           </p>
+        ) : (
+          <>
+            <Link
+              href={`/dashboard/properties/${id}/edit`}
+              className={buttonVariants({ variant: "outline", size: "sm", className: "text-sm" })}
+            >
+              Edit
+            </Link>
+            {status !== "RENTED" && <AvailabilityButton propertyId={id} status={status} />}
+          </>
         )}
       </div>
     </li>
@@ -139,7 +146,7 @@ function PropertyItemSkeleton() {
         </div>
       </div>
       <div className="divider-dashed mt-6 flex justify-center gap-2 pt-4">
-        <div className="skeleton h-7 w-16 rounded-lg" />
+        <div className="skeleton h-7 w-12 rounded-lg" />
         <div className="skeleton h-7 w-32 rounded-lg" />
       </div>
     </div>
@@ -193,7 +200,15 @@ export async function LandlordProperties({
         ) : filter ? (
           <p>You have no {propertyFilterLabel(filter).toLowerCase()} properties.</p>
         ) : (
-          <p>You haven&apos;t listed any properties yet.</p>
+          <>
+            <p>You haven&apos;t listed any properties yet.</p>
+            <Link
+              href="/dashboard/properties/add"
+              className={buttonVariants({ variant: "outline", size: "sm", className: "text-sm" })}
+            >
+              Add property
+            </Link>
+          </>
         )}
       </div>
     )

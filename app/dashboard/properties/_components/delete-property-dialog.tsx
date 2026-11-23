@@ -1,5 +1,6 @@
 "use client"
 
+import { useRouter } from "next/navigation"
 import { useState } from "react"
 
 import { Button } from "@/components/ui/button"
@@ -17,19 +18,18 @@ import { useFormAction } from "@/hooks/use-form-action"
 
 import { deletePropertyAction } from "../_actions/property-actions"
 
-// Asks first: deleting can't be undone and removes the property's photos too
+// Asks first: deleting can't be undone and removes the property's photos too. Then back to the list
 export function DeletePropertyDialog({ propertyId }: { propertyId: string }) {
+  const router = useRouter()
   const [open, setOpen] = useState(false)
   const [, formAction, pending] = useFormAction(
     () => deletePropertyAction(propertyId),
-    () => setOpen(false),
+    () => router.push("/dashboard/properties"),
   )
 
   return (
     <Dialog open={open} onOpenChange={setOpen}>
-      <DialogTrigger render={<Button variant="outline" size="sm" className="text-sm" />}>
-        Delete
-      </DialogTrigger>
+      <DialogTrigger render={<Button size="sm" className="text-sm" />}>Delete</DialogTrigger>
       <DialogContent className="sm:max-w-md">
         <DialogHeader>
           <DialogTitle>Delete this property?</DialogTitle>
