@@ -93,6 +93,13 @@ export type RentalRequest = {
   isReviewed: boolean
 }
 
+// A rental request as the landlord reads it: the tenant instead of the review flag
+export type LandlordRequest = Omit<RentalRequest, "isReviewed"> & {
+  tenant: Pick<User, "id" | "name" | "email">
+  // The deposit the tenant paid, as a decimal string; null until paid
+  paidDeposit: string | null
+}
+
 // Set by the Stripe webhook only: COMPLETED when paid, FAILED when the checkout expired
 export type PaymentStatus = "PENDING" | "COMPLETED" | "FAILED"
 
