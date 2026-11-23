@@ -2,6 +2,7 @@ import Link from "next/link"
 
 import { requestsHref } from "@/app/dashboard/requests/_components/tenant-requests"
 import { ApiError } from "@/components/shared/api-error"
+import { HiddenBadge } from "@/components/shared/hidden-badge"
 import { Pagination } from "@/components/shared/pagination"
 import { SkeletonText } from "@/components/shared/skeleton-text"
 import { Stars } from "@/components/shared/stars"
@@ -18,9 +19,9 @@ const reviewsHref = (page = 1) =>
   page > 1 ? `/dashboard/reviews?page=${page}` : "/dashboard/reviews"
 
 /*
-A card like the property page's reviews, with the property in place of the tenant's name. A
-review an admin has hidden sits on the page background with a dashed border, like an empty
-list's box.
+A card like the property page's reviews: the rating line first, then the property in place of
+the tenant's name. A review an admin has hidden sits on the page background with a dashed
+border, like an empty list's box, with a Hidden badge at the end of its rating line.
 */
 function ReviewItem({ review }: { review: TenantReview }) {
   return (
@@ -30,17 +31,21 @@ function ReviewItem({ review }: { review: TenantReview }) {
         review.isHidden ? "border-foreground/25 border-dashed" : "bg-card",
       )}
     >
-      {review.isHidden && <span className="sr-only">Hidden by an admin</span>}
+      <div className="flex items-center gap-2 text-xs">
+        <Stars rating={review.rating} />
+        <span className="text-muted-foreground">{formatShortDate(review.createdAt)}</span>
+        {review.isHidden && (
+          <span className="ml-auto">
+            <HiddenBadge />
+          </span>
+        )}
+      </div>
       <Link
         href={`/properties/${review.property.id}`}
         className="link-hover-underline line-clamp-2 font-medium"
       >
         {review.property.name}
       </Link>
-      <div className="flex items-center gap-2 text-xs">
-        <Stars rating={review.rating} />
-        <span className="text-muted-foreground">{formatShortDate(review.createdAt)}</span>
-      </div>
       <p className="text-sm whitespace-pre-line">{review.comment}</p>
     </li>
   )
@@ -52,8 +57,8 @@ export function TenantReviewsSkeleton() {
     <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3" aria-hidden="true">
       {Array.from({ length: REVIEWS_PAGE_SIZE }, (_, index) => (
         <div key={index} className="bg-card flex flex-col gap-2 rounded-xl border p-4">
-          <SkeletonText className="w-3/4" />
           <SkeletonText className="w-36 text-xs" />
+          <SkeletonText className="w-3/4" />
           <div className="text-sm">
             <SkeletonText />
             <SkeletonText className="w-2/3" />
