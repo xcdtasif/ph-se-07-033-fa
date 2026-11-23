@@ -13,6 +13,7 @@ import type { RentalRequest, RequestStatus } from "@/lib/types"
 
 import { CancelRequestDialog } from "./cancel-request-dialog"
 import { PayDepositButton } from "./pay-deposit-button"
+import { ReviewDialog } from "./review-dialog"
 
 const REQUESTS_PAGE_SIZE = 6
 
@@ -96,6 +97,8 @@ function RequestItem({ request }: { request: RentalRequest }) {
             <CancelRequestDialog requestId={request.id} status={status} />
             {status === "APPROVED" && <PayDepositButton requestId={request.id} />}
           </>
+        ) : status === "COMPLETED" && !request.isReviewed ? (
+          <ReviewDialog requestId={request.id} propertyName={property.name} />
         ) : (
           <p className="text-muted-foreground flex h-7 items-center text-sm">
             This request is {status.toLowerCase()}

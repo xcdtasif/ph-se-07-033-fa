@@ -81,6 +81,7 @@ export type RentalRequest = {
     Property,
     "id" | "landlordId" | "name" | "location" | "images" | "rent" | "deposit" | "status"
   >
+  isReviewed: boolean
 }
 
 // Set by the Stripe webhook only: COMPLETED when paid, FAILED when the checkout expired
