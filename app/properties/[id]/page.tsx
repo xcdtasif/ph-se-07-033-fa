@@ -5,7 +5,7 @@ import { notFound } from "next/navigation"
 import { Suspense } from "react"
 
 import { ApiError } from "@/components/shared/api-error"
-import { PropertyStatusText } from "@/components/shared/property-status-badge"
+import { propertyStatusLabel } from "@/components/shared/property-status-badge"
 import { SkeletonText } from "@/components/shared/skeleton-text"
 import { Card, CardContent } from "@/components/ui/card"
 import { formatDate, formatMoney } from "@/lib/format"
@@ -42,20 +42,11 @@ async function PropertyDetails({ params, searchParams }: PageProps<"/properties/
   const { name, category, location, averageRating, reviewCount } = property
   const details = [
     { label: "Deposit", value: formatMoney(property.deposit) },
-    { label: "Status", value: <PropertyStatusText status={property.status} /> },
+    { label: "Status", value: propertyStatusLabel(property.status) },
     { label: "Landlord", value: property.landlord.name },
     {
-      label: "Rating",
-      // Jumps to the reviews below, once there are any
-      value:
-        averageRating === null ? (
-          "N/A"
-        ) : (
-          <a href="#reviews" className="link-underline">
-            {averageRating.toFixed(1)} ({reviewCount})
-            <span className="sr-only">, go to reviews</span>
-          </a>
-        ),
+      label: "Rating (Reviews)",
+      value: averageRating === null ? "N/A" : `${averageRating.toFixed(1)} (${reviewCount})`,
     },
     { label: "Listed since", value: formatDate(property.createdAt) },
   ]
@@ -125,7 +116,7 @@ async function PropertyDetails({ params, searchParams }: PageProps<"/properties/
           <h2 id="reviews-heading" className="text-lg font-semibold">
             Reviews
           </h2>
-          {/* The rating link and a page change jump here, to the first review */}
+          {/* A page change jumps here, to the first review */}
           <div id="reviews" className="jump-target-4">
             <Suspense fallback={<PropertyReviewsSkeleton count={reviewCount} />}>
               <ReviewsPage propertyId={property.id} searchParams={searchParams} />

@@ -154,13 +154,12 @@ dark as divider-dashed so it shows against the grey page
 }
 
 /*
-A list that pagination and the rating link jump to, with its pagination. jump-target-N
-takes the list's gap between cards (gap-N), and its first card lands that far below the
-navbar. The page-wide scroll padding leaves the navbar plus main's 2rem top padding; the
-margin swaps the 2rem for the gap. A page too short to scroll that far stops at its
-bottom; no empty space is added to make room. While the next page loads (data-pending,
-set by ScrollLink) the current cards fade, after a short delay so an instant swap doesn't
-flicker, and come back at once.
+For the element that holds a list's cards and, below them, its page links. After a page link
+is clicked, the element fades while the next page loads (data-pending, set by ScrollLink;
+after a short delay so an instant swap doesn't flicker), then scrolls so its first card sits
+one card gap below the navbar. N is the list's gap between cards (gap-N). The page's scroll
+padding already leaves room for the navbar plus main's 2rem top padding, so the margin swaps
+that 2rem for the gap. A page too short to scroll that far stops at its bottom.
 */
 @utility jump-target-* {
   scroll-margin-top: calc(--spacing(--value(integer)) - 2rem);

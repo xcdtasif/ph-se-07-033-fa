@@ -9,15 +9,10 @@ const STATUSES: Record<PropertyStatus, { label: string; text: string; background
   UNAVAILABLE: { label: "Unavailable", text: "text-muted-foreground", background: "bg-muted" },
 }
 
+export const propertyStatusLabel = (status: PropertyStatus) => STATUSES[status].label
+
 export function PropertyStatusBadge({ status }: { status: PropertyStatus }) {
   const { label, text, background } = STATUSES[status]
 
   return <Badge className={cn(text, background)}>{label}</Badge>
-}
-
-// The status as text in the badge's colour, for places without a pill
-export function PropertyStatusText({ status }: { status: PropertyStatus }) {
-  const { label, text } = STATUSES[status]
-
-  return <span className={text}>{label}</span>
 }
