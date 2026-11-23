@@ -97,7 +97,10 @@ function SelectLabel({ className, ...props }: SelectPrimitive.GroupLabel.Props) 
   return (
     <SelectPrimitive.GroupLabel
       data-slot="select-label"
-      className={cn("px-1.5 py-1 text-xs text-muted-foreground", className)}
+      className={cn(
+        "py-1 pr-1.5 pl-[calc(--spacing(2.5)+1px)] text-xs text-muted-foreground",
+        className,
+      )}
       {...props}
     />
   )
@@ -107,14 +110,15 @@ function SelectLabel({ className, ...props }: SelectPrimitive.GroupLabel.Props) 
 No tick: as in the app's vertical lists, the selected item is semibold and the others regular.
 Base UI marks it with an empty data-selected, which shadcn's data-selected variant (="true")
 misses, hence the attribute selector. The background shows on hover and keyboard focus only,
-not on the selected item the list opens on.
+not on the selected item the list opens on. The text starts where the trigger's does: its left
+padding plus its 1px border, since the list opens at the trigger's left edge.
 */
 function SelectItem({ className, children, ...props }: SelectPrimitive.Item.Props) {
   return (
     <SelectPrimitive.Item
       data-slot="select-item"
       className={cn(
-        "relative flex w-full cursor-default items-center gap-1.5 rounded-md px-1.5 py-1 text-sm outline-hidden select-none hover:bg-foreground/10 focus-visible:bg-foreground/10 [&[data-selected]]:font-semibold data-disabled:pointer-events-none data-disabled:opacity-50 [&_svg]:pointer-events-none [&_svg]:shrink-0 [&_svg:not([class*='size-'])]:size-4 *:[span]:last:flex *:[span]:last:items-center *:[span]:last:gap-2",
+        "relative flex w-full cursor-default items-center gap-1.5 rounded-md py-1 pr-1.5 pl-[calc(--spacing(2.5)+1px)] text-sm outline-hidden select-none hover:bg-foreground/10 focus-visible:bg-foreground/10 [&[data-selected]]:font-semibold data-disabled:pointer-events-none data-disabled:opacity-50 [&_svg]:pointer-events-none [&_svg]:shrink-0 [&_svg:not([class*='size-'])]:size-4 *:[span]:last:flex *:[span]:last:items-center *:[span]:last:gap-2",
         className,
       )}
       {...props}

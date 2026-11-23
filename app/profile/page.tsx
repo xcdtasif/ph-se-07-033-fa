@@ -86,7 +86,7 @@ function ProfileDetailsSkeleton() {
             <SkeletonText className="w-12 leading-snug" />
             <div className="skeleton h-8 rounded-lg" />
           </div>
-          <div className="skeleton h-7 w-28 rounded-lg" />
+          <div className="skeleton h-7 w-28 self-center rounded-lg" />
         </CardContent>
       </Card>
     </>

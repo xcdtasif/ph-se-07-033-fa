@@ -29,7 +29,7 @@ export function ProfileForm({ name }: { name: string }) {
           <FieldError errors={toErrors(errors?.name)} />
         </Field>
 
-        <Button type="submit" size="sm" disabled={pending} className="self-start text-sm">
+        <Button type="submit" size="sm" disabled={pending} className="self-center text-sm">
           {pending ? "Saving…" : "Save changes"}
         </Button>
       </FieldGroup>
