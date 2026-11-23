@@ -16,7 +16,7 @@ export function Rating({ averageRating, reviewCount, className }: RatingProps) {
   return (
     <span
       className={cn(
-        "bg-muted flex h-5 w-fit shrink-0 items-center gap-1 rounded-4xl px-2 text-xs font-medium whitespace-nowrap",
+        "bg-muted flex h-5 w-fit shrink-0 items-center justify-center gap-1 rounded-4xl px-2 text-xs font-medium whitespace-nowrap",
         className,
       )}
     >

@@ -11,7 +11,7 @@ export function PayDepositButton({ requestId }: { requestId: string }) {
 
   return (
     <form action={formAction}>
-      <Button type="submit" size="sm" className="text-sm" disabled={pending}>
+      <Button type="submit" variant="outline" size="sm" className="text-sm" disabled={pending}>
         {pending ? "Redirecting…" : "Pay deposit"}
       </Button>
     </form>

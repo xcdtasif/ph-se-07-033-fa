@@ -4,6 +4,7 @@ import Link from "next/link"
 import { ApiError } from "@/components/shared/api-error"
 import { Pagination } from "@/components/shared/pagination"
 import { PropertyImage } from "@/components/shared/property-image"
+import { Rating } from "@/components/shared/rating"
 import { RequestStatusBadge, requestStatusLabel } from "@/components/shared/request-status-badge"
 import { SkeletonText } from "@/components/shared/skeleton-text"
 import { buttonVariants } from "@/components/ui/button"
@@ -38,7 +39,7 @@ export const requestsHref = (status?: RequestStatus, page = 1) => {
 const CANCELLABLE: RequestStatus[] = ["PENDING", "APPROVED"]
 
 /*
-A card: thumbnail with the status on its right, title, location, prices and date,
+A card: thumbnail with the status on its right, title, location, prices, date and rating,
 then the actions centred in a footer. Three cards per row on desktop, two on
 tablets, one on phones.
 */
@@ -83,9 +84,12 @@ function RequestItem({ request }: { request: RentalRequest }) {
             <span className="text-muted-foreground"> deposit</span>
           </span>
         </p>
-        <p className="text-muted-foreground text-xs">
-          Requested on {formatDate(request.createdAt)}
-        </p>
+        <div className="flex items-center justify-between gap-2">
+          <p className="text-muted-foreground text-xs">
+            Requested on {formatDate(request.createdAt)}
+          </p>
+          <Rating averageRating={property.averageRating} reviewCount={property.reviewCount} />
+        </div>
       </div>
       {/*
       Same spacing as the rent card's note: 1.5rem above the line, 1rem below,
@@ -121,7 +125,10 @@ function RequestItemSkeleton() {
         <SkeletonText className="w-3/4" />
         <SkeletonText className="w-1/2 text-sm" />
         <SkeletonText className="w-2/3 text-sm" />
-        <SkeletonText className="w-32 text-xs" />
+        <div className="flex items-center justify-between gap-2">
+          <SkeletonText className="w-32 text-xs" />
+          <div className="skeleton h-5 w-14 rounded-4xl" />
+        </div>
       </div>
       <div className="divider-dashed mt-6 flex justify-center gap-2 pt-4">
         <div className="skeleton h-7 w-28 rounded-lg" />

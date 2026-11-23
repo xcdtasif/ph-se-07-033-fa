@@ -88,13 +88,23 @@ export type RentalRequest = {
   updatedAt: string
   property: Pick<
     Property,
-    "id" | "landlordId" | "name" | "location" | "images" | "rent" | "deposit" | "status"
+    | "id"
+    | "landlordId"
+    | "name"
+    | "location"
+    | "images"
+    | "rent"
+    | "deposit"
+    | "status"
+    | "reviewCount"
+    | "averageRating"
   >
   isReviewed: boolean
 }
 
-// A rental request as the landlord reads it: the tenant instead of the review flag
-export type LandlordRequest = Omit<RentalRequest, "isReviewed"> & {
+// A rental request as the landlord reads it: the tenant instead of the review flag, no rating
+export type LandlordRequest = Omit<RentalRequest, "isReviewed" | "property"> & {
+  property: Omit<RentalRequest["property"], "reviewCount" | "averageRating">
   tenant: Pick<User, "id" | "name" | "email">
   // The deposit the tenant paid, as a decimal string; null until paid
   paidDeposit: string | null
