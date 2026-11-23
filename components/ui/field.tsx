@@ -51,7 +51,8 @@ function FieldGroup({ className, ...props }: React.ComponentProps<"div">) {
   )
 }
 
-const fieldVariants = cva("group/field flex w-full gap-2 data-[invalid=true]:text-destructive", {
+// An invalid field keeps its label colour; only the control's outline and the message turn red
+const fieldVariants = cva("group/field flex w-full gap-2", {
   variants: {
     orientation: {
       vertical: "flex-col *:w-full [&>.sr-only]:w-auto",

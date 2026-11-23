@@ -1,6 +1,6 @@
 "use client"
 
-import { useState } from "react"
+import { useRef, useState } from "react"
 
 import { Button } from "@/components/ui/button"
 import {
@@ -27,7 +27,8 @@ type RequestDialogProps = {
 
 export function RequestDialog({ propertyId, propertyName }: RequestDialogProps) {
   const [open, setOpen] = useState(false)
-  const [state, formAction, pending] = useFormAction(
+  const popupRef = useRef<HTMLDivElement>(null)
+  const [state, formAction, pending, onFormChange] = useFormAction(
     (formData: FormData) => createRequestAction(propertyId, formData),
     () => setOpen(false),
   )
@@ -38,8 +39,14 @@ export function RequestDialog({ propertyId, propertyName }: RequestDialogProps) 
       <DialogTrigger render={<Button size="sm" className="text-sm" />}>
         Request to rent
       </DialogTrigger>
-      <DialogContent className="grid-cols-1 sm:max-w-md">
-        <form action={formAction} noValidate className="grid grid-cols-1 gap-4">
+      {/* Focuses the dialog itself, not the first field, so the placeholder shows until a click */}
+      <DialogContent ref={popupRef} initialFocus={popupRef} className="grid-cols-1 sm:max-w-md">
+        <form
+          action={formAction}
+          onChange={onFormChange}
+          noValidate
+          className="grid grid-cols-1 gap-4"
+        >
           <DialogTitle className="sr-only">{`Request to rent ${propertyName}`}</DialogTitle>
 
           <Field data-invalid={Boolean(errors?.message)}>
@@ -51,8 +58,8 @@ export function RequestDialog({ propertyId, propertyName }: RequestDialogProps) 
               maxLength={MESSAGE_MAX_LENGTH}
               defaultValue={state.values?.message}
               aria-invalid={Boolean(errors?.message)}
-              placeholder={`Tell the landlord about yourself and when you'd like to move in (10 to ${MESSAGE_MAX_LENGTH} characters)`}
-              className="max-h-64 min-h-0 text-sm"
+              placeholder="Tell the landlord about yourself and when you'd like to move in."
+              className="max-h-64 min-h-0 text-center text-sm"
               required
             />
             <FieldError errors={toErrors(errors?.message)} />
