@@ -40,7 +40,8 @@ export function RequestStatusFilter({ status, href }: RequestStatusFilterProps) 
                   href={href(option)}
                   aria-current={selected ? "page" : undefined}
                   className={cn(
-                    "focus-visible:ring-ring/50 flex h-7 items-center rounded-full px-3 text-sm font-medium whitespace-nowrap outline-none hover:brightness-95 focus-visible:ring-3",
+                    // The focus ring sits inside the pill; the scrolling row clips anything outside
+                    "focus-visible:ring-ring flex h-7 items-center rounded-full px-3 text-sm font-medium whitespace-nowrap outline-none hover:brightness-95 focus-visible:ring-2 focus-visible:ring-inset",
                     option
                       ? requestStatusColors(option)
                       : "bg-card text-foreground ring-foreground/15 ring-1 ring-inset",
