@@ -2,9 +2,15 @@ import { MapPin } from "lucide-react"
 import Link from "next/link"
 
 import { ApiError } from "@/components/shared/api-error"
+import { HiddenBadge } from "@/components/shared/hidden-badge"
 import { Pagination } from "@/components/shared/pagination"
 import { PropertyImage } from "@/components/shared/property-image"
 import { PropertyStatusBadge } from "@/components/shared/property-status-badge"
+import {
+  propertyFilterLabel,
+  propertyFilterQuery,
+  type PropertyFilter,
+} from "@/components/shared/property-status-filter"
 import { Rating } from "@/components/shared/rating"
 import { SkeletonText } from "@/components/shared/skeleton-text"
 import { buttonVariants } from "@/components/ui/button"
@@ -18,15 +24,28 @@ import { DeletePropertyDialog } from "./delete-property-dialog"
 
 const PROPERTIES_PAGE_SIZE = 6
 
-// This page's URL for a page, leaving the first page out of the query
-const propertiesHref = (page = 1) =>
-  page > 1 ? `/dashboard/properties?page=${page}` : "/dashboard/properties"
+// This page's URL for a filter and page, leaving defaults out of the query
+export const propertiesHref = (filter?: PropertyFilter, page = 1) => {
+  const query = new URLSearchParams()
+
+  if (filter) {
+    query.set("status", filter)
+  }
+
+  if (page > 1) {
+    query.set("page", String(page))
+  }
+
+  const search = query.toString()
+
+  return search ? `/dashboard/properties?${search}` : "/dashboard/properties"
+}
 
 /*
 A card like a request card: thumbnail with the status on its right, title, location, prices,
 rating and date, then the actions centred in a footer. A property an admin has hidden sits on
-the page background with a dashed border, like an empty list's box, and its title isn't a link
-since its page is gone for everyone else.
+the page background with a dashed border, like an empty list's box, with a Hidden badge in place
+of its status; its title isn't a link since its page is gone for everyone else.
 */
 function PropertyItem({ property }: { property: Property }) {
   const { id, name, status, isHidden } = property
@@ -38,7 +57,6 @@ function PropertyItem({ property }: { property: Property }) {
         isHidden ? "border-foreground/25 border-dashed" : "bg-card",
       )}
     >
-      {isHidden && <span className="sr-only">Hidden by an admin</span>}
       {/* Grows, so the footers line up across a row */}
       <div className="flex flex-1 flex-col gap-2">
         <div className="mb-1 flex items-start justify-between gap-2">
@@ -51,7 +69,8 @@ function PropertyItem({ property }: { property: Property }) {
               className="object-cover"
             />
           </div>
-          <PropertyStatusBadge status={status} />
+          {/* Hidden outranks the status while it lasts; the footer still follows the status */}
+          {isHidden ? <HiddenBadge /> : <PropertyStatusBadge status={status} />}
         </div>
         {isHidden ? (
           <p className="line-clamp-2 font-medium">{name}</p>
@@ -138,9 +157,15 @@ export function LandlordPropertiesSkeleton() {
 }
 
 // Per-user, uncached: reads cookies, so it sits inside <Suspense>
-export async function LandlordProperties({ page }: { page: number }) {
+export async function LandlordProperties({
+  page,
+  filter,
+}: {
+  page: number
+  filter?: PropertyFilter
+}) {
   const result = await authFetch<Property[]>(
-    `/api/landlord/properties?page=${page}&limit=${PROPERTIES_PAGE_SIZE}`,
+    `/api/landlord/properties?page=${page}&limit=${PROPERTIES_PAGE_SIZE}${propertyFilterQuery(filter)}`,
   )
 
   if (!result.success) {
@@ -152,19 +177,21 @@ export async function LandlordProperties({ page }: { page: number }) {
   const totalPages = Math.max(1, Math.ceil(total / PROPERTIES_PAGE_SIZE))
 
   if (properties.length === 0) {
-    // Past the last page, or no properties at all
+    // Past the last page, none for this filter, or no properties at all
     return (
       <div className="text-muted-foreground empty-state flex flex-col items-center gap-4">
         {total > 0 ? (
           <>
             <p>There are no properties on this page.</p>
             <Link
-              href={propertiesHref()}
+              href={propertiesHref(filter)}
               className={buttonVariants({ variant: "outline", size: "sm", className: "text-sm" })}
             >
               Go to the first page
             </Link>
           </>
+        ) : filter ? (
+          <p>You have no {propertyFilterLabel(filter).toLowerCase()} properties.</p>
         ) : (
           <p>You haven&apos;t listed any properties yet.</p>
         )}
@@ -183,7 +210,7 @@ export async function LandlordProperties({ page }: { page: number }) {
         label="Properties pagination"
         page={page}
         totalPages={totalPages}
-        href={propertiesHref}
+        href={(target) => propertiesHref(filter, target)}
         scrollTo="properties"
       />
     </div>
