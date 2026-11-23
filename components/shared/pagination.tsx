@@ -8,7 +8,7 @@ import { ActiveDot } from "./active-dot"
 import { ScrollLink, ScrollOnArrival } from "./scroll-link"
 
 // Page numbers shown at once; an odd count keeps the current page in the middle
-const WINDOW = 9
+const WINDOW = 5
 
 type PaginationProps = {
   page: number
@@ -27,7 +27,7 @@ const linkClass = buttonVariants({
 })
 
 /*
-< 1 2 3 … 9 >, the current page centred when there are pages on both sides, marked
+< 3 4 5 6 7 >, the current page centred when there are pages on both sides, marked
 with a dot. Each link prefetches its page (prefetch={true} resolves the URL's
 searchParams ahead of the click), so cached pages swap in without a skeleton.
 */
