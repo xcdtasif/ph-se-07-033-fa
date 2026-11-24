@@ -41,10 +41,10 @@ export const propertiesHref = (filter?: PropertyFilter, page = 1) => {
 }
 
 /*
-A card like a request card: thumbnail with the status on its right, title, location, prices,
-rating and date, then the actions centred in a footer. A property an admin has hidden sits on
-the page background with a dashed border, like an empty list's box, with a Hidden badge in place
-of its status; its title isn't a link since its page is gone for everyone else.
+A card like a request card: thumbnail with the status on its right, title (linking to the
+property's page, with its requests and reviews), location, prices, rating and date, then the
+actions centred in a footer. A property an admin has hidden sits on the page background with a
+dashed border, like an empty list's box, with a Hidden badge in place of its status.
 */
 function PropertyItem({ property }: { property: Property }) {
   const { id, name, status, isHidden } = property
@@ -71,16 +71,12 @@ function PropertyItem({ property }: { property: Property }) {
           {/* Hidden outranks the status while it lasts; the footer still follows the status */}
           {isHidden ? <HiddenBadge /> : <PropertyStatusBadge status={status} />}
         </div>
-        {isHidden ? (
-          <p className="line-clamp-2 font-medium">{name}</p>
-        ) : (
-          <Link
-            href={`/properties/${id}`}
-            className="link-hover-underline line-clamp-2 font-medium"
-          >
-            {name}
-          </Link>
-        )}
+        <Link
+          href={`/dashboard/properties/${id}`}
+          className="link-hover-underline line-clamp-2 font-medium"
+        >
+          {name}
+        </Link>
         <p className="text-muted-foreground flex items-center gap-1 text-sm">
           <MapPin className="size-4 shrink-0" aria-hidden="true" />
           <span className="line-clamp-1">{property.location}</span>

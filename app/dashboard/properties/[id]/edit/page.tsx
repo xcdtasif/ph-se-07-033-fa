@@ -1,36 +1,20 @@
 import type { Metadata } from "next"
-import { notFound } from "next/navigation"
-import { cache, Suspense } from "react"
+import { Suspense } from "react"
 
 import { ApiError } from "@/components/shared/api-error"
-import { authFetch } from "@/lib/auth-fetch"
 import { getCategories } from "@/lib/categories"
-import type { Property } from "@/lib/types"
 
 import { updatePropertyAction } from "../../_actions/property-actions"
 import { DeletePropertyDialog } from "../../_components/delete-property-dialog"
 import { PropertyForm } from "../../_components/property-form"
 import { PropertyFormSkeleton } from "../../_components/property-form-skeleton"
+import { getOwnProperty } from "../get-own-property"
 
 export const metadata: Metadata = {
   title: "Edit property",
 }
 
 type EditPageProps = Pick<PageProps<"/dashboard/properties/[id]/edit">, "params">
-
-/*
-The landlord's own property, hidden ones included, fetched once for the heading's Delete and the
-form. Another landlord's property, a missing one or a malformed id is a 404.
-*/
-const getOwnProperty = cache(async (id: string) => {
-  const result = await authFetch<Property>(`/api/landlord/properties/${encodeURIComponent(id)}`)
-
-  if (!result.success && [400, 403, 404].includes(result.statusCode)) {
-    notFound()
-  }
-
-  return result
-})
 
 // Only an available or unavailable property can be deleted; the backend still refuses one with requests
 async function DeleteButton({ params }: EditPageProps) {

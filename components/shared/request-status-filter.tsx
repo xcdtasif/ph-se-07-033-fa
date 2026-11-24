@@ -10,9 +10,10 @@ export const parseRequestStatus = (value: string | string[] | undefined) =>
 type RequestStatusFilterProps = {
   status?: RequestStatus
   href: (status?: RequestStatus) => string
+  showAll?: boolean
 }
 
-export function RequestStatusFilter({ status, href }: RequestStatusFilterProps) {
+export function RequestStatusFilter({ status, href, showAll }: RequestStatusFilterProps) {
   return (
     <StatusFilter
       label="Filter requests by status"
@@ -21,6 +22,7 @@ export function RequestStatusFilter({ status, href }: RequestStatusFilterProps) 
       href={href}
       statusLabel={requestStatusLabel}
       statusColors={requestStatusColors}
+      showAll={showAll}
     />
   )
 }

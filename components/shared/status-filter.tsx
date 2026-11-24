@@ -16,11 +16,13 @@ type StatusFilterProps<Status extends string> = {
   statusLabel: (status: Status) => string
   // The status badge's colours
   statusColors: (status: Status) => string
+  // Off where a status is always selected
+  showAll?: boolean
 }
 
 /*
-One line of status pills in the badges' colours ("All" white with a thin ring), the selected
-one with the dot under it. On a phone it scrolls sideways within the content width instead
+One line of status pills in the badges' colours ("All", if shown, white with a thin ring), the
+selected one with the dot under it. On a phone it scrolls sideways within the content width instead
 of wrapping (ScrollFade).
 */
 export function StatusFilter<Status extends string>({
@@ -30,8 +32,9 @@ export function StatusFilter<Status extends string>({
   href,
   statusLabel,
   statusColors,
+  showAll = true,
 }: StatusFilterProps<Status>) {
-  const options = [undefined, ...statuses]
+  const options = showAll ? [undefined, ...statuses] : statuses
 
   return (
     <nav aria-label={label}>

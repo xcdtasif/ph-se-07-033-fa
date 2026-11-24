@@ -72,14 +72,20 @@ function ConfirmChange({
   )
 }
 
+type LandlordRequestItemProps = {
+  request: LandlordRequest
+  // Off on the property's own page, where the card has only the tenant's name above the message
+  showProperty?: boolean
+}
+
 /*
-A card like the tenant's: thumbnail with the status on its right, the property, the tenant's
-name and their message, then the actions centred in a
+A card like the tenant's: thumbnail with the status on its right, the property (linking to its
+dashboard page), the tenant's name and their message, then the actions centred in a
 footer. A change shows at once (the badge and the footer follow it) while the backend saves it;
 a failure shows its toast and the card goes back to the request's current state. Approve shows
 only while the property is available, since approving reserves it.
 */
-export function LandlordRequestItem({ request }: { request: LandlordRequest }) {
+export function LandlordRequestItem({ request, showProperty = true }: LandlordRequestItemProps) {
   const { property, tenant } = request
   const [status, setStatus] = useOptimistic(request.status)
   const [pending, startTransition] = useTransition()
@@ -116,29 +122,38 @@ export function LandlordRequestItem({ request }: { request: LandlordRequest }) {
     <li className="bg-card flex flex-col rounded-xl border p-4">
       {/* Grows, so the footers line up across a row */}
       <div className="flex flex-1 flex-col gap-2">
-        <div className="mb-1 flex items-start justify-between gap-2">
-          <div className="bg-muted relative aspect-3/2 w-24 overflow-hidden rounded-lg sm:w-32">
-            <PropertyImage
-              src={property.images[0]}
-              alt=""
-              fill
-              sizes="128px"
-              className="object-cover"
-            />
+        {showProperty ? (
+          <>
+            <div className="mb-1 flex items-start justify-between gap-2">
+              <div className="bg-muted relative aspect-3/2 w-24 overflow-hidden rounded-lg sm:w-32">
+                <PropertyImage
+                  src={property.images[0]}
+                  alt=""
+                  fill
+                  sizes="128px"
+                  className="object-cover"
+                />
+              </div>
+              <RequestStatusBadge status={status} />
+            </div>
+            <Link
+              href={`/dashboard/properties/${property.id}`}
+              className="link-hover-underline line-clamp-2 font-medium"
+            >
+              {property.name}
+            </Link>
+            <p className="text-muted-foreground flex items-center gap-1 text-sm">
+              <MapPin className="size-4 shrink-0" aria-hidden="true" />
+              <span className="line-clamp-1">{property.location}</span>
+            </p>
+            <p className="line-clamp-1 text-sm font-medium">{tenant.name}</p>
+          </>
+        ) : (
+          <div className="flex items-start justify-between gap-2">
+            <p className="line-clamp-1 font-medium">{tenant.name}</p>
+            <RequestStatusBadge status={status} />
           </div>
-          <RequestStatusBadge status={status} />
-        </div>
-        <Link
-          href={`/properties/${property.id}`}
-          className="link-hover-underline line-clamp-2 font-medium"
-        >
-          {property.name}
-        </Link>
-        <p className="text-muted-foreground flex items-center gap-1 text-sm">
-          <MapPin className="size-4 shrink-0" aria-hidden="true" />
-          <span className="line-clamp-1">{property.location}</span>
-        </p>
-        <p className="line-clamp-1 text-sm font-medium">{tenant.name}</p>
+        )}
         <p className="bg-muted rounded-lg px-3 py-2 text-sm whitespace-pre-line">
           {request.message}
         </p>

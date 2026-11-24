@@ -68,6 +68,9 @@ export type TenantReview = Omit<PropertyReview, "tenant"> & {
   property: Pick<Property, "id" | "name" | "location" | "images">
 }
 
+// A review of one of the signed-in landlord's properties: visible ones only, with the tenant's name
+export type LandlordReview = TenantReview & Pick<PropertyReview, "tenant">
+
 // In lifecycle order, as the status filter lists them
 export const REQUEST_STATUSES = [
   "PENDING",
