@@ -1,6 +1,7 @@
 import type { Metadata } from "next"
 import { Suspense } from "react"
 
+import { PageHeader } from "@/components/shared/page-header"
 import { parsePage } from "@/lib/pagination"
 
 import { TenantReviews, TenantReviewsSkeleton } from "./_components/tenant-reviews"
@@ -22,7 +23,7 @@ async function ReviewsList({
 export default function ReviewsPage({ searchParams }: PageProps<"/dashboard/reviews">) {
   return (
     <section className="flex flex-col gap-6">
-      <h1 className="text-2xl font-semibold tracking-tight">Reviews</h1>
+      <PageHeader title="Reviews" />
       {/* A page change jumps here, to the first card */}
       <div id="reviews" className="jump-target-4">
         <Suspense fallback={<TenantReviewsSkeleton />}>

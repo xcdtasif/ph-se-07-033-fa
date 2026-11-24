@@ -1,5 +1,6 @@
 import { Suspense, type ComponentType, type ReactNode } from "react"
 
+import { PageHeader } from "@/components/shared/page-header"
 import { parseRequestStatus, RequestStatusFilter } from "@/components/shared/request-status-filter"
 import { requestsHref } from "@/lib/dashboard"
 import { parsePage } from "@/lib/pagination"
@@ -44,7 +45,7 @@ export function RequestsPage(props: RequestsPageProps) {
 
   return (
     <section className="flex flex-col gap-6">
-      <h1 className="text-2xl font-semibold tracking-tight">Requests</h1>
+      <PageHeader title="Requests" />
       <Suspense
         fallback={
           <div className="flex flex-col gap-6" aria-hidden="true">

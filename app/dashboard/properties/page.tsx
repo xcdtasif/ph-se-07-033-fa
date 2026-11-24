@@ -2,6 +2,7 @@ import type { Metadata } from "next"
 import Link from "next/link"
 import { Suspense } from "react"
 
+import { PageHeader } from "@/components/shared/page-header"
 import {
   parsePropertyFilter,
   PropertyStatusFilter,
@@ -56,15 +57,17 @@ function PropertiesPageSkeleton() {
 export default function PropertiesPage({ searchParams }: PageProps<"/dashboard/properties">) {
   return (
     <section className="flex flex-col gap-6">
-      <div className="flex items-center justify-between gap-4">
-        <h1 className="text-2xl font-semibold tracking-tight">Properties</h1>
-        <Link
-          href="/dashboard/properties/add"
-          className={buttonVariants({ size: "sm", className: "text-sm" })}
-        >
-          Add property
-        </Link>
-      </div>
+      <PageHeader
+        title="Properties"
+        action={
+          <Link
+            href="/dashboard/properties/add"
+            className={buttonVariants({ size: "sm", className: "text-sm" })}
+          >
+            Add property
+          </Link>
+        }
+      />
       <Suspense fallback={<PropertiesPageSkeleton />}>
         <PropertiesList searchParams={searchParams} />
       </Suspense>

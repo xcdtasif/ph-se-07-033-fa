@@ -2,6 +2,7 @@ import type { Metadata } from "next"
 import { Suspense } from "react"
 
 import { ApiError } from "@/components/shared/api-error"
+import { PageHeader } from "@/components/shared/page-header"
 import { getCategories } from "@/lib/categories"
 
 import { updatePropertyAction } from "../../_actions/property-actions"
@@ -63,12 +64,14 @@ async function EditProperty({ params }: EditPageProps) {
 export default function EditPropertyPage({ params }: PageProps<"/dashboard/properties/[id]/edit">) {
   return (
     <section className="mx-auto flex w-full max-w-lg flex-col gap-6">
-      <div className="flex items-center justify-between gap-4">
-        <h1 className="text-2xl font-semibold tracking-tight">Edit property</h1>
-        <Suspense fallback={<div className="skeleton h-7 w-28 rounded-lg" aria-hidden="true" />}>
-          <DeleteButton params={params} />
-        </Suspense>
-      </div>
+      <PageHeader
+        title="Edit property"
+        action={
+          <Suspense fallback={<div className="skeleton h-7 w-28 rounded-lg" aria-hidden="true" />}>
+            <DeleteButton params={params} />
+          </Suspense>
+        }
+      />
       <Suspense fallback={<PropertyFormSkeleton />}>
         <EditProperty params={params} />
       </Suspense>

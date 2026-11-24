@@ -1,10 +1,10 @@
-import { ArrowLeft, MapPin } from "lucide-react"
+import { MapPin } from "lucide-react"
 import type { Metadata } from "next"
-import Link from "next/link"
 import { notFound } from "next/navigation"
 import { Suspense } from "react"
 
 import { ApiError } from "@/components/shared/api-error"
+import { PageHeader } from "@/components/shared/page-header"
 import { propertyStatusLabel } from "@/components/shared/property-status-badge"
 import { SkeletonText } from "@/components/shared/skeleton-text"
 import { Card, CardContent } from "@/components/ui/card"
@@ -64,7 +64,7 @@ async function PropertyDetails({ params, searchParams }: PageProps<"/properties/
           <p className="text-muted-foreground text-xs font-medium tracking-wide uppercase">
             {category.name}
           </p>
-          <h1 className="text-2xl font-semibold tracking-tight sm:text-3xl">{name}</h1>
+          <h1 className="text-2xl font-semibold tracking-tight">{name}</h1>
           <p className="text-muted-foreground flex items-center gap-1 text-sm">
             <MapPin className="size-4 shrink-0" aria-hidden="true" />
             {location}
@@ -74,9 +74,10 @@ async function PropertyDetails({ params, searchParams }: PageProps<"/properties/
 
       {/*
       Sticks at the same offset it starts at, so it never shifts while scrolling:
-      navbar (3.5rem + 1px border), main's top padding (2rem), back link (1.25rem), gap (2rem)
+      navbar (3.5rem + 1px border), main's top padding (2rem), the back link's row (2rem, as tall
+      as a page heading), gap (2rem)
       */}
-      <aside className="lg:sticky lg:top-35.25 lg:col-start-2 lg:row-span-2 lg:row-start-1 lg:self-start">
+      <aside className="lg:sticky lg:top-38.25 lg:col-start-2 lg:row-span-2 lg:row-start-1 lg:self-start">
         <Card>
           <CardContent className="flex flex-col gap-4">
             <p>
@@ -162,7 +163,7 @@ function PropertyDetailsSkeleton() {
         </div>
         <div className="flex flex-col gap-2">
           <SkeletonText className="w-24 text-xs" />
-          <SkeletonText className="w-2/3 text-2xl sm:text-3xl" />
+          <SkeletonText className="w-2/3 text-2xl" />
           <SkeletonText className="w-48 text-sm" />
         </div>
       </div>
@@ -204,13 +205,7 @@ function PropertyDetailsSkeleton() {
 export default function PropertyPage(props: PageProps<"/properties/[id]">) {
   return (
     <div className="flex flex-col gap-8">
-      <Link
-        href="/properties"
-        className="text-muted-foreground hover:text-foreground flex w-fit items-center gap-1 text-sm"
-      >
-        <ArrowLeft className="size-4" aria-hidden="true" />
-        All properties
-      </Link>
+      <PageHeader back={{ href: "/properties", label: "All properties" }} />
       <Suspense fallback={<PropertyDetailsSkeleton />}>
         <PropertyDetails {...props} />
       </Suspense>

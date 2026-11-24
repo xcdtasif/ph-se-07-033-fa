@@ -1,4 +1,3 @@
-import { ArrowLeft } from "lucide-react"
 import type { Metadata } from "next"
 import Link from "next/link"
 import { Suspense } from "react"
@@ -7,6 +6,7 @@ import {
   LandlordRequests,
   LandlordRequestsSkeleton,
 } from "@/app/dashboard/requests/_components/landlord-requests"
+import { PageHeader } from "@/components/shared/page-header"
 import { parseRequestStatus, RequestStatusFilter } from "@/components/shared/request-status-filter"
 import { buttonVariants } from "@/components/ui/button"
 import { parsePage } from "@/lib/pagination"
@@ -117,21 +117,16 @@ own pages. A new page keeps the current cards until the next page swaps in.
 export default function OwnPropertyPage(props: OwnPropertyPageProps) {
   return (
     <div className="flex flex-col gap-6">
-      {/* The page has no visible heading; the sections' headings sit under this one */}
-      <h1 className="sr-only">Property requests and reviews</h1>
-      {/* As tall as the other pages' heading, so the button sits where theirs do */}
-      <div className="flex h-8 items-center justify-between gap-4">
-        <Link
-          href="/dashboard/properties"
-          className="text-muted-foreground hover:text-foreground flex w-fit items-center gap-1 text-sm"
-        >
-          <ArrowLeft className="size-4" aria-hidden="true" />
-          All properties
-        </Link>
-        <Suspense fallback={<div className="skeleton h-7 w-24 rounded-lg" aria-hidden="true" />}>
-          <ViewListing params={props.params} />
-        </Suspense>
-      </div>
+      <PageHeader
+        // No visible heading; the sections' headings sit under this one
+        title="Property requests and reviews"
+        back={{ href: "/dashboard/properties", label: "All properties" }}
+        action={
+          <Suspense fallback={<div className="skeleton h-7 w-24 rounded-lg" aria-hidden="true" />}>
+            <ViewListing params={props.params} />
+          </Suspense>
+        }
+      />
       <div className="flex flex-col gap-10">
         <section className="flex flex-col gap-4">
           <h2 className="text-lg font-semibold tracking-tight">Requests</h2>

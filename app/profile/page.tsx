@@ -2,6 +2,7 @@ import type { Metadata } from "next"
 import { Suspense } from "react"
 
 import { ApiError } from "@/components/shared/api-error"
+import { PageHeader } from "@/components/shared/page-header"
 import { SkeletonText } from "@/components/shared/skeleton-text"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { getCurrentUser } from "@/lib/auth-fetch"
@@ -97,7 +98,7 @@ function ProfileDetailsSkeleton() {
 export default function ProfilePage() {
   return (
     <section className="mx-auto flex w-full max-w-lg flex-col gap-6">
-      <h1 className="text-2xl font-semibold tracking-tight">Profile</h1>
+      <PageHeader title="Profile" />
       <Suspense fallback={<ProfileDetailsSkeleton />}>
         <ProfileDetails />
       </Suspense>

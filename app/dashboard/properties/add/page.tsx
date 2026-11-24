@@ -1,6 +1,7 @@
 import type { Metadata } from "next"
 
 import { ApiError } from "@/components/shared/api-error"
+import { PageHeader } from "@/components/shared/page-header"
 import { getCategories } from "@/lib/categories"
 
 import { createPropertyAction } from "../_actions/property-actions"
@@ -17,7 +18,7 @@ export default async function AddPropertyPage() {
 
   return (
     <section className="mx-auto flex w-full max-w-lg flex-col gap-6">
-      <h1 className="text-2xl font-semibold tracking-tight">Add property</h1>
+      <PageHeader title="Add property" />
       {categories.success ? (
         <div className="bg-card rounded-xl border p-4">
           <PropertyForm

@@ -4,6 +4,7 @@ import Link from "next/link"
 import { Suspense } from "react"
 
 import { ApiError } from "@/components/shared/api-error"
+import { PageHeader } from "@/components/shared/page-header"
 import { SkeletonText } from "@/components/shared/skeleton-text"
 import { buttonVariants } from "@/components/ui/button"
 import { Card, CardContent } from "@/components/ui/card"
@@ -150,7 +151,7 @@ function PaymentResultSkeleton() {
 export default function PaymentSuccessPage({ searchParams }: PageProps<"/payments/success">) {
   return (
     <section className="mx-auto flex w-full max-w-lg flex-col gap-6">
-      <h1 className="text-2xl font-semibold tracking-tight">Payment</h1>
+      <PageHeader title="Payment" />
       {/* Screen readers hear the new status when polling swaps the card */}
       <div aria-live="polite">
         <Suspense fallback={<PaymentResultSkeleton />}>

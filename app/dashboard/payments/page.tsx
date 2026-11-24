@@ -1,6 +1,7 @@
 import type { Metadata } from "next"
 import { Suspense } from "react"
 
+import { PageHeader } from "@/components/shared/page-header"
 import { parsePage } from "@/lib/pagination"
 
 import { TenantPayments, TenantPaymentsSkeleton } from "./_components/tenant-payments"
@@ -22,7 +23,7 @@ async function PaymentsTable({
 export default function PaymentsPage({ searchParams }: PageProps<"/dashboard/payments">) {
   return (
     <section className="flex flex-col gap-6">
-      <h1 className="text-2xl font-semibold tracking-tight">Payments</h1>
+      <PageHeader title="Payments" />
       {/* A page change jumps here, to the top of the table */}
       <div id="payments" className="jump-target-4">
         <Suspense fallback={<TenantPaymentsSkeleton />}>

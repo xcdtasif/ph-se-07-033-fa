@@ -3,6 +3,7 @@ import Link from "next/link"
 import { Suspense } from "react"
 
 import { ApiError } from "@/components/shared/api-error"
+import { PageHeader } from "@/components/shared/page-header"
 import { Pagination } from "@/components/shared/pagination"
 import { PropertyGrid, PropertyGridSkeleton } from "@/components/shared/property-grid"
 import { SkeletonText } from "@/components/shared/skeleton-text"
@@ -144,7 +145,7 @@ async function PropertiesView({ searchParams }: Pick<PageProps<"/properties">, "
 export default function PropertiesPage({ searchParams }: PageProps<"/properties">) {
   return (
     <div className="flex flex-col gap-6">
-      <h1 className="text-2xl font-semibold tracking-tight">Properties</h1>
+      <PageHeader title="Properties" />
       <Suspense
         fallback={
           <>
