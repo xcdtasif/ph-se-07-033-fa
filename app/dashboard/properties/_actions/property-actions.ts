@@ -1,25 +1,13 @@
 "use server"
 
-import { refresh, updateTag } from "next/cache"
+import { refresh } from "next/cache"
 import { z } from "zod"
 
 import { authFetch } from "@/lib/auth-fetch"
 import { formText, toFormError, type FormState } from "@/lib/form"
-import { PROPERTIES_TAG, propertyTag } from "@/lib/properties"
+import { expirePropertyCaches } from "@/lib/properties"
 
 import { propertySchema, type PropertyField } from "../_schemas/property-schema"
-
-/*
-After a change, the public list and the property's page fetch it afresh on the next visit
-instead of showing their cached copy, e.g. a removed photo
-*/
-const expirePropertyCaches = (propertyId?: string) => {
-  updateTag(PROPERTIES_TAG)
-
-  if (propertyId) {
-    updateTag(propertyTag(propertyId))
-  }
-}
 
 /*
 Marking a property unavailable rejects its pending requests. The backend refuses a reserved or

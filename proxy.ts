@@ -22,6 +22,13 @@ const PROTECTED_ROUTES: { prefix: string; roles: readonly UserRole[] }[] = [
   { prefix: "/profile", roles: USER_ROLES },
 ]
 
+/*
+Dashboard pages that several roles share at one URL. Each role's version is its own page at
+`<path>/<role>` (e.g. `/dashboard/requests/landlord`), which the proxy shows in place of the
+shared URL, so each prerenders a loading state that matches its own content
+*/
+const ROLE_PAGES = ["/dashboard/requests"]
+
 // Refresh a little early so the token doesn't expire while the page renders
 const EXPIRY_MARGIN_MS = 10_000
 
@@ -128,6 +135,13 @@ const readSession = async (request: NextRequest): Promise<Session> => {
 const redirectFor = (request: NextRequest, role: UserRole | null): URL | null => {
   const { pathname, search, searchParams } = request.nextUrl
 
+  // A role's own version is reached through the shared URL only
+  const shared = ROLE_PAGES.find((page) => pathname.startsWith(`${page}/`))
+
+  if (shared) {
+    return new URL(`${shared}${search}`, request.url)
+  }
+
   if (isGuestOnly(pathname)) {
     return role ? new URL(safeRedirectPath(searchParams.get("redirectTo")), request.url) : null
   }
@@ -152,6 +166,15 @@ const redirectFor = (request: NextRequest, role: UserRole | null): URL | null =>
   return null
 }
 
+// The role's own version of a shared page, or null to show the requested page
+const rewriteFor = (request: NextRequest, role: UserRole | null): URL | null => {
+  const { pathname, search } = request.nextUrl
+
+  return role && ROLE_PAGES.includes(pathname)
+    ? new URL(`${pathname}/${role.toLowerCase()}${search}`, request.url)
+    : null
+}
+
 export async function proxy(request: NextRequest) {
   const { role, refreshed, cleared } = await readSession(request)
   const redirectUrl = redirectFor(request, role)
@@ -167,9 +190,12 @@ export async function proxy(request: NextRequest) {
     }
   }
 
+  const rewriteUrl = redirectUrl ? null : rewriteFor(request, role)
   const response = redirectUrl
     ? NextResponse.redirect(redirectUrl)
-    : NextResponse.next({ request: { headers: request.headers } })
+    : rewriteUrl
+      ? NextResponse.rewrite(rewriteUrl, { request: { headers: request.headers } })
+      : NextResponse.next({ request: { headers: request.headers } })
 
   for (const { name, value, options } of refreshed ?? []) {
     response.cookies.set(name, value, options)

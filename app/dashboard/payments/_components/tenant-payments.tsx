@@ -1,7 +1,6 @@
 import Link from "next/link"
 import type { ReactNode } from "react"
 
-import { requestsHref } from "@/app/dashboard/requests/_components/tenant-requests"
 import { ApiError } from "@/components/shared/api-error"
 import { Pagination } from "@/components/shared/pagination"
 import { SkeletonText } from "@/components/shared/skeleton-text"
@@ -16,6 +15,7 @@ import {
   TableRow,
 } from "@/components/ui/table"
 import { authFetch } from "@/lib/auth-fetch"
+import { requestsHref } from "@/lib/dashboard"
 import { formatAmount, formatShortDateTime } from "@/lib/format"
 import type { Payment, PaymentStatus, PaymentType } from "@/lib/types"
 

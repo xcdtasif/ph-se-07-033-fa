@@ -1,11 +1,24 @@
-import { cacheLife, cacheTag } from "next/cache"
+import { cacheLife, cacheTag, updateTag } from "next/cache"
 
 import { apiFetch } from "@/lib/api"
 import type { Property, PropertyReview } from "@/lib/types"
 
 // The cached list pages, and one property's page; the landlord's changes expire them
-export const PROPERTIES_TAG = "properties"
-export const propertyTag = (id: string) => `property:${id}`
+const PROPERTIES_TAG = "properties"
+const propertyTag = (id: string) => `property:${id}`
+
+/*
+For server actions only. After a change, the public list and the property's page fetch it
+afresh on the next visit instead of showing their cached copy, e.g. a removed photo or a
+property that is now reserved
+*/
+export const expirePropertyCaches = (propertyId?: string) => {
+  updateTag(PROPERTIES_TAG)
+
+  if (propertyId) {
+    updateTag(propertyTag(propertyId))
+  }
+}
 
 /*
 Public property reads, cached across requests for a few minutes. A failure is

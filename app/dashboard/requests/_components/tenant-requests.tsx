@@ -9,6 +9,7 @@ import { RequestStatusBadge, requestStatusLabel } from "@/components/shared/requ
 import { SkeletonText } from "@/components/shared/skeleton-text"
 import { buttonVariants } from "@/components/ui/button"
 import { authFetch } from "@/lib/auth-fetch"
+import { requestsHref } from "@/lib/dashboard"
 import { formatDate, formatMoney } from "@/lib/format"
 import type { RentalRequest, RequestStatus } from "@/lib/types"
 
@@ -17,23 +18,6 @@ import { PayDepositButton } from "./pay-deposit-button"
 import { ReviewDialog } from "./review-dialog"
 
 const REQUESTS_PAGE_SIZE = 6
-
-// This page's URL for a status filter and page, leaving defaults out of the query
-export const requestsHref = (status?: RequestStatus, page = 1) => {
-  const query = new URLSearchParams()
-
-  if (status) {
-    query.set("status", status)
-  }
-
-  if (page > 1) {
-    query.set("page", String(page))
-  }
-
-  const search = query.toString()
-
-  return search ? `/dashboard/requests?${search}` : "/dashboard/requests"
-}
 
 // The backend allows cancelling only these
 const CANCELLABLE: RequestStatus[] = ["PENDING", "APPROVED"]

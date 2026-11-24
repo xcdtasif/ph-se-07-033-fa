@@ -1,6 +1,5 @@
 import Link from "next/link"
 
-import { requestsHref } from "@/app/dashboard/requests/_components/tenant-requests"
 import { ApiError } from "@/components/shared/api-error"
 import { HiddenBadge } from "@/components/shared/hidden-badge"
 import { Pagination } from "@/components/shared/pagination"
@@ -8,15 +7,12 @@ import { SkeletonText } from "@/components/shared/skeleton-text"
 import { Stars } from "@/components/shared/stars"
 import { buttonVariants } from "@/components/ui/button"
 import { authFetch } from "@/lib/auth-fetch"
+import { requestsHref, reviewsHref } from "@/lib/dashboard"
 import { formatShortDate } from "@/lib/format"
 import type { TenantReview } from "@/lib/types"
 import { cn } from "@/lib/utils"
 
 const REVIEWS_PAGE_SIZE = 6
-
-// This page's URL for a page, leaving the first page out of the query
-const reviewsHref = (page = 1) =>
-  page > 1 ? `/dashboard/reviews?page=${page}` : "/dashboard/reviews"
 
 /*
 A card like the property page's reviews: the rating line first, then the property in place of

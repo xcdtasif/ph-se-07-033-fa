@@ -2,8 +2,8 @@ import { CircleSlash } from "lucide-react"
 import type { Metadata } from "next"
 import Link from "next/link"
 
-import { requestsHref } from "@/app/dashboard/requests/_components/tenant-requests"
 import { buttonVariants } from "@/components/ui/button"
+import { requestsHref } from "@/lib/dashboard"
 
 import { PaymentNote, PaymentOutcome } from "../_components/payment-outcome"
 

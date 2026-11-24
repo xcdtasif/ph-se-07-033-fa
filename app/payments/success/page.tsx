@@ -3,12 +3,12 @@ import type { Metadata } from "next"
 import Link from "next/link"
 import { Suspense } from "react"
 
-import { requestsHref } from "@/app/dashboard/requests/_components/tenant-requests"
 import { ApiError } from "@/components/shared/api-error"
 import { SkeletonText } from "@/components/shared/skeleton-text"
 import { buttonVariants } from "@/components/ui/button"
 import { Card, CardContent } from "@/components/ui/card"
 import { authFetch } from "@/lib/auth-fetch"
+import { requestsHref } from "@/lib/dashboard"
 import { formatMoney } from "@/lib/format"
 import type { Payment } from "@/lib/types"
 
