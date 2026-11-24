@@ -33,11 +33,6 @@ async function ProfileDetails() {
   return (
     <>
       <Card>
-        <CardHeader>
-          <CardTitle>
-            <h2>Profile</h2>
-          </CardTitle>
-        </CardHeader>
         <CardContent>
           <dl className="grid grid-cols-[auto_1fr] gap-x-6 gap-y-2 text-sm">
             {details.map(({ label, value }) => (
@@ -69,9 +64,6 @@ function ProfileDetailsSkeleton() {
   return (
     <>
       <Card aria-hidden="true">
-        <CardHeader>
-          <SkeletonText className="w-20 text-base leading-snug" />
-        </CardHeader>
         <CardContent className="flex flex-col gap-2">
           {Array.from({ length: 4 }, (_, index) => (
             <SkeletonText key={index} />
