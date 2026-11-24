@@ -4,26 +4,46 @@ import { Search } from "lucide-react"
 import { useRouter } from "next/navigation"
 import { useEffect, useRef, useState, useTransition } from "react"
 
-import { useFadeWhilePending } from "@/components/shared/scroll-link"
 import { Input } from "@/components/ui/input"
 
-import { usersHref, type UserFilter } from "./user-filter"
+import { useFadeWhilePending } from "./scroll-link"
 
 // Typing waits for a pause this long before searching; Enter searches at once
 const TYPING_DELAY = 400
 
-type UserSearchProps = {
-  filter?: UserFilter
+type SearchBoxProps = {
+  // The input's id and accessible name, e.g. "Search users"
+  id: string
+  label: string
+  placeholder: string
+  // This page's URL for the current filter, from the first page, without a search
+  href: string
   // The search in the URL
   search?: string
+  // The id of the list it searches, faded while results load
+  listId: string
+}
+
+// The URL for a search: `href` with `?search=` added, or `href` itself for an empty one
+const searchHref = (href: string, search: string) => {
+  const [path, query = ""] = href.split("?")
+  const params = new URLSearchParams(query)
+
+  if (search) {
+    params.set("search", search)
+  }
+
+  const text = params.toString()
+
+  return text ? `${path}?${text}` : path
 }
 
 /*
-Searches names and emails as the admin types, replacing the URL so Back leaves the page instead
-of stepping through each keystroke. The text is kept in state, not remounted per URL, so typing
-keeps focus while results load; the table's current rows stay, faded, until the new ones arrive.
+Searches as the admin types, replacing the URL so Back leaves the page instead of stepping
+through each keystroke. The text is kept in state, not remounted per URL, so typing keeps focus
+while results load; the list's current rows stay, faded, until the new ones arrive.
 */
-export function UserSearch({ filter, search = "" }: UserSearchProps) {
+export function SearchBox({ id, label, placeholder, href, search = "", listId }: SearchBoxProps) {
   const router = useRouter()
   const [pending, startTransition] = useTransition()
   const [value, setValue] = useState(search)
@@ -32,7 +52,7 @@ export function UserSearch({ filter, search = "" }: UserSearchProps) {
   const [seen, setSeen] = useState(search)
   const timer = useRef<ReturnType<typeof setTimeout>>(undefined)
 
-  useFadeWhilePending("users", pending)
+  useFadeWhilePending(listId, pending)
 
   // Back, Forward or a link changed the URL: show its search, unless it's the one just typed
   if (search !== seen) {
@@ -56,9 +76,7 @@ export function UserSearch({ filter, search = "" }: UserSearchProps) {
     }
 
     setApplied(next)
-    startTransition(() =>
-      router.replace(usersHref({ filter, search: next || undefined }), { scroll: false }),
-    )
+    startTransition(() => router.replace(searchHref(href, next), { scroll: false }))
   }
 
   return (
@@ -70,17 +88,17 @@ export function UserSearch({ filter, search = "" }: UserSearchProps) {
         apply(value)
       }}
     >
-      <label htmlFor="user-search" className="sr-only">
-        Search users
+      <label htmlFor={id} className="sr-only">
+        {label}
       </label>
       <Search
         className="text-muted-foreground pointer-events-none absolute top-1/2 left-2.5 size-4 -translate-y-1/2"
         aria-hidden="true"
       />
       <Input
-        id="user-search"
+        id={id}
         type="search"
-        placeholder="Search by name or email"
+        placeholder={placeholder}
         maxLength={100}
         autoComplete="off"
         value={value}

@@ -25,9 +25,10 @@ const PROTECTED_ROUTES: { prefix: string; roles: readonly UserRole[] }[] = [
 /*
 Dashboard pages that several roles share at one URL. Each role's version is its own page at
 `<path>/<role>` (e.g. `/dashboard/requests/landlord`), which the proxy shows in place of the
-shared URL, so each prerenders a loading state that matches its own content
+shared URL, so each prerenders a loading state that matches its own content. Other pages under
+the path (the landlord's `/dashboard/properties/<id>`) are left alone
 */
-const ROLE_PAGES = ["/dashboard/overview", "/dashboard/requests"]
+const ROLE_PAGES = ["/dashboard/overview", "/dashboard/properties", "/dashboard/requests"]
 
 // Refresh a little early so the token doesn't expire while the page renders
 const EXPIRY_MARGIN_MS = 10_000
@@ -51,7 +52,9 @@ const roleHome = (role: UserRole) => DASHBOARD_SECTIONS[role][0]?.href ?? "/prof
 // `/dashboard` itself, or a dashboard page the role doesn't have
 const isOtherDashboard = (pathname: string, role: UserRole) =>
   matches(pathname, "/dashboard") &&
-  !DASHBOARD_SECTIONS[role].some((section) => matches(pathname, section.href))
+  !DASHBOARD_SECTIONS[role].some((section) =>
+    section.exact ? pathname === section.href : matches(pathname, section.href),
+  )
 
 // The role in an unexpired access token, or null
 const roleFromToken = (token: string): UserRole | null => {
@@ -136,7 +139,9 @@ const redirectFor = (request: NextRequest, role: UserRole | null): URL | null =>
   const { pathname, search, searchParams } = request.nextUrl
 
   // A role's own version is reached through the shared URL only
-  const shared = ROLE_PAGES.find((page) => pathname.startsWith(`${page}/`))
+  const shared = ROLE_PAGES.find((page) =>
+    USER_ROLES.some((option) => matches(pathname, `${page}/${option.toLowerCase()}`)),
+  )
 
   if (shared) {
     return new URL(`${shared}${search}`, request.url)

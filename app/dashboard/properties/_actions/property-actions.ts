@@ -111,3 +111,28 @@ export const updatePropertyAction = async (propertyId: string, formData: FormDat
     method: "PATCH",
     propertyId,
   })
+
+/*
+The admin hides or unhides a property, which takes it off or puts it back on the public pages,
+so their cached copies are expired. Success shows the change; a 404 means the list is stale, so
+it shows the current one
+*/
+export const setPropertyHiddenAction = async (
+  propertyId: string,
+  isHidden: boolean,
+): Promise<FormState<never>> => {
+  const result = await authFetch(`/api/admin/properties/${encodeURIComponent(propertyId)}`, {
+    method: "PATCH",
+    body: { isHidden },
+  })
+
+  if (result.success) {
+    expirePropertyCaches(propertyId)
+  }
+
+  if (result.success || result.statusCode === 404) {
+    refresh()
+  }
+
+  return result.success ? { success: true, message: result.message } : toFormError(result)
+}

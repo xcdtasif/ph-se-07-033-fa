@@ -2,10 +2,10 @@ import type { Metadata } from "next"
 import { Suspense } from "react"
 
 import { PageHeader } from "@/components/shared/page-header"
-import { parsePage } from "@/lib/pagination"
+import { SearchBox } from "@/components/shared/search-box"
+import { parsePage, parseSearch } from "@/lib/pagination"
 
-import { parseUserFilter, parseUserSearch, UserFilterStrip } from "./_components/user-filter"
-import { UserSearch } from "./_components/user-search"
+import { parseUserFilter, usersHref, UserFilterStrip } from "./_components/user-filter"
 import { UsersTable, UsersTableSkeleton } from "./_components/users-table"
 
 export const metadata: Metadata = {
@@ -20,12 +20,19 @@ async function UsersList({ searchParams }: Pick<PageProps<"/dashboard/users">, "
   const query = await searchParams
   const page = parsePage(query.page)
   const filter = parseUserFilter(query.filter)
-  const search = parseUserSearch(query.search)
+  const search = parseSearch(query.search)
 
   return (
     <div className="flex flex-col gap-6">
       <div className="flex flex-col gap-4">
-        <UserSearch filter={filter} search={search} />
+        <SearchBox
+          id="user-search"
+          label="Search users"
+          placeholder="Search by name or email"
+          href={usersHref({ filter })}
+          search={search}
+          listId="users"
+        />
         <UserFilterStrip filter={filter} search={search} />
       </div>
       {/* A page change jumps here, to the first row */}

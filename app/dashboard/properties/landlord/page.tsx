@@ -8,13 +8,10 @@ import {
   PropertyStatusFilter,
 } from "@/components/shared/property-status-filter"
 import { buttonVariants } from "@/components/ui/button"
+import { propertiesHref } from "@/lib/dashboard"
 import { parsePage } from "@/lib/pagination"
 
-import {
-  LandlordProperties,
-  LandlordPropertiesSkeleton,
-  propertiesHref,
-} from "./_components/landlord-properties"
+import { LandlordProperties, LandlordPropertiesSkeleton } from "../_components/landlord-properties"
 
 export const metadata: Metadata = {
   title: "Properties",
@@ -26,7 +23,7 @@ faded, until the next ones swap in (a transition), so nothing above them moves.
 */
 async function PropertiesList({
   searchParams,
-}: Pick<PageProps<"/dashboard/properties">, "searchParams">) {
+}: Pick<PageProps<"/dashboard/properties/landlord">, "searchParams">) {
   const query = await searchParams
   const page = parsePage(query.page)
   const filter = parsePropertyFilter(query.status)
@@ -35,7 +32,7 @@ async function PropertiesList({
     <div className="flex flex-col gap-6">
       <PropertyStatusFilter
         filter={filter}
-        href={(option) => propertiesHref(option)}
+        href={(option) => propertiesHref({ filter: option })}
         listId="properties"
       />
       {/* A page change jumps here, to the first card */}
@@ -58,7 +55,10 @@ function PropertiesPageSkeleton() {
   )
 }
 
-export default function PropertiesPage({ searchParams }: PageProps<"/dashboard/properties">) {
+// The landlord's own properties; the proxy shows it at /dashboard/properties
+export default function LandlordPropertiesPage({
+  searchParams,
+}: PageProps<"/dashboard/properties/landlord">) {
   return (
     <section className="flex flex-col gap-6">
       <PageHeader

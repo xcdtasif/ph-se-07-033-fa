@@ -4,13 +4,13 @@ import { ApiError } from "@/components/shared/api-error"
 import { SkeletonText } from "@/components/shared/skeleton-text"
 import { authFetch } from "@/lib/auth-fetch"
 import { requestsHref } from "@/lib/dashboard"
-import type { AdminRequest, Property, User } from "@/lib/types"
+import type { AdminProperty, AdminRequest, User } from "@/lib/types"
 
 import { StatCards, totalOf, type Stat } from "./stat-cards"
 
 type StatKey = "users" | "properties" | "pending"
 
-// The platform's health at a glance; a card opens its list once that page exists
+// The platform's health at a glance; each card opens its list
 const STATS: Stat<StatKey>[] = [
   {
     key: "users",
@@ -24,6 +24,7 @@ const STATS: Stat<StatKey>[] = [
     label: "Properties",
     icon: Building2,
     note: "All listings, in any status, hidden ones included",
+    href: "/dashboard/properties",
   },
   {
     key: "pending",
@@ -48,7 +49,7 @@ export function AdminOverviewSkeleton() {
 export async function AdminOverview() {
   const [users, properties, pending] = await Promise.all([
     authFetch<User[]>("/api/admin/users?limit=1"),
-    authFetch<Property[]>("/api/admin/properties?limit=1"),
+    authFetch<AdminProperty[]>("/api/admin/properties?limit=1"),
     authFetch<AdminRequest[]>("/api/admin/requests?limit=1&status=PENDING"),
   ])
 

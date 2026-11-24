@@ -181,12 +181,7 @@ export async function UsersTable({ page, filter, search }: UsersTableProps) {
             {/* Admins can't be banned; the button's focus ring needs room past the cell */}
             <TableCell className="overflow-visible!">
               {user.role !== "ADMIN" && (
-                <BanButton
-                  userId={user.id}
-                  name={user.name}
-                  role={user.role}
-                  isBanned={user.isBanned}
-                />
+                <BanButton userId={user.id} role={user.role} isBanned={user.isBanned} />
               )}
             </TableCell>
           </TableRow>

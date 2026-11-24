@@ -20,7 +20,6 @@ import { setUserBannedAction } from "../_actions/user-actions"
 
 type BanButtonProps = {
   userId: string
-  name: string
   role: Exclude<UserRole, "ADMIN">
   isBanned: boolean
 }
@@ -29,7 +28,7 @@ type BanButtonProps = {
 Unbanning happens at once. Banning asks first, since it logs the user out at once and, for a
 landlord, hides their properties from tenants.
 */
-export function BanButton({ userId, name, role, isBanned }: BanButtonProps) {
+export function BanButton({ userId, role, isBanned }: BanButtonProps) {
   const [open, setOpen] = useState(false)
   const [, formAction, pending] = useFormAction(
     () => setUserBannedAction(userId, role, !isBanned),
@@ -53,11 +52,11 @@ export function BanButton({ userId, name, role, isBanned }: BanButtonProps) {
       </DialogTrigger>
       <DialogContent className="sm:max-w-md">
         <DialogHeader>
-          <DialogTitle>Ban {name}?</DialogTitle>
+          <DialogTitle>Ban this user?</DialogTitle>
           <DialogDescription>
             {role === "LANDLORD"
-              ? "They'll be logged out at once, and their properties will be hidden from tenants until they're unbanned."
-              : "They'll be logged out at once and can't log in until they're unbanned."}
+              ? "They'll be logged out and their properties hidden until they're unbanned."
+              : "They'll be logged out and can't log in until they're unbanned."}
           </DialogDescription>
         </DialogHeader>
         <form action={formAction}>

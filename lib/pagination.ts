@@ -4,3 +4,10 @@ export const parsePage = (value: string | string[] | undefined) => {
 
   return Number.isInteger(page) && page > 1 ? page : 1
 }
+
+// `?search=` as the backend takes it: trimmed, 1 to 100 characters, undefined when empty
+export const parseSearch = (value: string | string[] | undefined) => {
+  const search = typeof value === "string" ? value.trim().slice(0, 100) : ""
+
+  return search || undefined
+}

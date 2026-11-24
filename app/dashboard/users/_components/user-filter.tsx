@@ -1,3 +1,4 @@
+import { BANNED_COLORS } from "@/components/shared/banned-colors"
 import { StatusFilter } from "@/components/shared/status-filter"
 import { Badge } from "@/components/ui/badge"
 import { USER_ROLES, type UserRole } from "@/lib/types"
@@ -14,7 +15,7 @@ const FILTERS: Record<UserFilter, { label: string; className: string }> = {
   ADMIN: { label: "Admin", className: "bg-violet-100 text-violet-800" },
   LANDLORD: { label: "Landlord", className: "bg-blue-100 text-blue-800" },
   TENANT: { label: "Tenant", className: "bg-amber-100 text-amber-800" },
-  BANNED: { label: "Banned", className: "bg-red-100 text-red-800" },
+  BANNED: { label: "Banned", className: BANNED_COLORS },
 }
 
 export const userFilterLabel = (filter: UserFilter) => FILTERS[filter].label
@@ -22,13 +23,6 @@ export const userFilterLabel = (filter: UserFilter) => FILTERS[filter].label
 // `?filter=` as a user filter, undefined (all) for anything else
 export const parseUserFilter = (value: string | string[] | undefined) =>
   USER_FILTERS.find((filter) => filter === value)
-
-// `?search=` as the backend takes it: trimmed, 1 to 100 characters, undefined when empty
-export const parseUserSearch = (value: string | string[] | undefined) => {
-  const search = typeof value === "string" ? value.trim().slice(0, 100) : ""
-
-  return search || undefined
-}
 
 // The backend's query for a filter and search: banned ones by themselves, a role without them
 export const usersQuery = (filter?: UserFilter, search?: string) => {

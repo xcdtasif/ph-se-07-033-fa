@@ -47,6 +47,11 @@ export type Property = {
   averageRating: number | null
 }
 
+// A property as the admin reads it: the landlord's email and ban too, no rating
+export type AdminProperty = Omit<Property, "landlord" | "reviewCount" | "averageRating"> & {
+  landlord: Pick<User, "id" | "name" | "email" | "isBanned">
+}
+
 // A review as the public property reviews list returns it: the tenant's name only
 export type PropertyReview = {
   id: string

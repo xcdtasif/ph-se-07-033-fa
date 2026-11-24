@@ -15,6 +15,7 @@ import { Rating } from "@/components/shared/rating"
 import { SkeletonText } from "@/components/shared/skeleton-text"
 import { buttonVariants } from "@/components/ui/button"
 import { authFetch } from "@/lib/auth-fetch"
+import { propertiesHref } from "@/lib/dashboard"
 import { formatDate, formatMoney } from "@/lib/format"
 import type { Property } from "@/lib/types"
 import { cn } from "@/lib/utils"
@@ -22,23 +23,6 @@ import { cn } from "@/lib/utils"
 import { AvailabilityButton } from "./availability-button"
 
 const PROPERTIES_PAGE_SIZE = 6
-
-// This page's URL for a filter and page, leaving defaults out of the query
-export const propertiesHref = (filter?: PropertyFilter, page = 1) => {
-  const query = new URLSearchParams()
-
-  if (filter) {
-    query.set("status", filter)
-  }
-
-  if (page > 1) {
-    query.set("page", String(page))
-  }
-
-  const search = query.toString()
-
-  return search ? `/dashboard/properties?${search}` : "/dashboard/properties"
-}
 
 /*
 A card like a request card: thumbnail with the status on its right, title (linking to the
@@ -190,7 +174,7 @@ export async function LandlordProperties({
           <>
             <p>There are no properties on this page.</p>
             <Link
-              href={propertiesHref(filter)}
+              href={propertiesHref({ filter })}
               className={buttonVariants({ variant: "outline", size: "sm", className: "text-sm" })}
             >
               Go to the first page
@@ -224,7 +208,7 @@ export async function LandlordProperties({
         label="Properties pagination"
         page={page}
         totalPages={totalPages}
-        href={(target) => propertiesHref(filter, target)}
+        href={(target) => propertiesHref({ filter, page: target })}
         scrollTo="properties"
       />
     </div>

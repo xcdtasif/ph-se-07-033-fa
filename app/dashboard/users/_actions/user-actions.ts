@@ -5,7 +5,7 @@ import { refresh } from "next/cache"
 import { authFetch } from "@/lib/auth-fetch"
 import { toFormError, type FormState } from "@/lib/form"
 import { expirePropertyCaches } from "@/lib/properties"
-import type { Property, User, UserRole } from "@/lib/types"
+import type { AdminProperty, User, UserRole } from "@/lib/types"
 
 // The backend's largest page
 const MAX_LIMIT = 50
@@ -18,7 +18,7 @@ const expireLandlordProperties = async (landlordId: string) => {
   expirePropertyCaches()
 
   for (let page = 1; ; page++) {
-    const result = await authFetch<Property[]>(
+    const result = await authFetch<AdminProperty[]>(
       `/api/admin/properties?page=${page}&limit=${MAX_LIMIT}&landlordId=${encodeURIComponent(landlordId)}`,
     )
 
