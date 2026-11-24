@@ -1,6 +1,7 @@
 import { cacheLife, cacheTag, updateTag } from "next/cache"
 
 import { apiFetch } from "@/lib/api"
+import { categoryTag } from "@/lib/categories"
 import type { Property, PropertyReview } from "@/lib/types"
 
 // The cached list pages, and one property's page; the landlord's changes expire them
@@ -44,13 +45,20 @@ export const getProperties = async (query: string) => {
   return result
 }
 
-// Any status, unless hidden: 404 for a hidden or missing property, 400 for a malformed id
+/*
+Any status, unless hidden: 404 for a hidden or missing property, 400 for a malformed id. Tagged
+with its category too, so renaming the category expires it
+*/
 export const getProperty = async (id: string) => {
   "use cache"
   cacheTag(propertyTag(id))
 
   const result = await apiFetch<Property>(`/api/properties/${encodeURIComponent(id)}`)
   cacheFor(result.success)
+
+  if (result.success) {
+    cacheTag(categoryTag(result.data.category.id))
+  }
 
   return result
 }

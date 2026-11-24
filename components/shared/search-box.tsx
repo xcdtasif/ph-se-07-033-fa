@@ -6,6 +6,7 @@ import { useEffect, useRef, useState, useTransition } from "react"
 
 import { Input } from "@/components/ui/input"
 import { NO_AUTOFILL } from "@/lib/form"
+import { cn } from "@/lib/utils"
 
 import { useFadeWhilePending } from "./scroll-link"
 
@@ -23,6 +24,8 @@ type SearchBoxProps = {
   search?: string
   // The id of the list it searches, faded while results load
   listId: string
+  // E.g. full width in a narrow column, in place of the usual 24rem
+  className?: string
 }
 
 // The URL for a search: `href` with `?search=` added, or `href` itself for an empty one
@@ -44,7 +47,15 @@ Searches as the admin types, replacing the URL so Back leaves the page instead o
 through each keystroke. The text is kept in state, not remounted per URL, so typing keeps focus
 while results load; the list's current rows stay, faded, until the new ones arrive.
 */
-export function SearchBox({ id, label, placeholder, href, search = "", listId }: SearchBoxProps) {
+export function SearchBox({
+  id,
+  label,
+  placeholder,
+  href,
+  search = "",
+  listId,
+  className,
+}: SearchBoxProps) {
   const router = useRouter()
   const [pending, startTransition] = useTransition()
   const [value, setValue] = useState(search)
@@ -83,7 +94,7 @@ export function SearchBox({ id, label, placeholder, href, search = "", listId }:
   return (
     <form
       role="search"
-      className="relative w-full max-w-sm"
+      className={cn("relative w-full max-w-sm", className)}
       onSubmit={(event) => {
         event.preventDefault()
         apply(value)

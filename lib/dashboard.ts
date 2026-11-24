@@ -28,6 +28,7 @@ export const DASHBOARD_SECTIONS: Record<UserRole, DashboardSection[]> = {
   ADMIN: [
     { href: "/dashboard/overview", label: "Overview" },
     { href: "/dashboard/users", label: "Users" },
+    { href: "/dashboard/categories", label: "Categories" },
     { href: "/dashboard/properties", label: "Properties", exact: true },
     { href: "/dashboard/requests", label: "Requests" },
     { href: "/dashboard/reviews", label: "Reviews" },
@@ -101,4 +102,21 @@ export const reviewsHref = ({
   const text = query.toString()
 
   return text ? `/dashboard/reviews?${text}` : "/dashboard/reviews"
+}
+
+// The categories page's URL for a search and page, leaving defaults out of the query
+export const categoriesHref = ({ search, page = 1 }: { search?: string; page?: number } = {}) => {
+  const query = new URLSearchParams()
+
+  if (search) {
+    query.set("search", search)
+  }
+
+  if (page > 1) {
+    query.set("page", String(page))
+  }
+
+  const text = query.toString()
+
+  return text ? `/dashboard/categories?${text}` : "/dashboard/categories"
 }
