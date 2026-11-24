@@ -13,7 +13,7 @@ function ErrorFrame({ title, children }: { title: string; children: ReactNode })
       role="alert"
       className="text-muted-foreground empty-state flex flex-col items-center gap-4"
     >
-      <h2 className="text-foreground text-lg font-semibold">{title}</h2>
+      <h2 className="text-lg font-semibold">{title}</h2>
       {children}
     </div>
   )

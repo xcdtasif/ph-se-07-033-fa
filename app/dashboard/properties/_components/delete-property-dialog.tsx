@@ -29,7 +29,9 @@ export function DeletePropertyDialog({ propertyId }: { propertyId: string }) {
 
   return (
     <Dialog open={open} onOpenChange={setOpen}>
-      <DialogTrigger render={<Button size="sm" className="text-sm" />}>Delete</DialogTrigger>
+      <DialogTrigger render={<Button size="sm" className="text-sm" />}>
+        Delete property
+      </DialogTrigger>
       <DialogContent className="sm:max-w-md">
         <DialogHeader>
           <DialogTitle>Delete this property?</DialogTitle>

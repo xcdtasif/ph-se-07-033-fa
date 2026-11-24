@@ -81,7 +81,7 @@ export default function EditPropertyPage({ params }: PageProps<"/dashboard/prope
     <section className="mx-auto flex w-full max-w-lg flex-col gap-6">
       <div className="flex items-center justify-between gap-4">
         <h1 className="text-2xl font-semibold tracking-tight">Edit property</h1>
-        <Suspense fallback={<div className="skeleton h-7 w-16 rounded-lg" aria-hidden="true" />}>
+        <Suspense fallback={<div className="skeleton h-7 w-28 rounded-lg" aria-hidden="true" />}>
           <DeleteButton params={params} />
         </Suspense>
       </div>

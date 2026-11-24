@@ -136,11 +136,12 @@ muted grey, so it shows on the page and on white cards alike.
 }
 
 /*
-An empty list's message box: on the page background, unlike a card, with a dashed border as
-dark as divider-dashed so it shows against the grey page
+An empty list's or a failed read's message box: on the page background, unlike a card, with a
+dashed border as dark as divider-dashed so it shows against the grey page. All its text is
+muted, headings included
 */
 @utility empty-state {
-  @apply border-foreground/25 rounded-xl border border-dashed p-8 text-center;
+  @apply border-foreground/25 text-muted-foreground rounded-xl border border-dashed p-8 text-center;
 }
 
 /* An inline text link: a grey underline that darkens on hover */

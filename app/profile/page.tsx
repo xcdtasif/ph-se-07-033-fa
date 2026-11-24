@@ -23,6 +23,7 @@ async function ProfileDetails() {
 
   const user = result.data
   const details = [
+    { label: "Name", value: user.name },
     { label: "Email", value: user.email },
     { label: "Role", value: user.role.charAt(0) + user.role.slice(1).toLowerCase() },
     { label: "Member since", value: formatDate(user.createdAt) },
@@ -33,7 +34,7 @@ async function ProfileDetails() {
       <Card>
         <CardHeader>
           <CardTitle>
-            <h2>Account</h2>
+            <h2>Profile</h2>
           </CardTitle>
         </CardHeader>
         <CardContent>
@@ -71,7 +72,7 @@ function ProfileDetailsSkeleton() {
           <SkeletonText className="w-20 text-base leading-snug" />
         </CardHeader>
         <CardContent className="flex flex-col gap-2">
-          {Array.from({ length: 3 }, (_, index) => (
+          {Array.from({ length: 4 }, (_, index) => (
             <SkeletonText key={index} />
           ))}
         </CardContent>
