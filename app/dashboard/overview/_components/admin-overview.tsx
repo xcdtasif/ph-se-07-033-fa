@@ -9,13 +9,14 @@ import { StatCards, totalOf, type Stat } from "./stat-cards"
 
 type StatKey = "users" | "properties" | "pending"
 
-// The platform's health at a glance; the cards open their lists once those pages exist
+// The platform's health at a glance; a card opens its list once that page exists
 const STATS: Stat<StatKey>[] = [
   {
     key: "users",
     label: "Users",
     icon: Users,
     note: "Tenants, landlords and admins, banned ones included",
+    href: "/dashboard/users",
   },
   {
     key: "properties",

@@ -16,13 +16,22 @@ const shortDateTimeFormat = new Intl.DateTimeFormat("en-GB", {
   timeZone: "Asia/Dhaka",
 })
 
+// Reads one part, e.g. the day, of the short date and time
+const shortParts = (iso: string) => {
+  const parts = shortDateTimeFormat.formatToParts(new Date(iso))
+  return (type: Intl.DateTimeFormatPartTypes) => parts.find((item) => item.type === type)?.value
+}
+
+// "31-12-99"
+export const formatShortDate = (iso: string) => {
+  const part = shortParts(iso)
+  return `${part("day")}-${part("month")}-${part("year")}`
+}
+
 // "31-12-99 09:09", on a 24-hour clock
 export const formatShortDateTime = (iso: string) => {
-  const parts = shortDateTimeFormat.formatToParts(new Date(iso))
-  const part = (type: Intl.DateTimeFormatPartTypes) =>
-    parts.find((item) => item.type === type)?.value
-
-  return `${part("day")}-${part("month")}-${part("year")} ${part("hour")}:${part("minute")}`
+  const part = shortParts(iso)
+  return `${formatShortDate(iso)} ${part("hour")}:${part("minute")}`
 }
 
 /*
