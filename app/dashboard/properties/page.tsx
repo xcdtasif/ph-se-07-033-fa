@@ -21,8 +21,8 @@ export const metadata: Metadata = {
 }
 
 /*
-Reads the URL, so it renders at request time. A new filter shows the skeleton again; a
-new page keeps the current cards until the next page swaps in, so nothing above moves.
+Reads the URL, so it renders at request time. A new status or page keeps the current cards,
+faded, until the next ones swap in (a transition), so nothing above them moves.
 */
 async function PropertiesList({
   searchParams,
@@ -33,10 +33,14 @@ async function PropertiesList({
 
   return (
     <div className="flex flex-col gap-6">
-      <PropertyStatusFilter filter={filter} href={(option) => propertiesHref(option)} />
+      <PropertyStatusFilter
+        filter={filter}
+        href={(option) => propertiesHref(option)}
+        listId="properties"
+      />
       {/* A page change jumps here, to the first card */}
       <div id="properties" className="jump-target-4">
-        <Suspense key={filter} fallback={<LandlordPropertiesSkeleton />}>
+        <Suspense fallback={<LandlordPropertiesSkeleton />}>
           <LandlordProperties page={page} filter={filter} />
         </Suspense>
       </div>

@@ -26,9 +26,10 @@ export const propertyFilterQuery = (filter?: PropertyFilter) =>
 type PropertyStatusFilterProps = {
   filter?: PropertyFilter
   href: (filter?: PropertyFilter) => string
+  listId: string
 }
 
-export function PropertyStatusFilter({ filter, href }: PropertyStatusFilterProps) {
+export function PropertyStatusFilter({ filter, href, listId }: PropertyStatusFilterProps) {
   return (
     <StatusFilter
       label="Filter properties by status"
@@ -39,6 +40,7 @@ export function PropertyStatusFilter({ filter, href }: PropertyStatusFilterProps
       statusColors={(option) =>
         option === "HIDDEN" ? HIDDEN_COLORS : propertyStatusColors(option)
       }
+      listId={listId}
     />
   )
 }

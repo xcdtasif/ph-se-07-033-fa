@@ -29,18 +29,17 @@ export function ScrollLink({ scrollTo, href, children, ...props }: ScrollLinkPro
       }}
     >
       {children}
-      <FadeWhilePending id={scrollTo} />
+      <FadeWhileLinkPending id={scrollTo} />
     </Link>
   )
 }
 
 /*
-Marks the list data-pending while this link's page loads, which fades its current cards
-(the jump-target-N class). Inside the link, as useLinkStatus requires.
+Marks the list with this id data-pending while `pending`, which fades its current cards (the
+jump-target-N class) until the next ones replace them. For any in-page change that keeps the
+current cards on screen instead of showing a skeleton: a page link, a status pill, a filter.
 */
-function FadeWhilePending({ id }: { id: string }) {
-  const { pending } = useLinkStatus()
-
+export function useFadeWhilePending(id: string, pending: boolean) {
   useEffect(() => {
     const list = document.getElementById(id)
 
@@ -52,6 +51,13 @@ function FadeWhilePending({ id }: { id: string }) {
 
     return () => list.removeAttribute("data-pending")
   }, [id, pending])
+}
+
+// Fades the list while the link it sits in loads; inside the link, as useLinkStatus requires
+export function FadeWhileLinkPending({ id }: { id: string }) {
+  const { pending } = useLinkStatus()
+
+  useFadeWhilePending(id, pending)
 
   return null
 }

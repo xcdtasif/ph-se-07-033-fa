@@ -155,10 +155,11 @@ muted, headings included
 }
 
 /*
-For the element that holds a list's cards and, below them, its page links. After a page link
-is clicked, the element fades while the next page loads (data-pending, set by ScrollLink;
-after a short delay so an instant swap doesn't flicker), then scrolls so its first card sits
-one card gap below the navbar. N is the list's gap between cards (gap-N). The page's scroll
+For the element that holds a list's cards and, below them, its page links. While a page link,
+a status pill or a filter loads the next cards, the element fades (data-pending, set through
+useFadeWhilePending in scroll-link.tsx; after a short delay so an instant swap doesn't
+flicker). After a page link it then scrolls so its first card sits one card gap below the
+navbar. N is the list's gap between cards (gap-N). The page's scroll
 padding already leaves room for the navbar plus main's 2rem top padding, so the margin swaps
 that 2rem for the gap. A page too short to scroll that far stops at its bottom.
 */

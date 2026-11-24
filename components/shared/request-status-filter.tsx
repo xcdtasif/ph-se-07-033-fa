@@ -11,9 +11,10 @@ type RequestStatusFilterProps = {
   status?: RequestStatus
   href: (status?: RequestStatus) => string
   showAll?: boolean
+  listId: string
 }
 
-export function RequestStatusFilter({ status, href, showAll }: RequestStatusFilterProps) {
+export function RequestStatusFilter({ status, href, showAll, listId }: RequestStatusFilterProps) {
   return (
     <StatusFilter
       label="Filter requests by status"
@@ -23,6 +24,7 @@ export function RequestStatusFilter({ status, href, showAll }: RequestStatusFilt
       statusLabel={requestStatusLabel}
       statusColors={requestStatusColors}
       showAll={showAll}
+      listId={listId}
     />
   )
 }

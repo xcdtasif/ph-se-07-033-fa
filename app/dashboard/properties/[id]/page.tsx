@@ -58,7 +58,7 @@ async function ViewListing({ params }: Pick<OwnPropertyPageProps, "params">) {
   ) : null
 }
 
-// The status strip, then that status's requests; a new status shows the skeleton again
+// The status strip, then that status's requests; a new status keeps the current cards, faded, until its own arrive
 async function Requests(props: OwnPropertyPageProps) {
   const { id, current } = await readPage(props)
   const { status } = current
@@ -70,10 +70,11 @@ async function Requests(props: OwnPropertyPageProps) {
         // A new status starts from its first page
         href={(option) => ownPropertyHref(id, { ...current, status: option, requestsPage: 1 })}
         showAll={false}
+        listId="requests"
       />
       {/* A page change jumps here, to the first card */}
       <div id="requests" className="jump-target-4">
-        <Suspense key={status} fallback={<LandlordRequestsSkeleton showProperty={false} />}>
+        <Suspense fallback={<LandlordRequestsSkeleton showProperty={false} />}>
           <LandlordRequests
             page={current.requestsPage}
             status={status}

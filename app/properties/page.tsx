@@ -122,19 +122,15 @@ async function PropertiesView({ searchParams }: Pick<PageProps<"/properties">, "
     return <ApiError error={categories} />
   }
 
-  // Without the page: a page change keeps the current cards until the next page is ready
-  const filtersQuery = toQueryString({ ...filters, page: 1 })
-
   return (
     <>
       <PropertyFiltersForm categories={categories.data} filters={filters} />
       {/*
-      A filter change gives a new key, so the skeleton shows while its results load. A page
-      change keeps the key, so the current cards stay until the next page swaps in (a
-      transition) and nothing above them moves.
+      A filter or page change keeps the current cards, faded, until the new results swap in (a
+      transition), so nothing above them moves
       */}
       <section aria-label="Results">
-        <Suspense key={`results?${filtersQuery}`} fallback={<PropertyResultsSkeleton />}>
+        <Suspense fallback={<PropertyResultsSkeleton />}>
           <PropertyResults filters={filters} />
         </Suspense>
       </section>

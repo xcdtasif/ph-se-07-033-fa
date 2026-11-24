@@ -3,6 +3,7 @@
 import { useRouter } from "next/navigation"
 import { useEffect, useRef, useState, useTransition, type ChangeEvent } from "react"
 
+import { useFadeWhilePending } from "@/components/shared/scroll-link"
 import { SkeletonText } from "@/components/shared/skeleton-text"
 import { Button } from "@/components/ui/button"
 import { Field, FieldError, FieldLabel } from "@/components/ui/field"
@@ -80,6 +81,8 @@ export function PropertyFiltersForm({ categories, filters }: PropertyFiltersForm
   ]
   const router = useRouter()
   const [pending, startTransition] = useTransition()
+  // The current results stay, faded, while the new ones load
+  useFadeWhilePending("results", pending)
   const [values, setValues] = useState(() => toValues(filters))
   const [rangeError, setRangeError] = useState(false)
   const timer = useRef<ReturnType<typeof setTimeout>>(undefined)

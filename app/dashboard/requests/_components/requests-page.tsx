@@ -14,8 +14,8 @@ type RequestsPageProps = {
 }
 
 /*
-Reads the URL, so it renders at request time. A new status shows the skeleton again; a
-new page keeps the current cards until the next page swaps in, so nothing above moves.
+Reads the URL, so it renders at request time. A new status or page keeps the current cards,
+faded, until the next ones swap in (a transition), so nothing above them moves.
 */
 async function RequestsList({ searchParams, List, Skeleton }: RequestsPageProps) {
   const query = await searchParams
@@ -24,10 +24,14 @@ async function RequestsList({ searchParams, List, Skeleton }: RequestsPageProps)
 
   return (
     <div className="flex flex-col gap-6">
-      <RequestStatusFilter status={status} href={(option) => requestsHref(option)} />
+      <RequestStatusFilter
+        status={status}
+        href={(option) => requestsHref(option)}
+        listId="requests"
+      />
       {/* A page change jumps here, to the first card */}
       <div id="requests" className="jump-target-4">
-        <Suspense key={status} fallback={<Skeleton />}>
+        <Suspense fallback={<Skeleton />}>
           <List page={page} status={status} />
         </Suspense>
       </div>

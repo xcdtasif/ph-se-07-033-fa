@@ -4,6 +4,7 @@ import { ScrollFade } from "@/components/ui/scroll-fade"
 import { cn } from "@/lib/utils"
 
 import { ActiveDot } from "./active-dot"
+import { FadeWhileLinkPending } from "./scroll-link"
 
 type StatusFilterProps<Status extends string> = {
   // The nav's accessible name, e.g. "Filter requests by status"
@@ -18,12 +19,15 @@ type StatusFilterProps<Status extends string> = {
   statusColors: (status: Status) => string
   // Off where a status is always selected
   showAll?: boolean
+  // The id of the list the strip filters, faded while a status loads
+  listId: string
 }
 
 /*
 One line of status pills in the badges' colours ("All", if shown, white with a thin ring), the
 selected one with the dot under it. On a phone it scrolls sideways within the content width instead
-of wrapping (ScrollFade).
+of wrapping (ScrollFade). Picking a status keeps the scroll position, and the list's current
+cards stay, faded, until that status's cards replace them.
 */
 export function StatusFilter<Status extends string>({
   label,
@@ -33,6 +37,7 @@ export function StatusFilter<Status extends string>({
   statusLabel,
   statusColors,
   showAll = true,
+  listId,
 }: StatusFilterProps<Status>) {
   const options = showAll ? [undefined, ...statuses] : statuses
 
@@ -48,6 +53,7 @@ export function StatusFilter<Status extends string>({
               <li key={option ?? "ALL"} className="relative pb-2">
                 <Link
                   href={href(option)}
+                  scroll={false}
                   aria-current={selected ? "page" : undefined}
                   className={cn(
                     // The focus ring sits inside the pill; the scrolling row clips anything outside
@@ -58,6 +64,7 @@ export function StatusFilter<Status extends string>({
                   )}
                 >
                   {option ? statusLabel(option) : "All"}
+                  <FadeWhileLinkPending id={listId} />
                 </Link>
                 {selected && <ActiveDot />}
               </li>
