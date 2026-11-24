@@ -120,7 +120,9 @@ export type LandlordRequest = AdminRequest & {
 }
 
 // Set by the Stripe webhook only: COMPLETED when paid, FAILED when the checkout expired
-export type PaymentStatus = "PENDING" | "COMPLETED" | "FAILED"
+export const PAYMENT_STATUSES = ["PENDING", "COMPLETED", "FAILED"] as const
+
+export type PaymentStatus = (typeof PAYMENT_STATUSES)[number]
 
 // What the payment is for; the deposit is the only one so far
 export type PaymentType = "DEPOSIT"

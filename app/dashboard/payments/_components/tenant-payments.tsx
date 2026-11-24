@@ -5,7 +5,6 @@ import { ApiError } from "@/components/shared/api-error"
 import { ClippedWords } from "@/components/shared/clipped-words"
 import { Pagination, PaginationSkeleton } from "@/components/shared/pagination"
 import { SkeletonText } from "@/components/shared/skeleton-text"
-import { Badge } from "@/components/ui/badge"
 import { buttonVariants } from "@/components/ui/button"
 import {
   Table,
@@ -20,48 +19,39 @@ import { requestsHref } from "@/lib/dashboard"
 import { formatAmount, formatShortDateTime } from "@/lib/format"
 import type { Payment, PaymentStatus, PaymentType } from "@/lib/types"
 
+import { paymentsHref, paymentStatusLabel, PaymentStatusBadge } from "./payment-status"
+
 const PAYMENTS_PAGE_SIZE = 10
-
-// This page's URL for a page, leaving the first page out of the query
-export const paymentsHref = (page = 1) =>
-  page > 1 ? `/dashboard/payments?page=${page}` : "/dashboard/payments"
-
-// Completed means paid, so it's green
-const STATUSES: Record<PaymentStatus, { label: string; className: string }> = {
-  PENDING: { label: "Pending", className: "bg-yellow-100 text-yellow-800" },
-  COMPLETED: { label: "Completed", className: "bg-emerald-100 text-emerald-800" },
-  FAILED: { label: "Failed", className: "bg-red-100 text-red-800" },
-}
 
 const TYPES: Record<PaymentType, string> = {
   DEPOSIT: "Deposit",
 }
 
 /*
-Each column's share of the table's width, so columns don't grow with what's in them. At the
-table's 45rem minimum they still fit a date, a lakh amount, "BDT", "Deposit" and the widest
-status pill; the property name takes what's left.
+Like the users table: every column but the property is a fixed width that fits the widest of
+each ("31-12-99 23:59", "9,99,999.99", "BDT", "Deposit", "Completed") with the cell's padding,
+so it never clips; the property takes what's left.
 */
 const COLUMNS = [
-  { label: "Date", width: "w-[19%]" },
-  { label: "Property", width: "w-[29%]" },
-  { label: "Amount", width: "w-[14%]" },
-  { label: "Currency", width: "w-[9%]" },
-  { label: "Type", width: "w-[12%]" },
-  { label: "Status", width: "w-[17%]" },
+  { label: "Date", width: "w-40" },
+  { label: "Property", width: undefined },
+  { label: "Amount", width: "w-32" },
+  { label: "Currency", width: "w-20" },
+  { label: "Type", width: "w-24" },
+  { label: "Status", width: "w-32" },
 ]
 
 /*
 A bordered card around the table, with more room at the row ends than the default cells.
-The columns keep their shares of the width (table-fixed) down to 45rem; a narrower screen
-scrolls the table sideways (see Table) at the widths it had there. Nothing wraps: text too
+The columns keep their widths (table-fixed) down to 50rem: the fixed columns' 37rem and 13rem for
+the property. A narrower screen scrolls the table sideways (see Table). Nothing wraps: text too
 long for its column ends in "…". No header row on screen; screen readers still get the
 column names.
 */
 function PaymentsFrame({ children }: { children: ReactNode }) {
   return (
     <div className="bg-card overflow-hidden rounded-xl border">
-      <Table className="min-w-180 table-fixed [&_td]:truncate [&_td]:px-4">
+      <Table className="min-w-200 table-fixed [&_td]:truncate [&_td]:px-4">
         <colgroup>
           {COLUMNS.map(({ label, width }) => (
             <col key={label} className={width} />
@@ -113,9 +103,9 @@ export function TenantPaymentsSkeleton() {
 }
 
 // Per-user, uncached: reads cookies, so it sits inside <Suspense>
-export async function TenantPayments({ page }: { page: number }) {
+export async function TenantPayments({ page, status }: { page: number; status?: PaymentStatus }) {
   const result = await authFetch<Payment[]>(
-    `/api/tenant/payments?page=${page}&limit=${PAYMENTS_PAGE_SIZE}`,
+    `/api/tenant/payments?page=${page}&limit=${PAYMENTS_PAGE_SIZE}${status ? `&status=${status}` : ""}`,
   )
 
   if (!result.success) {
@@ -127,22 +117,24 @@ export async function TenantPayments({ page }: { page: number }) {
   const totalPages = Math.max(1, Math.ceil(total / PAYMENTS_PAGE_SIZE))
 
   if (payments.length === 0) {
-    // Past the last page, or no payments at all
+    // Past the last page, none with this status, or no payments at all
     return (
       <div className="text-muted-foreground empty-state flex flex-col items-center gap-4">
         {total > 0 ? (
           <>
             <p>There are no payments on this page.</p>
             <Link
-              href={paymentsHref()}
+              href={paymentsHref(status)}
               className={buttonVariants({ variant: "outline", size: "sm", className: "text-sm" })}
             >
               Go to the first page
             </Link>
           </>
+        ) : status ? (
+          <p>No {paymentStatusLabel(status).toLowerCase()} payments.</p>
         ) : (
           <>
-            <p>You haven&apos;t made any payments yet.</p>
+            <p>No payments.</p>
             <Link
               href={requestsHref("APPROVED")}
               className={buttonVariants({ variant: "outline", size: "sm", className: "text-sm" })}
@@ -160,14 +152,12 @@ export async function TenantPayments({ page }: { page: number }) {
       <PaymentsFrame>
         {payments.map((payment) => {
           const { property } = payment.request
-          const status = STATUSES[payment.status]
-
           return (
             <TableRow key={payment.id}>
               <TableCell className="text-muted-foreground tabular-nums">
                 {formatShortDateTime(payment.createdAt)}
               </TableCell>
-              <TableCell>
+              <TableCell className="font-medium">
                 {/* Ends after the last word that fits, a first word too long cut midway */}
                 <Link href={`/properties/${property.id}`} title={property.name} className="group">
                   <ClippedWords text={property.name} underline />
@@ -182,7 +172,7 @@ export async function TenantPayments({ page }: { page: number }) {
               </TableCell>
               <TableCell>{TYPES[payment.type]}</TableCell>
               <TableCell>
-                <Badge className={status.className}>{status.label}</Badge>
+                <PaymentStatusBadge status={payment.status} />
               </TableCell>
             </TableRow>
           )
@@ -192,7 +182,7 @@ export async function TenantPayments({ page }: { page: number }) {
         label="Payments pagination"
         page={page}
         totalPages={totalPages}
-        href={paymentsHref}
+        href={(target) => paymentsHref(status, target)}
         scrollTo="payments"
       />
     </div>
