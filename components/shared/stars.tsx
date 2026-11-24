@@ -20,3 +20,14 @@ export function Stars({ rating }: { rating: number }) {
     </span>
   )
 }
+
+/*
+The stars while they load: as tall as the stars (1em, not a full line of text) and as wide as
+five of them with their gaps, so the review below doesn't move when they arrive. Give it the
+stars' text size, e.g. "text-xs"
+*/
+export function StarsSkeleton({ className }: { className?: string }) {
+  return (
+    <span className={cn("skeleton block h-[1em] w-[calc(5em+0.5rem)] rounded-sm", className)} />
+  )
+}

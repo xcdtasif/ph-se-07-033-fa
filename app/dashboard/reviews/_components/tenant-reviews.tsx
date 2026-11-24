@@ -2,13 +2,14 @@ import Link from "next/link"
 
 import { ApiError } from "@/components/shared/api-error"
 import { HiddenBadge } from "@/components/shared/hidden-badge"
+import { MessageText, MessageTextSkeleton } from "@/components/shared/message-text"
 import { Pagination, PaginationSkeleton } from "@/components/shared/pagination"
 import { SkeletonText } from "@/components/shared/skeleton-text"
-import { Stars } from "@/components/shared/stars"
+import { Stars, StarsSkeleton } from "@/components/shared/stars"
 import { buttonVariants } from "@/components/ui/button"
 import { authFetch } from "@/lib/auth-fetch"
 import { requestsHref, reviewsHref } from "@/lib/dashboard"
-import { formatShortDate } from "@/lib/format"
+import { formatDate } from "@/lib/format"
 import type { TenantReview } from "@/lib/types"
 import { cn } from "@/lib/utils"
 
@@ -29,7 +30,6 @@ function ReviewItem({ review }: { review: TenantReview }) {
     >
       <div className="flex items-center gap-2 text-xs">
         <Stars rating={review.rating} />
-        <span className="text-muted-foreground">{formatShortDate(review.createdAt)}</span>
         {review.isHidden && (
           <span className="ml-auto">
             <HiddenBadge />
@@ -42,7 +42,8 @@ function ReviewItem({ review }: { review: TenantReview }) {
       >
         {review.property.name}
       </Link>
-      <p className="text-sm whitespace-pre-line">{review.comment}</p>
+      <MessageText>{review.comment}</MessageText>
+      <p className="text-muted-foreground text-xs">Reviewed on {formatDate(review.createdAt)}</p>
     </li>
   )
 }
@@ -54,12 +55,10 @@ export function TenantReviewsSkeleton() {
       <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
         {Array.from({ length: REVIEWS_PAGE_SIZE }, (_, index) => (
           <div key={index} className="bg-card flex flex-col gap-2 rounded-xl border p-4">
-            <SkeletonText className="w-36 text-xs" />
+            <StarsSkeleton className="text-xs" />
             <SkeletonText className="w-3/4" />
-            <div className="text-sm">
-              <SkeletonText />
-              <SkeletonText className="w-2/3" />
-            </div>
+            <MessageTextSkeleton />
+            <SkeletonText className="w-32 text-xs" />
           </div>
         ))}
       </div>

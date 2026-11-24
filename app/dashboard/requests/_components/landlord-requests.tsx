@@ -1,6 +1,7 @@
 import Link from "next/link"
 
 import { ApiError } from "@/components/shared/api-error"
+import { MessageTextSkeleton } from "@/components/shared/message-text"
 import { Pagination, PaginationSkeleton } from "@/components/shared/pagination"
 import { requestStatusLabel } from "@/components/shared/request-status-badge"
 import { SkeletonText } from "@/components/shared/skeleton-text"
@@ -34,8 +35,7 @@ function LandlordRequestItemSkeleton({ showProperty }: { showProperty: boolean }
             <div className="skeleton h-5 w-16 rounded-4xl" />
           </div>
         )}
-        {/* A message's length isn't known, so each card assumes two lines */}
-        <div className="skeleton h-[calc(2lh+1rem)] rounded-lg text-sm" />
+        <MessageTextSkeleton />
         <SkeletonText className="w-32 text-xs" />
       </div>
       <div className="divider-dashed mt-6 flex justify-center gap-2 pt-4">

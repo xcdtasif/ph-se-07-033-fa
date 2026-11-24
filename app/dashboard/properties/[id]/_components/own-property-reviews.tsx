@@ -1,12 +1,13 @@
 import Link from "next/link"
 
 import { ApiError } from "@/components/shared/api-error"
+import { MessageText, MessageTextSkeleton } from "@/components/shared/message-text"
 import { Pagination, PaginationSkeleton } from "@/components/shared/pagination"
 import { SkeletonText } from "@/components/shared/skeleton-text"
-import { Stars } from "@/components/shared/stars"
+import { Stars, StarsSkeleton } from "@/components/shared/stars"
 import { buttonVariants } from "@/components/ui/button"
 import { authFetch } from "@/lib/auth-fetch"
-import { formatShortDate } from "@/lib/format"
+import { formatDate } from "@/lib/format"
 import type { LandlordReview } from "@/lib/types"
 
 const REVIEWS_PAGE_SIZE = 6
@@ -19,11 +20,9 @@ export function OwnPropertyReviewsSkeleton() {
         {Array.from({ length: REVIEWS_PAGE_SIZE }, (_, index) => (
           <div key={index} className="bg-card flex flex-col gap-2 rounded-xl border p-4">
             <SkeletonText className="w-1/3" />
-            <SkeletonText className="w-36 text-xs" />
-            <div className="text-sm">
-              <SkeletonText />
-              <SkeletonText className="w-2/3" />
-            </div>
+            <StarsSkeleton className="text-xs" />
+            <MessageTextSkeleton />
+            <SkeletonText className="w-32 text-xs" />
           </div>
         ))}
       </div>
@@ -85,9 +84,11 @@ export async function OwnPropertyReviews({ propertyId, page, href }: OwnProperty
             <p className="font-medium">{review.tenant.name}</p>
             <div className="flex items-center gap-2 text-xs">
               <Stars rating={review.rating} />
-              <span className="text-muted-foreground">{formatShortDate(review.createdAt)}</span>
             </div>
-            <p className="text-sm whitespace-pre-line">{review.comment}</p>
+            <MessageText>{review.comment}</MessageText>
+            <p className="text-muted-foreground text-xs">
+              Reviewed on {formatDate(review.createdAt)}
+            </p>
           </li>
         ))}
       </ul>

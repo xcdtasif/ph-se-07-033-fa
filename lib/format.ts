@@ -6,23 +6,6 @@ const dateFormat = new Intl.DateTimeFormat("en-GB", { dateStyle: "long", timeZon
 
 export const formatDate = (iso: string) => dateFormat.format(new Date(iso))
 
-// en-US months, since en-GB writes September as "Sept"
-const shortDateFormat = new Intl.DateTimeFormat("en-US", {
-  day: "2-digit",
-  month: "short",
-  year: "2-digit",
-  timeZone: "Asia/Dhaka",
-})
-
-// "22-Nov-26"
-export const formatShortDate = (iso: string) => {
-  const parts = shortDateFormat.formatToParts(new Date(iso))
-  const part = (type: Intl.DateTimeFormatPartTypes) =>
-    parts.find((item) => item.type === type)?.value
-
-  return `${part("day")}-${part("month")}-${part("year")}`
-}
-
 const shortDateTimeFormat = new Intl.DateTimeFormat("en-GB", {
   day: "2-digit",
   month: "2-digit",

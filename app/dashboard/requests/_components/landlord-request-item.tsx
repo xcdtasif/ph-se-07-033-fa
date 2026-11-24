@@ -5,6 +5,7 @@ import Link from "next/link"
 import { useOptimistic, useState, useTransition } from "react"
 import { toast } from "sonner"
 
+import { MessageText } from "@/components/shared/message-text"
 import { PropertyImage } from "@/components/shared/property-image"
 import { RequestStatusBadge } from "@/components/shared/request-status-badge"
 import { Button } from "@/components/ui/button"
@@ -154,9 +155,7 @@ export function LandlordRequestItem({ request, showProperty = true }: LandlordRe
             <RequestStatusBadge status={status} />
           </div>
         )}
-        <p className="bg-muted rounded-lg px-3 py-2 text-sm whitespace-pre-line">
-          {request.message}
-        </p>
+        <MessageText>{request.message}</MessageText>
         <p className="text-muted-foreground text-xs">
           Requested on {formatDate(request.createdAt)}
         </p>
