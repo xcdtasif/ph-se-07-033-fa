@@ -2,6 +2,7 @@ import Link from "next/link"
 import type { ReactNode } from "react"
 
 import { ApiError } from "@/components/shared/api-error"
+import { ClippedWords } from "@/components/shared/clipped-words"
 import { Pagination, PaginationSkeleton } from "@/components/shared/pagination"
 import { SkeletonText } from "@/components/shared/skeleton-text"
 import { Badge } from "@/components/ui/badge"
@@ -167,21 +168,9 @@ export async function TenantPayments({ page }: { page: number }) {
                 {formatShortDateTime(payment.createdAt)}
               </TableCell>
               <TableCell>
-                {/*
-                Each word is an inline-block, which the cell's "…" hides whole rather than cutting,
-                so the name ends after the last word that fits. A word's leading space is a
-                non-breaking one inside it, so no space is left before the "…". Underlines don't
-                reach into inline-blocks, so each word underlines itself on hover.
-                */}
+                {/* Ends after the last word that fits, a first word too long cut midway */}
                 <Link href={`/properties/${property.id}`} title={property.name} className="group">
-                  {property.name.split(" ").map((word, index) => (
-                    <span
-                      key={index}
-                      className="decoration-muted-foreground/60 inline-block underline-offset-4 group-hover:underline"
-                    >
-                      {index > 0 ? `\u00a0${word}` : word}
-                    </span>
-                  ))}
+                  <ClippedWords text={property.name} underline />
                 </Link>
               </TableCell>
               {/* Right-aligned so the digits line up, next to the currency */}
