@@ -80,8 +80,9 @@ async function PropertyDetails({ params, searchParams }: PageProps<"/properties/
       <aside className="lg:sticky lg:top-38.25 lg:col-start-2 lg:row-span-2 lg:row-start-1 lg:self-start">
         <Card>
           <CardContent className="flex flex-col gap-4">
-            <p>
-              <span className="text-2xl font-semibold">{formatMoney(property.rent)}</span>
+            {/* One text-2xl line, as tall as its skeleton; the smaller "/ month" sits inside it */}
+            <p className="text-2xl">
+              <span className="font-semibold">{formatMoney(property.rent)}</span>
               <span className="text-muted-foreground text-sm"> / month</span>
             </p>
             <dl className="grid grid-cols-[auto_1fr] gap-x-6 gap-y-2 text-sm">

@@ -2,7 +2,7 @@ import { MapPin } from "lucide-react"
 import Link from "next/link"
 
 import { ApiError } from "@/components/shared/api-error"
-import { Pagination } from "@/components/shared/pagination"
+import { Pagination, PaginationSkeleton } from "@/components/shared/pagination"
 import { PropertyImage } from "@/components/shared/property-image"
 import { Rating } from "@/components/shared/rating"
 import { RequestStatusBadge, requestStatusLabel } from "@/components/shared/request-status-badge"
@@ -123,10 +123,13 @@ function RequestItemSkeleton() {
 
 export function TenantRequestsSkeleton() {
   return (
-    <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3" aria-hidden="true">
-      {Array.from({ length: REQUESTS_PAGE_SIZE }, (_, index) => (
-        <RequestItemSkeleton key={index} />
-      ))}
+    <div className="flex flex-col gap-6" aria-hidden="true">
+      <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+        {Array.from({ length: REQUESTS_PAGE_SIZE }, (_, index) => (
+          <RequestItemSkeleton key={index} />
+        ))}
+      </div>
+      <PaginationSkeleton />
     </div>
   )
 }

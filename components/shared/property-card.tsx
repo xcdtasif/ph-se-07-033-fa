@@ -73,7 +73,7 @@ export function PropertyCardSkeleton() {
           <div className="skeleton h-5 w-16 rounded-4xl" />
         </div>
         <SkeletonText className="w-3/4" />
-        <SkeletonText className="w-1/2" />
+        <SkeletonText className="w-1/2 text-sm" />
         <div className="mt-auto flex items-center justify-between pt-2">
           <SkeletonText className="w-32" />
           <div className="skeleton h-5 w-14 rounded-4xl" />

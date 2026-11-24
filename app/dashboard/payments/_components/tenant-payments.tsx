@@ -2,7 +2,7 @@ import Link from "next/link"
 import type { ReactNode } from "react"
 
 import { ApiError } from "@/components/shared/api-error"
-import { Pagination } from "@/components/shared/pagination"
+import { Pagination, PaginationSkeleton } from "@/components/shared/pagination"
 import { SkeletonText } from "@/components/shared/skeleton-text"
 import { Badge } from "@/components/ui/badge"
 import { buttonVariants } from "@/components/ui/button"
@@ -81,7 +81,7 @@ function PaymentsFrame({ children }: { children: ReactNode }) {
 
 export function TenantPaymentsSkeleton() {
   return (
-    <div aria-hidden="true">
+    <div className="flex flex-col gap-6" aria-hidden="true">
       <PaymentsFrame>
         {Array.from({ length: PAYMENTS_PAGE_SIZE }, (_, index) => (
           <TableRow key={index} className="hover:bg-transparent">
@@ -106,6 +106,7 @@ export function TenantPaymentsSkeleton() {
           </TableRow>
         ))}
       </PaymentsFrame>
+      <PaginationSkeleton />
     </div>
   )
 }

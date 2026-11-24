@@ -2,7 +2,7 @@ import Link from "next/link"
 
 import { ApiError } from "@/components/shared/api-error"
 import { HiddenBadge } from "@/components/shared/hidden-badge"
-import { Pagination } from "@/components/shared/pagination"
+import { Pagination, PaginationSkeleton } from "@/components/shared/pagination"
 import { SkeletonText } from "@/components/shared/skeleton-text"
 import { Stars } from "@/components/shared/stars"
 import { buttonVariants } from "@/components/ui/button"
@@ -50,17 +50,20 @@ function ReviewItem({ review }: { review: TenantReview }) {
 // A comment's length isn't known, so each card assumes two lines
 export function TenantReviewsSkeleton() {
   return (
-    <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3" aria-hidden="true">
-      {Array.from({ length: REVIEWS_PAGE_SIZE }, (_, index) => (
-        <div key={index} className="bg-card flex flex-col gap-2 rounded-xl border p-4">
-          <SkeletonText className="w-36 text-xs" />
-          <SkeletonText className="w-3/4" />
-          <div className="text-sm">
-            <SkeletonText />
-            <SkeletonText className="w-2/3" />
+    <div className="flex flex-col gap-6" aria-hidden="true">
+      <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+        {Array.from({ length: REVIEWS_PAGE_SIZE }, (_, index) => (
+          <div key={index} className="bg-card flex flex-col gap-2 rounded-xl border p-4">
+            <SkeletonText className="w-36 text-xs" />
+            <SkeletonText className="w-3/4" />
+            <div className="text-sm">
+              <SkeletonText />
+              <SkeletonText className="w-2/3" />
+            </div>
           </div>
-        </div>
-      ))}
+        ))}
+      </div>
+      <PaginationSkeleton />
     </div>
   )
 }

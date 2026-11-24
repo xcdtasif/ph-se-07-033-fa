@@ -1,5 +1,5 @@
 import { ApiError } from "@/components/shared/api-error"
-import { Pagination } from "@/components/shared/pagination"
+import { Pagination, PaginationSkeleton } from "@/components/shared/pagination"
 import { SkeletonText } from "@/components/shared/skeleton-text"
 import { Stars } from "@/components/shared/stars"
 import { formatShortDate } from "@/lib/format"
@@ -71,17 +71,20 @@ export function PropertyReviewsSkeleton({ count }: { count: number }) {
   }
 
   return (
-    <div className="grid gap-4 lg:grid-cols-2" aria-hidden="true">
-      {Array.from({ length: Math.min(count, REVIEWS_PAGE_SIZE) }, (_, index) => (
-        <div key={index} className="bg-card flex flex-col gap-2 rounded-xl border p-4">
-          <SkeletonText className="w-32" />
-          <SkeletonText className="w-36 text-xs" />
-          <div className="text-sm">
-            <SkeletonText />
-            <SkeletonText className="w-2/3" />
+    <div className="flex flex-col gap-6" aria-hidden="true">
+      <div className="grid gap-4 lg:grid-cols-2">
+        {Array.from({ length: Math.min(count, REVIEWS_PAGE_SIZE) }, (_, index) => (
+          <div key={index} className="bg-card flex flex-col gap-2 rounded-xl border p-4">
+            <SkeletonText className="w-32" />
+            <SkeletonText className="w-36 text-xs" />
+            <div className="text-sm">
+              <SkeletonText />
+              <SkeletonText className="w-2/3" />
+            </div>
           </div>
-        </div>
-      ))}
+        ))}
+      </div>
+      <PaginationSkeleton />
     </div>
   )
 }

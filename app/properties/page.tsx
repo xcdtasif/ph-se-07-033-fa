@@ -4,7 +4,7 @@ import { Suspense } from "react"
 
 import { ApiError } from "@/components/shared/api-error"
 import { PageHeader } from "@/components/shared/page-header"
-import { Pagination } from "@/components/shared/pagination"
+import { Pagination, PaginationSkeleton } from "@/components/shared/pagination"
 import { PropertyGrid, PropertyGridSkeleton } from "@/components/shared/property-grid"
 import { SkeletonText } from "@/components/shared/skeleton-text"
 import { buttonVariants } from "@/components/ui/button"
@@ -102,12 +102,13 @@ async function PropertyResults({ filters }: { filters: PropertyFilters }) {
   )
 }
 
-// The results while they load: the count line above the grid too, so the cards don't move down
+// The results while they load: the count line above the grid and the page links below it too
 function PropertyResultsSkeleton() {
   return (
     <div className="flex flex-col gap-6" aria-hidden="true">
       <SkeletonText className="w-52 text-sm" />
       <PropertyGridSkeleton count={PAGE_SIZE} />
+      <PaginationSkeleton />
     </div>
   )
 }

@@ -1,7 +1,7 @@
 import Link from "next/link"
 
 import { ApiError } from "@/components/shared/api-error"
-import { Pagination } from "@/components/shared/pagination"
+import { Pagination, PaginationSkeleton } from "@/components/shared/pagination"
 import { requestStatusLabel } from "@/components/shared/request-status-badge"
 import { SkeletonText } from "@/components/shared/skeleton-text"
 import { buttonVariants } from "@/components/ui/button"
@@ -48,10 +48,13 @@ function LandlordRequestItemSkeleton({ showProperty }: { showProperty: boolean }
 
 export function LandlordRequestsSkeleton({ showProperty = true }: { showProperty?: boolean }) {
   return (
-    <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3" aria-hidden="true">
-      {Array.from({ length: REQUESTS_PAGE_SIZE }, (_, index) => (
-        <LandlordRequestItemSkeleton key={index} showProperty={showProperty} />
-      ))}
+    <div className="flex flex-col gap-6" aria-hidden="true">
+      <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+        {Array.from({ length: REQUESTS_PAGE_SIZE }, (_, index) => (
+          <LandlordRequestItemSkeleton key={index} showProperty={showProperty} />
+        ))}
+      </div>
+      <PaginationSkeleton />
     </div>
   )
 }

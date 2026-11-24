@@ -82,3 +82,12 @@ export function Pagination({
     </nav>
   )
 }
+
+// The page links' row while its list loads, as tall as the links, so nothing below moves when they arrive
+export function PaginationSkeleton() {
+  return (
+    <div className="flex justify-center" aria-hidden="true">
+      <div className="skeleton h-7 w-32 rounded-lg" />
+    </div>
+  )
+}
