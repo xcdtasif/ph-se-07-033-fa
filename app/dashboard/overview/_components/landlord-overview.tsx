@@ -1,13 +1,4 @@
-import {
-  Building2,
-  CircleCheck,
-  Clock,
-  KeyRound,
-  Star,
-  Wallet,
-  type LucideIcon,
-} from "lucide-react"
-import Link from "next/link"
+import { Building2, CircleCheck, Clock, KeyRound, Star, Wallet } from "lucide-react"
 import type { ReactNode } from "react"
 
 import { ApiError } from "@/components/shared/api-error"
@@ -17,6 +8,8 @@ import { authFetch } from "@/lib/auth-fetch"
 import { requestsHref } from "@/lib/dashboard"
 import { formatMoney } from "@/lib/format"
 import type { LandlordRequest, LandlordReview, Property, RequestStatus } from "@/lib/types"
+
+import { StatCards, totalOf, type Stat } from "./stat-cards"
 
 // The backend's largest page
 const MAX_LIMIT = 50
@@ -44,9 +37,7 @@ async function fetchAllRequests(status: RequestStatus): Promise<ApiResponse<Land
 
 type StatKey = "properties" | "earnings" | "reviews" | "pending" | "approved" | "active"
 
-type Stat = { key: StatKey; label: string; icon: LucideIcon; note: string; href?: string }
-
-const TOTALS: Stat[] = [
+const TOTALS: Stat<StatKey>[] = [
   {
     key: "properties",
     label: "Properties",
@@ -68,7 +59,7 @@ const TOTALS: Stat[] = [
 ]
 
 // The requests that still need something, each opening the requests page at its status
-const REQUESTS: Stat[] = [
+const REQUESTS: Stat<StatKey>[] = [
   {
     key: "pending",
     label: "Pending",
@@ -91,46 +82,6 @@ const REQUESTS: Stat[] = [
     href: requestsHref("ACTIVE"),
   },
 ]
-
-// The label and icon on top, the figure, then what it counts
-function StatContent({ stat, value }: { stat: Stat; value: ReactNode }) {
-  const Icon = stat.icon
-
-  return (
-    <>
-      <p className="text-muted-foreground flex items-center justify-between gap-2 text-sm">
-        {stat.label}
-        <Icon className="size-4 shrink-0" aria-hidden="true" />
-      </p>
-      <p className="text-2xl font-semibold tracking-tight">{value}</p>
-      <p className="text-muted-foreground text-xs">{stat.note}</p>
-    </>
-  )
-}
-
-// One card per stat, each with its figure; a stat with a link is a card you can open
-function StatCards({ stats, values }: { stats: Stat[]; values: Record<StatKey, ReactNode> }) {
-  return (
-    <ul className="grid gap-4 sm:grid-cols-3">
-      {stats.map((stat) => (
-        <li key={stat.key} className="flex">
-          {stat.href ? (
-            <Link
-              href={stat.href}
-              className="bg-card focus-visible:ring-ring/50 flex flex-1 flex-col gap-1 rounded-xl border p-4 outline-none hover:brightness-97 focus-visible:ring-3"
-            >
-              <StatContent stat={stat} value={values[stat.key]} />
-            </Link>
-          ) : (
-            <div className="bg-card flex flex-1 flex-col gap-1 rounded-xl border p-4">
-              <StatContent stat={stat} value={values[stat.key]} />
-            </div>
-          )}
-        </li>
-      ))}
-    </ul>
-  )
-}
 
 // The totals, then the requests under their own heading
 function Overview({ values }: { values: Record<StatKey, ReactNode> }) {
@@ -163,10 +114,6 @@ export function LandlordOverviewSkeleton() {
     </div>
   )
 }
-
-// A list's total from its first page of one
-const totalOf = <T,>(result: { data: T[]; meta?: { total: number } }) =>
-  result.meta?.total ?? result.data.length
 
 // Per-user, uncached: reads cookies, so it sits inside <Suspense>
 export async function LandlordOverview() {

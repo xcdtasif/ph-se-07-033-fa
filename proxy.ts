@@ -27,7 +27,7 @@ Dashboard pages that several roles share at one URL. Each role's version is its 
 `<path>/<role>` (e.g. `/dashboard/requests/landlord`), which the proxy shows in place of the
 shared URL, so each prerenders a loading state that matches its own content
 */
-const ROLE_PAGES = ["/dashboard/requests"]
+const ROLE_PAGES = ["/dashboard/overview", "/dashboard/requests"]
 
 // Refresh a little early so the token doesn't expire while the page renders
 const EXPIRY_MARGIN_MS = 10_000

@@ -17,7 +17,7 @@ export const DASHBOARD_SECTIONS: Record<UserRole, DashboardSection[]> = {
     { href: "/dashboard/properties", label: "Properties" },
     { href: "/dashboard/requests", label: "Requests" },
   ],
-  ADMIN: [],
+  ADMIN: [{ href: "/dashboard/overview", label: "Overview" }],
 }
 
 // The requests page's URL for a status filter and page, leaving defaults out of the query
