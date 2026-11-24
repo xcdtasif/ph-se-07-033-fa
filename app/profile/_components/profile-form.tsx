@@ -4,6 +4,7 @@ import { Button } from "@/components/ui/button"
 import { Field, FieldError, FieldGroup, FieldLabel } from "@/components/ui/field"
 import { Input } from "@/components/ui/input"
 import { useFormAction } from "@/hooks/use-form-action"
+import { NO_AUTOFILL } from "@/lib/form"
 
 import { updateProfileAction } from "../_actions/profile-actions"
 
@@ -21,7 +22,7 @@ export function ProfileForm({ name }: { name: string }) {
           <Input
             id="name"
             name="name"
-            autoComplete="name"
+            {...NO_AUTOFILL}
             defaultValue={state.values?.name ?? name}
             aria-invalid={Boolean(errors?.name)}
             required

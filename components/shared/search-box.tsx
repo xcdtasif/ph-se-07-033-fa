@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation"
 import { useEffect, useRef, useState, useTransition } from "react"
 
 import { Input } from "@/components/ui/input"
+import { NO_AUTOFILL } from "@/lib/form"
 
 import { useFadeWhilePending } from "./scroll-link"
 
@@ -100,7 +101,7 @@ export function SearchBox({ id, label, placeholder, href, search = "", listId }:
         type="search"
         placeholder={placeholder}
         maxLength={100}
-        autoComplete="off"
+        {...NO_AUTOFILL}
         value={value}
         onChange={(event) => {
           const text = event.target.value

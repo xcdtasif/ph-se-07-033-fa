@@ -26,7 +26,7 @@ import {
 import { Textarea } from "@/components/ui/textarea"
 import { useFormAction } from "@/hooks/use-form-action"
 import { toAmountDigits } from "@/lib/amount"
-import type { FormState } from "@/lib/form"
+import { NO_AUTOFILL, type FormState } from "@/lib/form"
 import type { Category, Property } from "@/lib/types"
 import { uploadFiles } from "@/lib/uploadthing"
 
@@ -132,6 +132,7 @@ export function PropertyForm({ categories, property, action, submitLabel }: Prop
         defaultValue={values[field] ?? property?.[field] ?? ""}
         aria-invalid={Boolean(errors?.[field])}
         required
+        {...NO_AUTOFILL}
         {...props}
       />
       <FieldError errors={toErrors(errors?.[field])} />

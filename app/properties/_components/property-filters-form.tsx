@@ -16,6 +16,7 @@ import {
   SelectValue,
 } from "@/components/ui/select"
 import { MAX_AMOUNT, toAmountDigits } from "@/lib/amount"
+import { NO_AUTOFILL } from "@/lib/form"
 import { formatNumber } from "@/lib/format"
 import type { Category } from "@/lib/types"
 import { cn } from "@/lib/utils"
@@ -162,6 +163,7 @@ export function PropertyFiltersForm({ categories, filters }: PropertyFiltersForm
           type="search"
           placeholder="Name, location or description"
           maxLength={100}
+          {...NO_AUTOFILL}
           value={values.search}
           onChange={(event) => update({ search: event.target.value }, TYPING_DELAY)}
         />
@@ -194,7 +196,7 @@ export function PropertyFiltersForm({ categories, filters }: PropertyFiltersForm
           id="minRent"
           name="minRent"
           inputMode="numeric"
-          autoComplete="off"
+          {...NO_AUTOFILL}
           placeholder="0"
           value={values.minRent}
           onChange={(event) => update({ minRent: toDigits(event) }, TYPING_DELAY)}
@@ -209,7 +211,7 @@ export function PropertyFiltersForm({ categories, filters }: PropertyFiltersForm
           id="maxRent"
           name="maxRent"
           inputMode="numeric"
-          autoComplete="off"
+          {...NO_AUTOFILL}
           placeholder={formatNumber(MAX_AMOUNT)}
           value={values.maxRent}
           onChange={(event) => update({ maxRent: toDigits(event) }, TYPING_DELAY)}
