@@ -55,9 +55,10 @@ export const getProperty = async (id: string) => {
   return result
 }
 
-// Visible reviews, newest first
+// Visible reviews, newest first; tagged with the property, so hiding a review expires them
 export const getPropertyReviews = async (id: string, page: number, limit: number) => {
   "use cache"
+  cacheTag(propertyTag(id))
 
   const result = await apiFetch<PropertyReview[]>(
     `/api/properties/${encodeURIComponent(id)}/reviews?page=${page}&limit=${limit}`,

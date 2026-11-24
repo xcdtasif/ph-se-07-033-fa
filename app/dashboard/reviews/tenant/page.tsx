@@ -4,7 +4,7 @@ import { Suspense } from "react"
 import { PageHeader } from "@/components/shared/page-header"
 import { parsePage } from "@/lib/pagination"
 
-import { TenantReviews, TenantReviewsSkeleton } from "./_components/tenant-reviews"
+import { TenantReviews, TenantReviewsSkeleton } from "../_components/tenant-reviews"
 
 export const metadata: Metadata = {
   title: "Reviews",
@@ -16,11 +16,14 @@ next page swaps in.
 */
 async function ReviewsList({
   searchParams,
-}: Pick<PageProps<"/dashboard/reviews">, "searchParams">) {
+}: Pick<PageProps<"/dashboard/reviews/tenant">, "searchParams">) {
   return <TenantReviews page={parsePage((await searchParams).page)} />
 }
 
-export default function ReviewsPage({ searchParams }: PageProps<"/dashboard/reviews">) {
+// The tenant's own reviews; the proxy shows it at /dashboard/reviews
+export default function TenantReviewsPage({
+  searchParams,
+}: PageProps<"/dashboard/reviews/tenant">) {
   return (
     <section className="flex flex-col gap-6">
       <PageHeader title="Reviews" />

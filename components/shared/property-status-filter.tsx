@@ -1,7 +1,7 @@
 import { PROPERTY_STATUSES, type PropertyStatus } from "@/lib/types"
 
 import { BANNED_COLORS } from "./banned-colors"
-import { HIDDEN_COLORS } from "./hidden-badge"
+import { HIDDEN_PILL_COLORS } from "./hidden-badge"
 import { propertyStatusColors, propertyStatusLabel } from "./property-status-badge"
 import { StatusFilter } from "./status-filter"
 
@@ -44,12 +44,6 @@ export const propertyFilterQuery = (filter?: PropertyFilter, admin = false) => {
 
   return `&status=${filter}&isHidden=false${admin ? "&isLandlordBanned=false" : ""}`
 }
-
-/*
-The pills darken on hover by brightness, which a see-through pill doesn't show, so the Hidden one
-gets a faint shade instead, about as dark on the page background
-*/
-const HIDDEN_PILL_COLORS = `${HIDDEN_COLORS} hover:bg-foreground/5`
 
 const filterColors = (filter: PropertyFilter) =>
   filter === "HIDDEN"

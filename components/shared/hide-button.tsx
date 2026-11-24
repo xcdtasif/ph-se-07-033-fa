@@ -14,22 +14,26 @@ import {
   DialogTrigger,
 } from "@/components/ui/dialog"
 import { useFormAction } from "@/hooks/use-form-action"
-
-import { setPropertyHiddenAction } from "../_actions/property-actions"
+import type { FormState } from "@/lib/form"
 
 type HideButtonProps = {
-  propertyId: string
   isHidden: boolean
+  // A server action bound to the item, given whether to hide it
+  action: (isHidden: boolean) => Promise<FormState<never>>
+  // What's hidden, e.g. "property", for the dialog's title and button
+  noun: string
+  // What hiding does, under the dialog's title
+  description: string
 }
 
 /*
-Unhiding happens at once. Hiding asks first, since tenants lose the property at once: it leaves
-the listings, and its requests can't be approved or paid for until it's unhidden.
+The admin's Hide or Unhide for a property or a review. Unhiding happens at once. Hiding asks
+first, since it takes the item off the public pages at once.
 */
-export function HideButton({ propertyId, isHidden }: HideButtonProps) {
+export function HideButton({ isHidden, action, noun, description }: HideButtonProps) {
   const [open, setOpen] = useState(false)
   const [, formAction, pending] = useFormAction(
-    () => setPropertyHiddenAction(propertyId, !isHidden),
+    () => action(!isHidden),
     () => setOpen(false),
   )
 
@@ -50,16 +54,14 @@ export function HideButton({ propertyId, isHidden }: HideButtonProps) {
       </DialogTrigger>
       <DialogContent className="sm:max-w-md">
         <DialogHeader>
-          <DialogTitle>Hide this property?</DialogTitle>
-          <DialogDescription>
-            Tenants can&apos;t find, request or pay for it until it&apos;s unhidden.
-          </DialogDescription>
+          <DialogTitle>Hide this {noun}?</DialogTitle>
+          <DialogDescription>{description}</DialogDescription>
         </DialogHeader>
         <form action={formAction}>
           <DialogFooter>
             <DialogClose render={<Button variant="outline" />}>Cancel</DialogClose>
             <Button type="submit" variant="destructive" disabled={pending}>
-              {pending ? "Hiding…" : "Hide property"}
+              {pending ? "Hiding…" : `Hide ${noun}`}
             </Button>
           </DialogFooter>
         </form>

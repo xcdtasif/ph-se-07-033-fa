@@ -5,6 +5,7 @@ import { ApiError } from "@/components/shared/api-error"
 import { BANNED_COLORS } from "@/components/shared/banned-colors"
 import { ClippedWords } from "@/components/shared/clipped-words"
 import { HiddenBadge } from "@/components/shared/hidden-badge"
+import { HideButton } from "@/components/shared/hide-button"
 import { Pagination, PaginationSkeleton } from "@/components/shared/pagination"
 import { PropertyStatusBadge } from "@/components/shared/property-status-badge"
 import {
@@ -28,7 +29,7 @@ import { propertiesHref } from "@/lib/dashboard"
 import { formatShortDate } from "@/lib/format"
 import type { AdminProperty } from "@/lib/types"
 
-import { HideButton } from "./hide-button"
+import { setPropertyHiddenAction } from "../_actions/property-actions"
 
 const PROPERTIES_PAGE_SIZE = 10
 
@@ -213,7 +214,12 @@ export async function AdminProperties({ page, filter, search }: AdminPropertiesP
             </TableCell>
             {/* The button's focus ring needs room past the cell */}
             <TableCell className="overflow-visible!">
-              <HideButton propertyId={property.id} isHidden={property.isHidden} />
+              <HideButton
+                isHidden={property.isHidden}
+                action={setPropertyHiddenAction.bind(null, property.id)}
+                noun="property"
+                description="Tenants can't find, request or pay for it until it's unhidden."
+              />
             </TableCell>
           </TableRow>
         ))}

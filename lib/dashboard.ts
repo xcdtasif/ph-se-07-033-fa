@@ -1,4 +1,5 @@
 import type { PropertyFilter } from "@/components/shared/property-status-filter"
+import type { ReviewFilter } from "@/components/shared/review-filter"
 
 import type { RequestStatus, UserRole } from "./types"
 
@@ -29,6 +30,7 @@ export const DASHBOARD_SECTIONS: Record<UserRole, DashboardSection[]> = {
     { href: "/dashboard/users", label: "Users" },
     { href: "/dashboard/properties", label: "Properties", exact: true },
     { href: "/dashboard/requests", label: "Requests" },
+    { href: "/dashboard/reviews", label: "Reviews" },
   ],
 }
 
@@ -81,6 +83,22 @@ export const propertiesHref = ({
   return text ? `/dashboard/properties?${text}` : "/dashboard/properties"
 }
 
-// The reviews page's URL for a page, leaving the first page out of the query
-export const reviewsHref = (page = 1) =>
-  page > 1 ? `/dashboard/reviews?page=${page}` : "/dashboard/reviews"
+// The reviews page's URL for a filter (the admin's) and page, leaving defaults out of the query
+export const reviewsHref = ({
+  filter,
+  page = 1,
+}: { filter?: ReviewFilter; page?: number } = {}) => {
+  const query = new URLSearchParams()
+
+  if (filter) {
+    query.set("status", filter)
+  }
+
+  if (page > 1) {
+    query.set("page", String(page))
+  }
+
+  const text = query.toString()
+
+  return text ? `/dashboard/reviews?${text}` : "/dashboard/reviews"
+}

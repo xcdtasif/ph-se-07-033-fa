@@ -28,7 +28,12 @@ Dashboard pages that several roles share at one URL. Each role's version is its 
 shared URL, so each prerenders a loading state that matches its own content. Other pages under
 the path (the landlord's `/dashboard/properties/<id>`) are left alone
 */
-const ROLE_PAGES = ["/dashboard/overview", "/dashboard/properties", "/dashboard/requests"]
+const ROLE_PAGES = [
+  "/dashboard/overview",
+  "/dashboard/properties",
+  "/dashboard/requests",
+  "/dashboard/reviews",
+]
 
 // Refresh a little early so the token doesn't expire while the page renders
 const EXPIRY_MARGIN_MS = 10_000
