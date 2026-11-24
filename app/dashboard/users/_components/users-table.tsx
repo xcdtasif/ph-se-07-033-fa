@@ -17,6 +17,7 @@ import {
 import { authFetch } from "@/lib/auth-fetch"
 import { formatShortDate } from "@/lib/format"
 import type { User } from "@/lib/types"
+import { cn } from "@/lib/utils"
 
 import { BanButton } from "./ban-button"
 import {
@@ -163,7 +164,12 @@ export async function UsersTable({ page, filter, search }: UsersTableProps) {
       <UsersFrame>
         {users.map((user) => (
           <TableRow key={user.id}>
-            <TableCell colSpan={NAME_SPAN} className="font-medium" title={user.name}>
+            {/* A banned user's name is muted, like a hidden card's text */}
+            <TableCell
+              colSpan={NAME_SPAN}
+              className={cn("font-medium", user.isBanned && "text-muted-foreground")}
+              title={user.name}
+            >
               <ClippedWords text={user.name} />
             </TableCell>
             <TableCell colSpan={EMAIL_SPAN} className="text-muted-foreground" title={user.email}>

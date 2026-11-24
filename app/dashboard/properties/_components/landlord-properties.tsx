@@ -28,7 +28,8 @@ const PROPERTIES_PAGE_SIZE = 6
 A card like a request card: thumbnail with the status on its right, title (linking to the
 property's page, with its requests and reviews), location, prices, rating and date, then the
 actions centred in a footer. A property an admin has hidden sits on the page background with a
-dashed border, like an empty list's box, with a Hidden badge in place of its status.
+dashed border, like an empty list's box, with a Hidden badge in place of its status and its text
+muted; its buttons stay as they are.
 */
 function PropertyItem({ property }: { property: Property }) {
   const { id, name, status, isHidden } = property
@@ -41,7 +42,7 @@ function PropertyItem({ property }: { property: Property }) {
       )}
     >
       {/* Grows, so the footers line up across a row */}
-      <div className="flex flex-1 flex-col gap-2">
+      <div className={cn("flex flex-1 flex-col gap-2", isHidden && "text-muted-foreground")}>
         <div className="mb-1 flex items-start justify-between gap-2">
           <div className="bg-muted relative aspect-3/2 w-24 overflow-hidden rounded-lg sm:w-32">
             <PropertyImage

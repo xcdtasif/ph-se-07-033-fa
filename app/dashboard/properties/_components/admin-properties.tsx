@@ -28,6 +28,7 @@ import { authFetch } from "@/lib/auth-fetch"
 import { propertiesHref } from "@/lib/dashboard"
 import { formatShortDate } from "@/lib/format"
 import type { AdminProperty } from "@/lib/types"
+import { cn } from "@/lib/utils"
 
 import { setPropertyHiddenAction } from "../_actions/property-actions"
 
@@ -185,9 +186,16 @@ export async function AdminProperties({ page, filter, search }: AdminPropertiesP
           <TableRow key={property.id}>
             {/*
             Tenants can open it unless it's hidden or its landlord is banned; then its public page
-            doesn't open, so the name is plain text
+            doesn't open, so the name is plain text, and muted
             */}
-            <TableCell colSpan={PROPERTY_SPAN} className="font-medium" title={property.name}>
+            <TableCell
+              colSpan={PROPERTY_SPAN}
+              className={cn(
+                "font-medium",
+                (property.isHidden || property.landlord.isBanned) && "text-muted-foreground",
+              )}
+              title={property.name}
+            >
               {property.isHidden || property.landlord.isBanned ? (
                 <ClippedWords text={property.name} />
               ) : (
