@@ -1,13 +1,8 @@
 "use client"
 
-import { MapPin } from "lucide-react"
-import Link from "next/link"
 import { useOptimistic, useState, useTransition } from "react"
 import { toast } from "sonner"
 
-import { MessageText } from "@/components/shared/message-text"
-import { PropertyImage } from "@/components/shared/property-image"
-import { RequestStatusBadge } from "@/components/shared/request-status-badge"
 import { Button } from "@/components/ui/button"
 import {
   Dialog,
@@ -19,10 +14,10 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog"
-import { formatDate } from "@/lib/format"
 import type { LandlordRequest } from "@/lib/types"
 
 import { setRequestStatusAction, type LandlordRequestChange } from "../_actions/request-actions"
+import { RequestCardDetails } from "./request-card"
 
 type ConfirmChangeProps = {
   label: string
@@ -80,14 +75,13 @@ type LandlordRequestItemProps = {
 }
 
 /*
-A card like the tenant's: thumbnail with the status on its right, the property (linking to its
-dashboard page), the tenant's name and their message, then the actions centred in a
-footer. A change shows at once (the badge and the footer follow it) while the backend saves it;
+A card like the tenant's: the request's details (the property linking to its dashboard page),
+then the actions centred in a footer. A change shows at once (the badge and the footer follow it) while the backend saves it;
 a failure shows its toast and the card goes back to the request's current state. Approve shows
 only while the property is available, since approving reserves it.
 */
 export function LandlordRequestItem({ request, showProperty = true }: LandlordRequestItemProps) {
-  const { property, tenant } = request
+  const { property } = request
   const [status, setStatus] = useOptimistic(request.status)
   const [pending, startTransition] = useTransition()
 
@@ -121,45 +115,12 @@ export function LandlordRequestItem({ request, showProperty = true }: LandlordRe
 
   return (
     <li className="bg-card flex flex-col rounded-xl border p-4">
-      {/* Grows, so the footers line up across a row */}
-      <div className="flex flex-1 flex-col gap-2">
-        {showProperty ? (
-          <>
-            <div className="mb-1 flex items-start justify-between gap-2">
-              <div className="bg-muted relative aspect-3/2 w-24 overflow-hidden rounded-lg sm:w-32">
-                <PropertyImage
-                  src={property.images[0]}
-                  alt=""
-                  fill
-                  sizes="128px"
-                  className="object-cover"
-                />
-              </div>
-              <RequestStatusBadge status={status} />
-            </div>
-            <Link
-              href={`/dashboard/properties/${property.id}`}
-              className="link-hover-underline line-clamp-2 font-medium"
-            >
-              {property.name}
-            </Link>
-            <p className="text-muted-foreground flex items-center gap-1 text-sm">
-              <MapPin className="size-4 shrink-0" aria-hidden="true" />
-              <span className="line-clamp-1">{property.location}</span>
-            </p>
-            <p className="line-clamp-1 text-sm font-medium">{tenant.name}</p>
-          </>
-        ) : (
-          <div className="flex items-start justify-between gap-2">
-            <p className="line-clamp-1 font-medium">{tenant.name}</p>
-            <RequestStatusBadge status={status} />
-          </div>
-        )}
-        <MessageText>{request.message}</MessageText>
-        <p className="text-muted-foreground text-xs">
-          Requested on {formatDate(request.createdAt)}
-        </p>
-      </div>
+      <RequestCardDetails
+        request={request}
+        status={status}
+        propertyHref={`/dashboard/properties/${property.id}`}
+        showProperty={showProperty}
+      />
       {/* Spaced like the tenant's cards; a note is as tall as the buttons */}
       <div className="divider-dashed mt-6 flex flex-wrap justify-center gap-2 pt-4">
         {status === "PENDING" ? (

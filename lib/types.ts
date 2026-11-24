@@ -108,11 +108,14 @@ export type RentalRequest = {
   isReviewed: boolean
 }
 
-// A rental request as the landlord reads it: the tenant instead of the review flag, no rating
-export type LandlordRequest = Omit<RentalRequest, "isReviewed" | "property"> & {
+// A rental request as the admin reads it: the tenant instead of the review flag, no rating
+export type AdminRequest = Omit<RentalRequest, "isReviewed" | "property"> & {
   property: Omit<RentalRequest["property"], "reviewCount" | "averageRating">
   tenant: Pick<User, "id" | "name" | "email">
-  // The deposit the tenant paid, as a decimal string; null until paid
+}
+
+// As the landlord reads it: also the deposit the tenant paid, as a decimal string; null until paid
+export type LandlordRequest = AdminRequest & {
   paidDeposit: string | null
 }
 

@@ -3,7 +3,8 @@ import { Building2, Clock, Users } from "lucide-react"
 import { ApiError } from "@/components/shared/api-error"
 import { SkeletonText } from "@/components/shared/skeleton-text"
 import { authFetch } from "@/lib/auth-fetch"
-import type { LandlordRequest, Property, User } from "@/lib/types"
+import { requestsHref } from "@/lib/dashboard"
+import type { AdminRequest, Property, User } from "@/lib/types"
 
 import { StatCards, totalOf, type Stat } from "./stat-cards"
 
@@ -29,6 +30,7 @@ const STATS: Stat<StatKey>[] = [
     label: "Pending requests",
     icon: Clock,
     note: "Waiting for a landlord to approve or reject",
+    href: requestsHref("PENDING"),
   },
 ]
 
@@ -47,7 +49,7 @@ export async function AdminOverview() {
   const [users, properties, pending] = await Promise.all([
     authFetch<User[]>("/api/admin/users?limit=1"),
     authFetch<Property[]>("/api/admin/properties?limit=1"),
-    authFetch<LandlordRequest[]>("/api/admin/requests?limit=1&status=PENDING"),
+    authFetch<AdminRequest[]>("/api/admin/requests?limit=1&status=PENDING"),
   ])
 
   if (!users.success) {

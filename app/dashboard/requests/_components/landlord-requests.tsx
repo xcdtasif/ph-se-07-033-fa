@@ -1,57 +1,24 @@
 import Link from "next/link"
 
 import { ApiError } from "@/components/shared/api-error"
-import { MessageTextSkeleton } from "@/components/shared/message-text"
 import { Pagination, PaginationSkeleton } from "@/components/shared/pagination"
 import { requestStatusLabel } from "@/components/shared/request-status-badge"
-import { SkeletonText } from "@/components/shared/skeleton-text"
 import { buttonVariants } from "@/components/ui/button"
 import { authFetch } from "@/lib/auth-fetch"
 import { requestsHref } from "@/lib/dashboard"
 import type { LandlordRequest, RequestStatus } from "@/lib/types"
 
 import { LandlordRequestItem } from "./landlord-request-item"
+import { RequestCardSkeleton } from "./request-card"
 
 const REQUESTS_PAGE_SIZE = 6
-
-// A card while it loads: the same frame, rows and footer as LandlordRequestItem
-function LandlordRequestItemSkeleton({ showProperty }: { showProperty: boolean }) {
-  return (
-    <div className="bg-card flex flex-col rounded-xl border p-4">
-      <div className="flex flex-1 flex-col gap-2">
-        {showProperty ? (
-          <>
-            <div className="mb-1 flex items-start justify-between gap-2">
-              <div className="skeleton aspect-3/2 w-24 rounded-lg sm:w-32" />
-              <div className="skeleton h-5 w-16 rounded-4xl" />
-            </div>
-            <SkeletonText className="w-3/4" />
-            <SkeletonText className="w-1/2 text-sm" />
-            <SkeletonText className="w-1/3 text-sm" />
-          </>
-        ) : (
-          <div className="flex items-start justify-between gap-2">
-            <SkeletonText className="w-1/3" />
-            <div className="skeleton h-5 w-16 rounded-4xl" />
-          </div>
-        )}
-        <MessageTextSkeleton />
-        <SkeletonText className="w-32 text-xs" />
-      </div>
-      <div className="divider-dashed mt-6 flex justify-center gap-2 pt-4">
-        <div className="skeleton h-7 w-28 rounded-lg" />
-        <div className="skeleton h-7 w-32 rounded-lg" />
-      </div>
-    </div>
-  )
-}
 
 export function LandlordRequestsSkeleton({ showProperty = true }: { showProperty?: boolean }) {
   return (
     <div className="flex flex-col gap-6" aria-hidden="true">
       <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
         {Array.from({ length: REQUESTS_PAGE_SIZE }, (_, index) => (
-          <LandlordRequestItemSkeleton key={index} showProperty={showProperty} />
+          <RequestCardSkeleton key={index} showProperty={showProperty} />
         ))}
       </div>
       <PaginationSkeleton />
