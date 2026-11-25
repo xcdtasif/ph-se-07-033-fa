@@ -10,12 +10,12 @@ const buttonStyles = cva(
       outline and ghost hover with a see-through tint of the text colour, not a fixed grey,
       so they darken whatever is behind them by the same step: a white navbar or card, or
       the grey page. Both hover at 10%; outline also rests at 5%, a shade darker than what's
-      behind it
+      behind it. Its border is as dark as the dashed lines (divider-dashed)
       */
       variant: {
         default: "bg-primary text-primary-foreground hover:bg-primary/80",
         outline:
-          "border-border bg-foreground/5 hover:bg-foreground/10 hover:text-foreground aria-expanded:bg-foreground/10 aria-expanded:text-foreground dark:border-input dark:bg-input/30 dark:hover:bg-input/50",
+          "border-foreground/25 bg-foreground/5 hover:bg-foreground/10 hover:text-foreground aria-expanded:bg-foreground/10 aria-expanded:text-foreground dark:bg-input/30 dark:hover:bg-input/50",
         secondary:
           "bg-secondary text-secondary-foreground hover:bg-[color-mix(in_oklch,var(--secondary),var(--foreground)_5%)] aria-expanded:bg-secondary aria-expanded:text-secondary-foreground",
         ghost:
@@ -48,7 +48,7 @@ const buttonStyles = cva(
 /*
 Merged with cn(), like Button does, so a variant's classes replace the base ones
 they conflict with. Without it a <Link className={buttonVariants(...)}> gets both
-border-transparent and outline's border-border, and the transparent border wins.
+border-transparent and outline's border-foreground/25, and the transparent border wins.
 */
 const buttonVariants = (props?: Parameters<typeof buttonStyles>[0]) => cn(buttonStyles(props))
 
