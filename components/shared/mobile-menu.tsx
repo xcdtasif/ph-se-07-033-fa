@@ -161,11 +161,7 @@ export function MobileMenu({ sections, loggedIn }: MobileMenuProps) {
             <div className="divider-dashed flex flex-col gap-2 pt-6">
               {loggedIn ? (
                 <>
-                  <Link href="/profile" onClick={close} className={buttonVariants()}>
-                    Profile
-                  </Link>
                   <Button
-                    variant="outline"
                     onClick={() => {
                       logoutNext.current = true
                       close()
@@ -173,6 +169,13 @@ export function MobileMenu({ sections, loggedIn }: MobileMenuProps) {
                   >
                     Log out
                   </Button>
+                  <Link
+                    href="/profile"
+                    onClick={close}
+                    className={buttonVariants({ variant: "outline" })}
+                  >
+                    Profile
+                  </Link>
                 </>
               ) : (
                 <>

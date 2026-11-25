@@ -59,15 +59,11 @@ export function LogoutDialog({ open, onOpenChange, trigger }: LogoutDialogProps)
   )
 }
 
-// The navbar's outline Log out button, opening the dialog
+// The navbar's primary Log out button, opening the dialog
 export function LogoutButton({ className }: { className?: string }) {
   const [open, setOpen] = useState(false)
 
   return (
-    <LogoutDialog
-      open={open}
-      onOpenChange={setOpen}
-      trigger={<Button variant="outline" className={className} />}
-    />
+    <LogoutDialog open={open} onOpenChange={setOpen} trigger={<Button className={className} />} />
   )
 }

@@ -41,7 +41,7 @@ async function NavbarLinks() {
 }
 
 /*
-Desktop: the theme toggle, then Log out and Profile, or Sign up and Log in. The toggle waits with
+Desktop: the theme toggle, then Profile and Log out, or Sign up and Log in. The toggle waits with
 the buttons, so it appears where it stays instead of moving once they replace their placeholder
 */
 async function NavbarAccount() {
@@ -50,10 +50,10 @@ async function NavbarAccount() {
   return loggedIn ? (
     <>
       <ThemeToggle />
-      <LogoutButton />
-      <Link href="/profile" className={buttonVariants()}>
+      <Link href="/profile" className={buttonVariants({ variant: "outline" })}>
         Profile
       </Link>
+      <LogoutButton />
     </>
   ) : (
     <>
