@@ -37,13 +37,14 @@ async function fetchAllRequests(status: RequestStatus): Promise<ApiResponse<Land
 
 type StatKey = "properties" | "earnings" | "reviews" | "pending" | "approved" | "active"
 
-// The listings and what they've brought in
+// The listings, which open the properties page, and what they've brought in
 const PROPERTIES: Stat<StatKey>[] = [
   {
     key: "properties",
     label: "All",
     icon: Building2,
     note: "All your listings, in any status",
+    href: "/dashboard/properties",
   },
   {
     key: "earnings",
