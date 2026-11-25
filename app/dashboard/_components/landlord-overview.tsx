@@ -37,10 +37,11 @@ async function fetchAllRequests(status: RequestStatus): Promise<ApiResponse<Land
 
 type StatKey = "properties" | "earnings" | "reviews" | "pending" | "approved" | "active"
 
-const TOTALS: Stat<StatKey>[] = [
+// The listings and what they've brought in
+const PROPERTIES: Stat<StatKey>[] = [
   {
     key: "properties",
-    label: "Properties",
+    label: "All",
     icon: Building2,
     note: "All your listings, in any status",
   },
@@ -83,15 +84,21 @@ const REQUESTS: Stat<StatKey>[] = [
   },
 ]
 
-// The totals, then the requests under their own heading
+const SECTIONS = [
+  { title: "Properties", stats: PROPERTIES },
+  { title: "Requests", stats: REQUESTS },
+]
+
+// Each row of cards under its own heading, like the admin's
 function Overview({ values }: { values: Record<StatKey, ReactNode> }) {
   return (
     <div className="flex flex-col gap-10">
-      <StatCards stats={TOTALS} values={values} />
-      <section className="flex flex-col gap-4">
-        <h2 className="text-lg font-semibold tracking-tight">Requests</h2>
-        <StatCards stats={REQUESTS} values={values} />
-      </section>
+      {SECTIONS.map(({ title, stats }) => (
+        <section key={title} className="flex flex-col gap-4">
+          <h2 className="text-lg font-semibold tracking-tight">{title}</h2>
+          <StatCards stats={stats} values={values} />
+        </section>
+      ))}
     </div>
   )
 }
