@@ -1,3 +1,5 @@
+import { Building2, CreditCard, Inbox, Star, Tags, Users, type LucideIcon } from "lucide-react"
+
 import type { PropertyFilter } from "@/components/shared/property-status-filter"
 import type { ReviewFilter } from "@/components/shared/review-filter"
 
@@ -6,32 +8,31 @@ import type { RequestStatus, UserRole } from "./types"
 export type DashboardSection = {
   href: string
   label: string
+  icon: LucideIcon
   // The role has this page only, not the pages under it (the landlord's property pages)
   exact?: boolean
 }
 
 /*
-The dashboard pages each role has. `/dashboard` opens the first; a role with none sees no
-Dashboard menu and is sent to its profile.
+The dashboard pages each role has, shown as cards at the top of `/dashboard`. The proxy sends a
+role away from another role's page.
 */
 export const DASHBOARD_SECTIONS: Record<UserRole, DashboardSection[]> = {
   TENANT: [
-    { href: "/dashboard/requests", label: "Requests" },
-    { href: "/dashboard/payments", label: "Payments" },
-    { href: "/dashboard/reviews", label: "Reviews" },
+    { href: "/dashboard/requests", label: "Requests", icon: Inbox },
+    { href: "/dashboard/payments", label: "Payments", icon: CreditCard },
+    { href: "/dashboard/reviews", label: "Reviews", icon: Star },
   ],
   LANDLORD: [
-    { href: "/dashboard/overview", label: "Overview" },
-    { href: "/dashboard/properties", label: "Properties" },
-    { href: "/dashboard/requests", label: "Requests" },
+    { href: "/dashboard/properties", label: "Properties", icon: Building2 },
+    { href: "/dashboard/requests", label: "Requests", icon: Inbox },
   ],
   ADMIN: [
-    { href: "/dashboard/overview", label: "Overview" },
-    { href: "/dashboard/users", label: "Users" },
-    { href: "/dashboard/categories", label: "Categories" },
-    { href: "/dashboard/properties", label: "Properties", exact: true },
-    { href: "/dashboard/requests", label: "Requests" },
-    { href: "/dashboard/reviews", label: "Reviews" },
+    { href: "/dashboard/users", label: "Users", icon: Users },
+    { href: "/dashboard/categories", label: "Categories", icon: Tags },
+    { href: "/dashboard/properties", label: "Properties", icon: Building2, exact: true },
+    { href: "/dashboard/requests", label: "Requests", icon: Inbox },
+    { href: "/dashboard/reviews", label: "Reviews", icon: Star },
   ],
 }
 

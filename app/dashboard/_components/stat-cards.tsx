@@ -2,6 +2,8 @@ import type { LucideIcon } from "lucide-react"
 import Link from "next/link"
 import type { ReactNode } from "react"
 
+import { cn } from "@/lib/utils"
+
 // One figure on an overview: its label and icon, what it counts, and the list it opens, if any
 export type Stat<Key extends string> = {
   key: Key
@@ -10,6 +12,10 @@ export type Stat<Key extends string> = {
   note: string
   href?: string
 }
+
+// A card that opens a page, for the stat cards and the dashboard's section cards
+export const CARD_LINK =
+  "bg-card focus-visible:ring-ring/50 flex flex-1 rounded-xl border p-4 outline-none hover:brightness-97 focus-visible:ring-3 dark:hover:brightness-115"
 
 // The label and icon on top, the figure, then what it counts
 function StatContent({ stat, value }: { stat: Stat<string>; value: ReactNode }) {
@@ -40,10 +46,7 @@ export function StatCards<Key extends string>({
       {stats.map((stat) => (
         <li key={stat.key} className="flex">
           {stat.href ? (
-            <Link
-              href={stat.href}
-              className="bg-card focus-visible:ring-ring/50 flex flex-1 flex-col gap-1 rounded-xl border p-4 outline-none hover:brightness-97 focus-visible:ring-3 dark:hover:brightness-115"
-            >
+            <Link href={stat.href} className={cn(CARD_LINK, "flex-col gap-1")}>
               <StatContent stat={stat} value={values[stat.key]} />
             </Link>
           ) : (

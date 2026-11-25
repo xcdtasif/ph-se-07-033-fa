@@ -1,22 +1,20 @@
 import type { Metadata } from "next"
 import { Suspense } from "react"
 
-import { PageHeader } from "@/components/shared/page-header"
-
 import { AdminOverview, AdminOverviewSkeleton } from "../_components/admin-overview"
+import { DashboardHome } from "../_components/dashboard-home"
 
 export const metadata: Metadata = {
-  title: "Overview",
+  title: "Dashboard",
 }
 
-// The platform's figures; the proxy shows it at /dashboard/overview
-export default function AdminOverviewPage() {
+// The platform's figures under the dashboard's pages; the proxy shows it at /dashboard
+export default function AdminDashboardPage() {
   return (
-    <section className="flex flex-col gap-6">
-      <PageHeader title="Overview" />
+    <DashboardHome role="ADMIN">
       <Suspense fallback={<AdminOverviewSkeleton />}>
         <AdminOverview />
       </Suspense>
-    </section>
+    </DashboardHome>
   )
 }

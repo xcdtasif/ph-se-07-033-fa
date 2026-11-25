@@ -25,11 +25,11 @@ const PROTECTED_ROUTES: { prefix: string; roles: readonly UserRole[] }[] = [
 /*
 Dashboard pages that several roles share at one URL. Each role's version is its own page at
 `<path>/<role>` (e.g. `/dashboard/requests/landlord`), which the proxy shows in place of the
-shared URL, so each prerenders a loading state that matches its own content. Other pages under
-the path (the landlord's `/dashboard/properties/<id>`) are left alone
+shared URL, so each prerenders a loading state that matches its own content; asked for directly,
+it's a 404. Other pages under the path (the landlord's `/dashboard/properties/<id>`) are left alone
 */
 const ROLE_PAGES = [
-  "/dashboard/overview",
+  "/dashboard",
   "/dashboard/properties",
   "/dashboard/requests",
   "/dashboard/reviews",
@@ -51,15 +51,25 @@ type Session = {
 const matches = (pathname: string, prefix: string) =>
   pathname === prefix || pathname.startsWith(`${prefix}/`)
 
-// The role's first dashboard page, or its profile while it has none
-const roleHome = (role: UserRole) => DASHBOARD_SECTIONS[role][0]?.href ?? "/profile"
+// Where a role lands when it opens another role's page: every role has a dashboard
+const ROLE_HOME = "/dashboard"
 
-// `/dashboard` itself, or a dashboard page the role doesn't have
-const isOtherDashboard = (pathname: string, role: UserRole) =>
-  matches(pathname, "/dashboard") &&
-  !DASHBOARD_SECTIONS[role].some((section) =>
+// No route has this path, so a rewrite to it shows the not-found page with a 404
+const NOT_FOUND_PATH = "/_not-found"
+
+const isRoleVersion = (pathname: string) =>
+  ROLE_PAGES.some((page) =>
+    USER_ROLES.some((role) => matches(pathname, `${page}/${role.toLowerCase()}`)),
+  )
+
+const roleHas = (role: UserRole, pathname: string) =>
+  DASHBOARD_SECTIONS[role].some((section) =>
     section.exact ? pathname === section.href : matches(pathname, section.href),
   )
+
+// Another role's dashboard page; a path no role has (`/dashboard/overview`) is left to 404
+const isOtherRolesDashboard = (pathname: string, role: UserRole) =>
+  !roleHas(role, pathname) && USER_ROLES.some((other) => roleHas(other, pathname))
 
 // The role in an unexpired access token, or null
 const roleFromToken = (token: string): UserRole | null => {
@@ -143,13 +153,9 @@ const readSession = async (request: NextRequest): Promise<Session> => {
 const redirectFor = (request: NextRequest, role: UserRole | null): URL | null => {
   const { pathname, search, searchParams } = request.nextUrl
 
-  // A role's own version is reached through the shared URL only
-  const shared = ROLE_PAGES.find((page) =>
-    USER_ROLES.some((option) => matches(pathname, `${page}/${option.toLowerCase()}`)),
-  )
-
-  if (shared) {
-    return new URL(`${shared}${search}`, request.url)
+  // Shown as a 404 for everyone, logged in or not (rewriteFor)
+  if (isRoleVersion(pathname)) {
+    return null
   }
 
   if (isGuestOnly(pathname)) {
@@ -169,16 +175,23 @@ const redirectFor = (request: NextRequest, role: UserRole | null): URL | null =>
     return loginUrl
   }
 
-  if (!rule.roles.includes(role) || isOtherDashboard(pathname, role)) {
-    return new URL(roleHome(role), request.url)
+  if (!rule.roles.includes(role) || isOtherRolesDashboard(pathname, role)) {
+    return new URL(ROLE_HOME, request.url)
   }
 
   return null
 }
 
-// The role's own version of a shared page, or null to show the requested page
+/*
+The role's own version of a shared page, the not-found page for a role's version asked for
+directly, or null to show the requested page
+*/
 const rewriteFor = (request: NextRequest, role: UserRole | null): URL | null => {
   const { pathname, search } = request.nextUrl
+
+  if (isRoleVersion(pathname)) {
+    return new URL(NOT_FOUND_PATH, request.url)
+  }
 
   return role && ROLE_PAGES.includes(pathname)
     ? new URL(`${pathname}/${role.toLowerCase()}${search}`, request.url)

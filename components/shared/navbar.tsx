@@ -3,37 +3,31 @@ import { Suspense } from "react"
 
 import { buttonVariants } from "@/components/ui/button"
 import { getCurrentUser } from "@/lib/auth-fetch"
-import { DASHBOARD_SECTIONS, type DashboardSection } from "@/lib/dashboard"
 
 import { AuthLink } from "./auth-link"
-import { DashboardMenu } from "./dashboard-menu"
 import { HomeLink } from "./home-link"
 import { LogoutButton } from "./logout-button"
 import { MenuButton, MobileMenu } from "./mobile-menu"
 import { NavLink } from "./nav-link"
 import { ThemeToggle } from "./theme-toggle"
 
-// The role's dashboard pages, none for a guest. Reads the session, so callers sit inside <Suspense>.
-async function readNavbarUser(): Promise<{ loggedIn: boolean; sections: DashboardSection[] }> {
-  const result = await getCurrentUser()
-
-  return result.success
-    ? { loggedIn: true, sections: DASHBOARD_SECTIONS[result.data.role] }
-    : { loggedIn: false, sections: [] }
+// Whether someone is logged in. Reads the session, so callers sit inside <Suspense>.
+async function readLoggedIn(): Promise<boolean> {
+  return (await getCurrentUser()).success
 }
 
-// Desktop: Properties, then Dashboard for a role that has dashboard pages
+// Desktop: Properties, then Dashboard once logged in
 async function NavbarLinks() {
-  const { sections } = await readNavbarUser()
+  const loggedIn = await readLoggedIn()
 
   return (
     <ul className="flex items-center gap-1">
       <li>
         <NavLink href="/properties">Properties</NavLink>
       </li>
-      {sections.length > 0 && (
+      {loggedIn && (
         <li>
-          <DashboardMenu sections={sections} />
+          <NavLink href="/dashboard">Dashboard</NavLink>
         </li>
       )}
     </ul>
@@ -45,7 +39,7 @@ Desktop: the theme toggle, then Profile and Log out, or Sign up and Log in. The 
 the buttons, so it appears where it stays instead of moving once they replace their placeholder
 */
 async function NavbarAccount() {
-  const { loggedIn } = await readNavbarUser()
+  const loggedIn = await readLoggedIn()
 
   return loggedIn ? (
     <>
@@ -70,9 +64,7 @@ async function NavbarAccount() {
 
 // Below desktop width: the links and account buttons in a sheet
 async function NavbarMobileMenu() {
-  const { loggedIn, sections } = await readNavbarUser()
-
-  return <MobileMenu loggedIn={loggedIn} sections={sections} />
+  return <MobileMenu loggedIn={await readLoggedIn()} />
 }
 
 /*

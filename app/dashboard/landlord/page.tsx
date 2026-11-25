@@ -1,22 +1,20 @@
 import type { Metadata } from "next"
 import { Suspense } from "react"
 
-import { PageHeader } from "@/components/shared/page-header"
-
+import { DashboardHome } from "../_components/dashboard-home"
 import { LandlordOverview, LandlordOverviewSkeleton } from "../_components/landlord-overview"
 
 export const metadata: Metadata = {
-  title: "Overview",
+  title: "Dashboard",
 }
 
-// The landlord's figures; the proxy shows it at /dashboard/overview
-export default function LandlordOverviewPage() {
+// The landlord's figures under the dashboard's pages; the proxy shows it at /dashboard
+export default function LandlordDashboardPage() {
   return (
-    <section className="flex flex-col gap-6">
-      <PageHeader title="Overview" />
+    <DashboardHome role="LANDLORD">
       <Suspense fallback={<LandlordOverviewSkeleton />}>
         <LandlordOverview />
       </Suspense>
-    </section>
+    </DashboardHome>
   )
 }

@@ -7,27 +7,16 @@ import { useRef, useState, type ReactNode } from "react"
 
 import { Button, buttonVariants } from "@/components/ui/button"
 import { Sheet, SheetClose, SheetContent, SheetTitle, SheetTrigger } from "@/components/ui/sheet"
-import type { DashboardSection } from "@/lib/dashboard"
 import { cn } from "@/lib/utils"
 
 import { AuthLink } from "./auth-link"
 import { HomeLink } from "./home-link"
 import { LogoutDialog } from "./logout-button"
 
-type MobileMenuProps = {
-  // The role's dashboard pages; none for a guest or a role without any yet
-  sections: DashboardSection[]
-  loggedIn: boolean
-}
-
-// Large links; the dashboard's pages, under it, a step smaller
-const parentLink = buttonVariants({
+// Large links
+const menuLinkClass = buttonVariants({
   variant: "ghost",
   className: "h-auto px-3 py-1.5 text-lg font-normal",
-})
-const childLink = buttonVariants({
-  variant: "ghost",
-  className: "h-auto px-3 py-1 text-base font-normal",
 })
 
 // The navbar's menu button; the sheet's close button sits over it at the same size
@@ -66,20 +55,19 @@ export function MenuButton({ disabled }: { disabled?: boolean }) {
 The navbar links and account buttons below desktop width, in a sheet from the right: 80% of
 the screen, up to 20rem, with the rest blurred like behind a dialog. The links sit in the
 middle, the current one semibold; the account buttons sit at the bottom under a dashed line, all
-the same width. Dashboard's pages start folded and fold again once the sheet has closed. Log out
-closes the sheet, then asks in a dialog outside it, so the dialog isn't drawn over the menu.
+the same width. Log out closes the sheet, then asks in a dialog outside it, so the dialog isn't
+drawn over the menu.
 */
-export function MobileMenu({ sections, loggedIn }: MobileMenuProps) {
+export function MobileMenu({ loggedIn }: { loggedIn: boolean }) {
   const pathname = usePathname()
   const [open, setOpen] = useState(false)
-  const [dashboardOpen, setDashboardOpen] = useState(false)
   const [logoutOpen, setLogoutOpen] = useState(false)
   // Log out was pressed: open its dialog once the sheet has closed
   const logoutNext = useRef(false)
 
   const close = () => setOpen(false)
 
-  const menuLink = (href: string, className: string, children: ReactNode) => {
+  const menuLink = (href: string, children: ReactNode) => {
     const current = href === pathname
 
     return (
@@ -87,7 +75,7 @@ export function MobileMenu({ sections, loggedIn }: MobileMenuProps) {
         href={href}
         onClick={close}
         aria-current={current ? "page" : undefined}
-        className={cn(className, current && "font-semibold")}
+        className={cn(menuLinkClass, current && "font-semibold")}
       >
         {children}
       </Link>
@@ -99,15 +87,9 @@ export function MobileMenu({ sections, loggedIn }: MobileMenuProps) {
       <Sheet
         open={open}
         onOpenChange={setOpen}
-        // After the closing animation, so the pages don't fold while the sheet is still in view
+        // After the closing animation, so the dialog doesn't open over the sliding sheet
         onOpenChangeComplete={(isOpen) => {
-          if (isOpen) {
-            return
-          }
-
-          setDashboardOpen(false)
-
-          if (logoutNext.current) {
+          if (!isOpen && logoutNext.current) {
             logoutNext.current = false
             setLogoutOpen(true)
           }
@@ -136,27 +118,8 @@ export function MobileMenu({ sections, loggedIn }: MobileMenuProps) {
               aria-label="Menu"
               className="flex flex-1 flex-col items-center justify-center gap-3"
             >
-              {menuLink("/properties", parentLink, "Properties")}
-              {sections.length > 0 && (
-                <div className="flex flex-col items-center gap-1">
-                  <button
-                    type="button"
-                    aria-expanded={dashboardOpen}
-                    aria-controls="menu-dashboard-pages"
-                    onClick={() => setDashboardOpen((value) => !value)}
-                    className={parentLink}
-                  >
-                    Dashboard
-                  </button>
-                  {dashboardOpen && (
-                    <ul id="menu-dashboard-pages" className="flex flex-col items-center gap-1">
-                      {sections.map(({ href, label }) => (
-                        <li key={href}>{menuLink(href, childLink, label)}</li>
-                      ))}
-                    </ul>
-                  )}
-                </div>
-              )}
+              {menuLink("/properties", "Properties")}
+              {loggedIn && menuLink("/dashboard", "Dashboard")}
             </nav>
             <div className="divider-dashed flex flex-col gap-2 pt-6">
               {loggedIn ? (
