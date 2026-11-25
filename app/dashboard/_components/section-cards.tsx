@@ -5,11 +5,11 @@ import { cn } from "@/lib/utils"
 
 import { CARD_LINK } from "./stat-cards"
 
-// The role's dashboard pages as cards: the name and icon. As many to a row as fit, two on a phone
+// The role's dashboard pages as cards: the name and icon. Three to a row on desktop, else two
 export function SectionCards({ sections }: { sections: DashboardSection[] }) {
   return (
     <nav aria-label="Dashboard">
-      <ul className="grid grid-cols-2 gap-4 sm:grid-cols-[repeat(auto-fit,minmax(10rem,1fr))]">
+      <ul className="grid grid-cols-2 gap-4 lg:grid-cols-3">
         {sections.map(({ href, label, icon: Icon }) => (
           <li key={href} className="flex">
             <Link

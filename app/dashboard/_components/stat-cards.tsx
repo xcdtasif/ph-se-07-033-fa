@@ -13,9 +13,13 @@ export type Stat<Key extends string> = {
   href?: string
 }
 
-// A card that opens a page, for the stat cards and the dashboard's section cards
+/*
+A card that opens a page, for the stat cards and the dashboard's section cards. On hover it
+mixes in the text colour, 4% (7% in dark mode), a step past the page behind it, and its border
+darkens to the outline buttons'
+*/
 export const CARD_LINK =
-  "bg-card focus-visible:ring-ring/50 flex flex-1 rounded-xl border p-4 outline-none hover:brightness-97 focus-visible:ring-3 dark:hover:brightness-115"
+  "bg-card focus-visible:ring-ring/50 hover:border-foreground/25 flex flex-1 rounded-xl border p-4 transition-colors outline-none hover:bg-[color-mix(in_oklch,var(--card),var(--foreground)_4%)] focus-visible:ring-3 dark:hover:bg-[color-mix(in_oklch,var(--card),var(--foreground)_7%)]"
 
 // The label and icon on top, the figure, then what it counts
 function StatContent({ stat, value }: { stat: Stat<string>; value: ReactNode }) {
@@ -33,7 +37,7 @@ function StatContent({ stat, value }: { stat: Stat<string>; value: ReactNode }) 
   )
 }
 
-// One card per stat, each with its figure; a stat with a link is a card you can open
+// One card per stat, with its figure; three to a row on desktop, two on a tablet, one on a phone
 export function StatCards<Key extends string>({
   stats,
   values,
@@ -42,7 +46,7 @@ export function StatCards<Key extends string>({
   values: Record<Key, ReactNode>
 }) {
   return (
-    <ul className="grid gap-4 sm:grid-cols-3">
+    <ul className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
       {stats.map((stat) => (
         <li key={stat.key} className="flex">
           {stat.href ? (
