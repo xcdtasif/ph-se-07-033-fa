@@ -9,17 +9,18 @@ const buttonStyles = cva(
       /*
       outline and ghost hover with a see-through tint of the text colour, not a fixed grey,
       so they darken whatever is behind them by the same step: a white navbar or card, or
-      the grey page. Both hover at 10%; outline also rests at 5%, a shade darker than what's
-      behind it. Its border is as dark as the dashed lines (divider-dashed)
+      the grey page (in dark mode they lighten it). Both hover at 10%, 15% in dark mode;
+      outline also rests at 5%, 8% in dark mode, a shade off what's behind it. Its border is
+      as dark as the dashed lines (divider-dashed)
       */
       variant: {
         default: "bg-primary text-primary-foreground hover:bg-primary/80",
         outline:
-          "border-foreground/25 bg-foreground/5 hover:bg-foreground/10 hover:text-foreground aria-expanded:bg-foreground/10 aria-expanded:text-foreground dark:bg-input/30 dark:hover:bg-input/50",
+          "border-foreground/25 bg-foreground/5 hover:bg-foreground/10 hover:text-foreground aria-expanded:bg-foreground/10 aria-expanded:text-foreground dark:bg-foreground/8 dark:hover:bg-foreground/15 dark:aria-expanded:bg-foreground/15",
         secondary:
           "bg-secondary text-secondary-foreground hover:bg-[color-mix(in_oklch,var(--secondary),var(--foreground)_5%)] aria-expanded:bg-secondary aria-expanded:text-secondary-foreground",
         ghost:
-          "hover:bg-foreground/10 hover:text-foreground aria-expanded:bg-foreground/10 aria-expanded:text-foreground dark:hover:bg-muted/50",
+          "hover:bg-foreground/10 hover:text-foreground aria-expanded:bg-foreground/10 aria-expanded:text-foreground dark:hover:bg-foreground/15 dark:aria-expanded:bg-foreground/15",
         destructive:
           "bg-destructive/10 text-destructive hover:bg-destructive/20 focus-visible:border-destructive/40 focus-visible:ring-destructive/20 dark:bg-destructive/20 dark:hover:bg-destructive/30 dark:focus-visible:ring-destructive/40",
         link: "text-primary underline-offset-4 hover:underline",

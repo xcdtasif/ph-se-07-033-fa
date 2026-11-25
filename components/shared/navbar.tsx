@@ -11,6 +11,7 @@ import { HomeLink } from "./home-link"
 import { LogoutButton } from "./logout-button"
 import { MenuButton, MobileMenu } from "./mobile-menu"
 import { NavLink } from "./nav-link"
+import { ThemeToggle } from "./theme-toggle"
 
 // The role's dashboard pages, none for a guest. Reads the session, so callers sit inside <Suspense>.
 async function readNavbarUser(): Promise<{ loggedIn: boolean; sections: DashboardSection[] }> {
@@ -39,12 +40,16 @@ async function NavbarLinks() {
   )
 }
 
-// Desktop: Log out and Profile, or Sign up and Log in
+/*
+Desktop: the theme toggle, then Log out and Profile, or Sign up and Log in. The toggle waits with
+the buttons, so it appears where it stays instead of moving once they replace their placeholder
+*/
 async function NavbarAccount() {
   const { loggedIn } = await readNavbarUser()
 
   return loggedIn ? (
     <>
+      <ThemeToggle />
       <LogoutButton />
       <Link href="/profile" className={buttonVariants()}>
         Profile
@@ -52,6 +57,7 @@ async function NavbarAccount() {
     </>
   ) : (
     <>
+      <ThemeToggle />
       <AuthLink href="/signup" className={buttonVariants({ variant: "outline" })}>
         Sign up
       </AuthLink>
@@ -70,9 +76,9 @@ async function NavbarMobileMenu() {
 }
 
 /*
-Desktop: the brand, the links centred together, the account buttons. Smaller screens: the
-brand and a menu button. The parts that depend on the session stream in at the same size as
-their placeholders.
+Desktop: the brand, the links centred together, the theme toggle and account buttons.
+Smaller screens: the brand, the theme toggle and a menu button. The parts that depend on the
+session stream in at the same size as their placeholders.
 */
 export function Navbar() {
   return (
@@ -89,11 +95,14 @@ export function Navbar() {
           </Suspense>
         </div>
         <div className="hidden items-center gap-2 justify-self-end lg:flex">
-          <Suspense fallback={<div className="skeleton h-8 w-40 rounded-lg" />}>
+          {/* As wide as the toggle and buttons: 184px logged in, 181px for a guest */}
+          <Suspense fallback={<div className="skeleton h-8 w-46 rounded-lg" aria-hidden="true" />}>
             <NavbarAccount />
           </Suspense>
         </div>
-        <div className="ml-auto lg:hidden">
+        {/* The menu button's placeholder is its own size, so the toggle needn't wait for it */}
+        <div className="ml-auto flex items-center gap-2 lg:hidden">
+          <ThemeToggle />
           <Suspense fallback={<MenuButton disabled />}>
             <NavbarMobileMenu />
           </Suspense>

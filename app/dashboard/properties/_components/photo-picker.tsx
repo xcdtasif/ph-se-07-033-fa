@@ -141,7 +141,7 @@ export function PhotoPicker({ photos, onChange, invalid }: PhotoPickerProps) {
                 onClick={() => makeCover(photo)}
                 className={cn(
                   COVER_PILL,
-                  "focus-visible:ring-ring/50 outline-none hover:brightness-95 focus-visible:ring-3",
+                  "focus-visible:ring-ring/50 outline-none hover:brightness-95 focus-visible:ring-3 dark:hover:brightness-125",
                 )}
               >
                 Set as cover

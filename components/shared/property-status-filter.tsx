@@ -1,7 +1,7 @@
 import { PROPERTY_STATUSES, type PropertyStatus } from "@/lib/types"
 
-import { BANNED_COLORS } from "./banned-colors"
 import { HIDDEN_PILL_COLORS } from "./hidden-badge"
+import { BANNED_COLORS } from "./pill-colors"
 import { propertyStatusColors, propertyStatusLabel } from "./property-status-badge"
 import { StatusFilter } from "./status-filter"
 

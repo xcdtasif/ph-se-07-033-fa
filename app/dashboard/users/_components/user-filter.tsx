@@ -1,4 +1,4 @@
-import { BANNED_COLORS } from "@/components/shared/banned-colors"
+import { BANNED_COLORS, PILL_COLORS } from "@/components/shared/pill-colors"
 import { StatusFilter } from "@/components/shared/status-filter"
 import { Badge } from "@/components/ui/badge"
 import { USER_ROLES, type UserRole } from "@/lib/types"
@@ -12,9 +12,9 @@ export type UserFilter = UserRole | "BANNED"
 const USER_FILTERS: readonly UserFilter[] = [...USER_ROLES, "BANNED"]
 
 const FILTERS: Record<UserFilter, { label: string; className: string }> = {
-  ADMIN: { label: "Admin", className: "bg-violet-100 text-violet-800" },
-  LANDLORD: { label: "Landlord", className: "bg-blue-100 text-blue-800" },
-  TENANT: { label: "Tenant", className: "bg-amber-100 text-amber-800" },
+  ADMIN: { label: "Admin", className: PILL_COLORS.violet },
+  LANDLORD: { label: "Landlord", className: PILL_COLORS.blue },
+  TENANT: { label: "Tenant", className: PILL_COLORS.amber },
   BANNED: { label: "Banned", className: BANNED_COLORS },
 }
 
@@ -82,7 +82,7 @@ export function UserStatusBadge({ isBanned }: { isBanned: boolean }) {
   return isBanned ? (
     <Badge className={FILTERS.BANNED.className}>Banned</Badge>
   ) : (
-    <Badge className="bg-emerald-100 text-emerald-800">Active</Badge>
+    <Badge className={PILL_COLORS.emerald}>Active</Badge>
   )
 }
 

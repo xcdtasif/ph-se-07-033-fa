@@ -98,7 +98,7 @@ async function PaymentResult({
     return (
       <PaymentOutcome
         icon={CircleX}
-        iconClassName="text-red-600"
+        iconClassName="text-red-600 dark:text-red-400"
         title="Payment not completed"
         action={
           <Link href={`/properties/${payment.request.property.id}`} className={actionClassName}>
@@ -115,7 +115,7 @@ async function PaymentResult({
   return (
     <PaymentOutcome
       icon={CircleCheck}
-      iconClassName="text-emerald-600"
+      iconClassName="text-emerald-600 dark:text-emerald-400"
       title="Payment successful"
       action={
         <Link href={requestsHref("ACTIVE")} className={actionClassName}>

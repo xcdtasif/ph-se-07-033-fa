@@ -1,10 +1,12 @@
 import { Badge } from "@/components/ui/badge"
 import type { PropertyStatus } from "@/lib/types"
 
+import { PILL_COLORS } from "./pill-colors"
+
 const STATUSES: Record<PropertyStatus, { label: string; className: string }> = {
-  AVAILABLE: { label: "Available", className: "bg-emerald-100 text-emerald-800" },
-  RESERVED: { label: "Reserved", className: "bg-amber-100 text-amber-800" },
-  RENTED: { label: "Rented", className: "bg-blue-100 text-blue-800" },
+  AVAILABLE: { label: "Available", className: PILL_COLORS.emerald },
+  RESERVED: { label: "Reserved", className: PILL_COLORS.amber },
+  RENTED: { label: "Rented", className: PILL_COLORS.blue },
   UNAVAILABLE: { label: "Unavailable", className: "bg-muted text-muted-foreground" },
 }
 

@@ -57,7 +57,7 @@ export function StatusFilter<Status extends string>({
                   aria-current={selected ? "page" : undefined}
                   className={cn(
                     // The focus ring sits inside the pill; the scrolling row clips anything outside
-                    "focus-visible:ring-ring flex h-7 items-center rounded-full px-3 text-sm font-medium whitespace-nowrap outline-none hover:brightness-95 focus-visible:ring-2 focus-visible:ring-inset",
+                    "focus-visible:ring-ring flex h-7 items-center rounded-full px-3 text-sm font-medium whitespace-nowrap outline-none hover:brightness-95 focus-visible:ring-2 dark:hover:brightness-125 focus-visible:ring-inset",
                     option
                       ? statusColors(option)
                       : "bg-card text-foreground ring-foreground/15 ring-1 ring-inset",

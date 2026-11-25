@@ -2,11 +2,11 @@ import Link from "next/link"
 import type { ReactNode } from "react"
 
 import { ApiError } from "@/components/shared/api-error"
-import { BANNED_COLORS } from "@/components/shared/banned-colors"
 import { ClippedWords } from "@/components/shared/clipped-words"
 import { HiddenBadge } from "@/components/shared/hidden-badge"
 import { HideButton } from "@/components/shared/hide-button"
 import { Pagination, PaginationSkeleton } from "@/components/shared/pagination"
+import { BANNED_COLORS } from "@/components/shared/pill-colors"
 import { PropertyStatusBadge } from "@/components/shared/property-status-badge"
 import {
   propertyFilterLabel,

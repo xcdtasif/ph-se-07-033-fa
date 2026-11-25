@@ -42,7 +42,7 @@ export function StatCards<Key extends string>({
           {stat.href ? (
             <Link
               href={stat.href}
-              className="bg-card focus-visible:ring-ring/50 flex flex-1 flex-col gap-1 rounded-xl border p-4 outline-none hover:brightness-97 focus-visible:ring-3"
+              className="bg-card focus-visible:ring-ring/50 flex flex-1 flex-col gap-1 rounded-xl border p-4 outline-none hover:brightness-97 focus-visible:ring-3 dark:hover:brightness-115"
             >
               <StatContent stat={stat} value={values[stat.key]} />
             </Link>

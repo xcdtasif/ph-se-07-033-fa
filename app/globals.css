@@ -120,6 +120,35 @@
 }
 
 /*
+Toasts in the pills' hues and in both themes alike: the popover colour tinted 20% with the
+type's hue, a 45% border and the hue's text, dark (800) in light mode and light (300) in dark,
+like the pills. Sonner's own dark colours are near-black tints that vanish on the dark page.
+The extra :root and [data-sonner-theme] outrank Sonner's rules, which it adds to <head> at
+runtime
+*/
+:root [data-sonner-toaster][data-sonner-theme] {
+  --success-bg: color-mix(in oklch, var(--color-emerald-400) 20%, var(--popover));
+  --success-border: color-mix(in oklch, var(--color-emerald-400) 45%, var(--popover));
+  --success-text: var(--color-emerald-800);
+  --info-bg: color-mix(in oklch, var(--color-blue-400) 20%, var(--popover));
+  --info-border: color-mix(in oklch, var(--color-blue-400) 45%, var(--popover));
+  --info-text: var(--color-blue-800);
+  --warning-bg: color-mix(in oklch, var(--color-amber-400) 20%, var(--popover));
+  --warning-border: color-mix(in oklch, var(--color-amber-400) 45%, var(--popover));
+  --warning-text: var(--color-amber-800);
+  --error-bg: color-mix(in oklch, var(--color-red-400) 20%, var(--popover));
+  --error-border: color-mix(in oklch, var(--color-red-400) 45%, var(--popover));
+  --error-text: var(--color-red-800);
+}
+
+:root [data-sonner-toaster][data-sonner-theme="dark"] {
+  --success-text: var(--color-emerald-300);
+  --info-text: var(--color-blue-300);
+  --warning-text: var(--color-amber-300);
+  --error-text: var(--color-red-300);
+}
+
+/*
 The dashed line above a footer: the rent card's note, request card actions, the page footer.
 @apply, because `@theme inline` doesn't output --color-* variables to read with var().
 */

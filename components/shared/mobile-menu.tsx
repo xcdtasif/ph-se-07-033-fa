@@ -39,13 +39,26 @@ export function MenuButton({ disabled }: { disabled?: boolean }) {
     </>
   )
 
-  // The placeholder while the session loads isn't inside a Sheet, so it can't be a trigger
+  /*
+  The placeholder while the session loads isn't inside a Sheet, so it can't be a trigger. The
+  open menu's tint is off: it showed beside the sliding sheet, like a stuck hover after a tap
+  */
   return disabled ? (
     <Button variant="ghost" size="icon" disabled>
       {icon}
     </Button>
   ) : (
-    <SheetTrigger render={<Button variant="ghost" size="icon" />}>{icon}</SheetTrigger>
+    <SheetTrigger
+      render={
+        <Button
+          variant="ghost"
+          size="icon"
+          className="aria-expanded:bg-transparent dark:aria-expanded:bg-transparent"
+        />
+      }
+    >
+      {icon}
+    </SheetTrigger>
   )
 }
 

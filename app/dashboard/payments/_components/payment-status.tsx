@@ -1,12 +1,13 @@
+import { PILL_COLORS } from "@/components/shared/pill-colors"
 import { StatusFilter } from "@/components/shared/status-filter"
 import { Badge } from "@/components/ui/badge"
 import { PAYMENT_STATUSES, type PaymentStatus } from "@/lib/types"
 
 // Completed means paid, so it's green
 const STATUSES: Record<PaymentStatus, { label: string; className: string }> = {
-  PENDING: { label: "Pending", className: "bg-yellow-100 text-yellow-800" },
-  COMPLETED: { label: "Completed", className: "bg-emerald-100 text-emerald-800" },
-  FAILED: { label: "Failed", className: "bg-red-100 text-red-800" },
+  PENDING: { label: "Pending", className: PILL_COLORS.yellow },
+  COMPLETED: { label: "Completed", className: PILL_COLORS.emerald },
+  FAILED: { label: "Failed", className: PILL_COLORS.red },
 }
 
 export const paymentStatusLabel = (status: PaymentStatus) => STATUSES[status].label
