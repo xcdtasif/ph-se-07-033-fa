@@ -6,11 +6,12 @@ import { toast } from "sonner"
 import type { FormState } from "@/lib/form"
 
 /*
-Runs a server action from a form through useActionState: shows its message as a toast and
-calls `onSuccess` when it succeeds. Returns the state, the form action, whether it's pending,
-props for the <form> (a ref and an onChange that drops a field's error once the user edits that
-field; a click or tap outside the form drops them all) and a way to drop a field's error by
-name; the next submit shows errors afresh.
+Runs a server action from a form through useActionState: shows its message as a toast, unless
+it failed with field errors, which show under their fields instead, and calls `onSuccess` when
+it succeeds. Returns the state, the form action, whether it's pending, props for the <form> (a
+ref and an onChange that drops a field's error once the user edits that field; a click or tap
+outside the form drops them all) and a way to drop a field's error by name; the next submit
+shows errors afresh.
 */
 export const useFormAction = <Field extends string>(
   action: (formData: FormData) => Promise<FormState<Field>>,
@@ -23,7 +24,7 @@ export const useFormAction = <Field extends string>(
       if (state.success) {
         toast.success(state.message)
         onSuccess?.(state)
-      } else {
+      } else if (Object.keys(state.fieldErrors ?? {}).length === 0) {
         toast.error(state.message)
       }
 
