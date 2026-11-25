@@ -46,11 +46,14 @@ export default function HomePage() {
       </section>
 
       <section aria-labelledby="featured-heading" className="flex flex-col gap-6">
-        <div className="flex items-baseline justify-between gap-4">
+        <div className="flex items-center justify-between gap-4">
           <h2 id="featured-heading" className="text-2xl font-semibold tracking-tight">
             Featured properties
           </h2>
-          <Link href="/properties" className="link-underline text-sm font-medium">
+          <Link
+            href="/properties"
+            className={buttonVariants({ variant: "outline", size: "sm", className: "text-sm" })}
+          >
             View all
           </Link>
         </div>
