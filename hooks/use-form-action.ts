@@ -1,6 +1,6 @@
 "use client"
 
-import { useActionState, useState, type FormEvent } from "react"
+import { useActionState, useEffect, useRef, useState, type FormEvent } from "react"
 import { toast } from "sonner"
 
 import type { FormState } from "@/lib/form"
@@ -8,8 +8,9 @@ import type { FormState } from "@/lib/form"
 /*
 Runs a server action from a form through useActionState: shows its message as a toast and
 calls `onSuccess` when it succeeds. Returns the state, the form action, whether it's pending,
-an onChange handler for the form that drops a field's error once the user edits that field, and
-the same for a field by name; the next submit shows errors afresh.
+props for the <form> (a ref and an onChange that drops a field's error once the user edits that
+field; a click or tap outside the form drops them all) and a way to drop a field's error by
+name; the next submit shows errors afresh.
 */
 export const useFormAction = <Field extends string>(
   action: (formData: FormData) => Promise<FormState<Field>>,
@@ -49,9 +50,31 @@ export const useFormAction = <Field extends string>(
   }
 
   // Change events from the form's fields bubble up to the form
-  const onFormChange = (event: FormEvent<HTMLFormElement>) => {
+  const onChange = (event: FormEvent<HTMLFormElement>) => {
     clearFieldError((event.target as HTMLInputElement).name)
   }
 
-  return [{ ...state, fieldErrors }, formAction, pending, onFormChange, clearFieldError] as const
+  // While errors show, a click or tap anywhere outside the form drops them all
+  const ref = useRef<HTMLFormElement>(null)
+  const showingErrors = Object.keys(fieldErrors ?? {}).length > 0
+
+  useEffect(() => {
+    if (!showingErrors) {
+      return
+    }
+
+    const onClick = (event: MouseEvent) => {
+      if (!ref.current?.contains(event.target as Node)) {
+        setEdited({ state, fields: new Set(Object.keys(state.fieldErrors ?? {})) })
+      }
+    }
+
+    document.addEventListener("click", onClick)
+
+    return () => document.removeEventListener("click", onClick)
+  }, [showingErrors, state])
+
+  const formProps = { ref, onChange }
+
+  return [{ ...state, fieldErrors }, formAction, pending, formProps, clearFieldError] as const
 }

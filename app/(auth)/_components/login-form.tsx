@@ -10,11 +10,11 @@ import { useAuthForm } from "./use-auth-form"
 const toErrors = (messages?: string[]) => messages?.map((message) => ({ message }))
 
 export function LoginForm() {
-  const [state, formAction, pending, onFormChange] = useAuthForm(loginAction)
+  const [state, formAction, pending, formProps] = useAuthForm(loginAction)
   const errors = state.fieldErrors
 
   return (
-    <form action={formAction} onChange={onFormChange} noValidate>
+    <form action={formAction} {...formProps} noValidate>
       <FieldGroup>
         <Field data-invalid={Boolean(errors?.email)}>
           <FieldLabel htmlFor="email">Email</FieldLabel>

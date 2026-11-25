@@ -28,7 +28,7 @@ type RequestDialogProps = {
 export function RequestDialog({ propertyId, propertyName }: RequestDialogProps) {
   const [open, setOpen] = useState(false)
   const popupRef = useRef<HTMLDivElement>(null)
-  const [state, formAction, pending, onFormChange] = useFormAction(
+  const [state, formAction, pending, formProps] = useFormAction(
     (formData: FormData) => createRequestAction(propertyId, formData),
     () => setOpen(false),
   )
@@ -41,12 +41,7 @@ export function RequestDialog({ propertyId, propertyName }: RequestDialogProps) 
       </DialogTrigger>
       {/* Focuses the dialog itself, not the first field, so the placeholder shows until a click */}
       <DialogContent ref={popupRef} initialFocus={popupRef} className="grid-cols-1 sm:max-w-md">
-        <form
-          action={formAction}
-          onChange={onFormChange}
-          noValidate
-          className="grid grid-cols-1 gap-4"
-        >
+        <form action={formAction} {...formProps} noValidate className="grid grid-cols-1 gap-4">
           <DialogTitle className="sr-only">{`Request to rent ${propertyName}`}</DialogTitle>
 
           <Field data-invalid={Boolean(errors?.message)}>

@@ -113,7 +113,7 @@ export function PropertyForm({ categories, property, action, submitLabel }: Prop
     return action(formData)
   }
 
-  const [state, formAction, pending, onFormChange, clearFieldError] = useFormAction(save, () =>
+  const [state, formAction, pending, formProps, clearFieldError] = useFormAction(save, () =>
     router.push("/dashboard/properties"),
   )
   const errors = state.fieldErrors
@@ -151,7 +151,7 @@ export function PropertyForm({ categories, property, action, submitLabel }: Prop
     })
 
   return (
-    <form action={formAction} onChange={onFormChange} noValidate>
+    <form action={formAction} {...formProps} noValidate>
       <FieldGroup>
         {textField("name", "Name", { placeholder: "Sunny 2-bed apartment in Dhanmondi" })}
 

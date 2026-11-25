@@ -9,10 +9,10 @@ import { CategoryNameField } from "./category-name-field"
 
 // Laid out like the profile's edit form; the field empties once the category is added
 export function AddCategoryForm() {
-  const [state, formAction, pending, onFormChange] = useFormAction(createCategoryAction)
+  const [state, formAction, pending, formProps] = useFormAction(createCategoryAction)
 
   return (
-    <form action={formAction} onChange={onFormChange} noValidate>
+    <form action={formAction} {...formProps} noValidate>
       <FieldGroup>
         <CategoryNameField
           id="new-category"

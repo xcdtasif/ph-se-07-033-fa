@@ -30,7 +30,7 @@ type ReviewDialogProps = {
 export function ReviewDialog({ requestId, propertyName }: ReviewDialogProps) {
   const [open, setOpen] = useState(false)
   const popupRef = useRef<HTMLDivElement>(null)
-  const [state, formAction, pending, onFormChange] = useFormAction(
+  const [state, formAction, pending, formProps] = useFormAction(
     (formData: FormData) => createReviewAction(requestId, formData),
     () => setOpen(false),
   )
@@ -43,12 +43,7 @@ export function ReviewDialog({ requestId, propertyName }: ReviewDialogProps) {
       </DialogTrigger>
       {/* Focuses the dialog itself, not the first field, so the placeholder shows until a click */}
       <DialogContent ref={popupRef} initialFocus={popupRef} className="grid-cols-1 sm:max-w-md">
-        <form
-          action={formAction}
-          onChange={onFormChange}
-          noValidate
-          className="grid grid-cols-1 gap-4"
-        >
+        <form action={formAction} {...formProps} noValidate className="grid grid-cols-1 gap-4">
           <DialogTitle className="sr-only">{`Review ${propertyName}`}</DialogTitle>
 
           {/* Centred like the dialog's field labels */}

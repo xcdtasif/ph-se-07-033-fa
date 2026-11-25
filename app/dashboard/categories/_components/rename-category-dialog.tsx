@@ -21,7 +21,7 @@ import { CategoryNameField } from "./category-name-field"
 // A row's Rename: the name in a field, saved on submit
 export function RenameCategoryDialog({ category }: { category: Category }) {
   const [open, setOpen] = useState(false)
-  const [state, formAction, pending, onFormChange] = useFormAction(
+  const [state, formAction, pending, formProps] = useFormAction(
     (formData: FormData) => renameCategoryAction(category.id, formData),
     () => setOpen(false),
   )
@@ -32,12 +32,7 @@ export function RenameCategoryDialog({ category }: { category: Category }) {
         Rename
       </DialogTrigger>
       <DialogContent className="sm:max-w-md">
-        <form
-          action={formAction}
-          onChange={onFormChange}
-          noValidate
-          className="grid grid-cols-1 gap-4"
-        >
+        <form action={formAction} {...formProps} noValidate className="grid grid-cols-1 gap-4">
           <DialogHeader>
             <DialogTitle>Rename this category</DialogTitle>
           </DialogHeader>
