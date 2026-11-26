@@ -9,9 +9,9 @@ import { useFormAction } from "@/hooks/use-form-action"
 import { demoLoginAction } from "../_actions/auth-actions"
 
 const ACCOUNTS = [
-  { value: "admin", label: "Admin 01" },
-  { value: "landlord", label: "Landlord 01" },
   { value: "tenant", label: "Tenant 01" },
+  { value: "landlord", label: "Landlord 01" },
+  { value: "admin", label: "Admin 01" },
 ]
 
 /*
