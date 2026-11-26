@@ -3,6 +3,7 @@ import type { Metadata } from "next"
 import { AuthLink } from "@/components/shared/auth-link"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 
+import { DemoLogin } from "../_components/demo-login"
 import { LoginForm } from "../_components/login-form"
 
 export const metadata: Metadata = {
@@ -23,8 +24,9 @@ export default function LoginPage() {
           </AuthLink>
         </CardDescription>
       </CardHeader>
-      <CardContent>
+      <CardContent className="flex flex-col gap-6">
         <LoginForm />
+        <DemoLogin />
       </CardContent>
     </Card>
   )

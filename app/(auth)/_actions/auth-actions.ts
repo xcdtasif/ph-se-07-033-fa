@@ -22,7 +22,7 @@ const NO_SESSION_MESSAGE = "We couldn't log you in. Please try again."
 const authenticate = async <Field extends string>(
   path: string,
   body: unknown,
-  values: FormState<Field>["values"],
+  values?: FormState<Field>["values"],
 ): Promise<FormState<Field>> => {
   const { result, setCookies } = await apiRequest<User>(path, { method: "POST", body })
 
@@ -51,6 +51,31 @@ export const loginAction = async (formData: FormData): Promise<FormState<LoginFi
   }
 
   return authenticate("/api/auth/login", parsed.data, values)
+}
+
+/*
+The sample users the backend seeds (src/db/seeders), for testers to log in without typing. Their
+shared password is already public in the backend's README, and keeping it here, on the server,
+means the client only sends which account it wants.
+*/
+const DEMO_ACCOUNTS = {
+  admin: "admin01@gmail.com",
+  landlord: "landlord01@gmail.com",
+  tenant: "tenant01@gmail.com",
+} as const
+const DEMO_PASSWORD = "1a2s3d4f"
+
+export const demoLoginAction = async (formData: FormData): Promise<FormState<never>> => {
+  const account = formText(formData, "account")
+
+  if (!Object.hasOwn(DEMO_ACCOUNTS, account)) {
+    return { success: false, message: "Unknown demo account" }
+  }
+
+  return authenticate("/api/auth/login", {
+    email: DEMO_ACCOUNTS[account as keyof typeof DEMO_ACCOUNTS],
+    password: DEMO_PASSWORD,
+  })
 }
 
 export const signupAction = async (formData: FormData): Promise<FormState<SignupField>> => {

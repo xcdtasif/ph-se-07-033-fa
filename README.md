@@ -92,6 +92,8 @@ The live API has the backend's sample data. Every sample user's password is `1a2
 | Tenant   | `tenant01@gmail.com`   |
 | Landlord | `landlord01@gmail.com` |
 
+The login page's demo buttons log in as either of them, or as the admin, in one click.
+
 `tenant01` has `APPROVED` requests, so the payment flow can be tried right away with Stripe's test
 card `4242 4242 4242 4242`, any future expiry date and any CVC.
 

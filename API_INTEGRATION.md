@@ -38,6 +38,7 @@ backend's message and a Retry button, or Log in again when the session is gone.
 | --------------- | ----------------------------------------------- | ------------------------------------ | --------------------- | ------------------------ |
 | Sign up         | `/signup`                                       | `signup-form.tsx`                    | `signupAction`        | `POST /api/auth/signup`  |
 | Log in          | `/login`                                        | `login-form.tsx`                     | `loginAction`         | `POST /api/auth/login`   |
+| Demo log in     | `/login`                                        | `demo-login.tsx`                     | `demoLoginAction`     | `POST /api/auth/login`   |
 | Log out         | every page (navbar)                             | `logout-button.tsx`, `api-error.tsx` | `logoutAction`        | x                        |
 | Session refresh | `/dashboard`, `/payments`, `/profile` and below | `proxy.ts`                           | x                     | `POST /api/auth/refresh` |
 | Profile         | `/profile`                                      | `app/profile/page.tsx`               | x                     | `GET /api/users/me`      |
