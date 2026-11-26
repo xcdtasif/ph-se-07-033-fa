@@ -5,10 +5,16 @@ import { cn } from "@/lib/utils"
 
 import { CARD_LINK } from "./stat-cards"
 
-// The role's dashboard pages as cards: the name and icon. Three to a row on desktop, else two
+/*
+The role's dashboard pages as cards under a Pages heading, like the figures' sections: the name
+and icon. Three to a row on desktop, else two
+*/
 export function SectionCards({ sections }: { sections: DashboardSection[] }) {
   return (
-    <nav aria-label="Dashboard">
+    <nav aria-labelledby="dashboard-pages" className="flex flex-col gap-4">
+      <h2 id="dashboard-pages" className="text-lg font-semibold tracking-tight">
+        Pages
+      </h2>
       <ul className="grid grid-cols-2 gap-4 lg:grid-cols-3">
         {sections.map(({ href, label, icon: Icon }) => (
           <li key={href} className="flex">
