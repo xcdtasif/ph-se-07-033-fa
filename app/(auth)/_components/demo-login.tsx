@@ -25,8 +25,11 @@ export function DemoLogin() {
 
   return (
     <form action={formAction} className="flex flex-col gap-4">
-      {/* The card's background, not the page's, behind the separator's text */}
-      <FieldSeparator className="*:data-[slot=field-separator-content]:bg-card">
+      {/*
+      The card's background, not the page's, behind the separator's text, and the dashed line of
+      the cards' footers in place of the solid one
+      */}
+      <FieldSeparator className="*:data-[slot=field-separator-content]:bg-card *:data-[slot=separator]:divider-dashed *:data-[slot=separator]:h-0 *:data-[slot=separator]:bg-transparent">
         Or try a demo account
       </FieldSeparator>
       <div className="flex flex-wrap gap-2">
